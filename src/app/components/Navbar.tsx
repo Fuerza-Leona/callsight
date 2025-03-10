@@ -29,14 +29,20 @@ const Navbar = () => {
                 <a href="/" className="ml-5">
                     <Image src="/neoris.png" alt="Logo" width={150} height={50} priority />
                 </a>
+                <nav className="sm:flex hidden items-center justify-between w-full">
+                    <NavItems />
+                </nav>
+                <div className="flex gap-5 items-center">
                 <button className="text-neutral-400 hover:text-white focus:outline-none sm:hidden flex" onClick={toggleMenu} aria-label="Toggle menu">
                     <img src={isOpen ? "/assets/close.svg" : "/assets/chevronDown.png"} alt="toggle" className="w-6 h-6" />
                 </button>
-                <nav className="sm:flex hidden">
-                    <NavItems />
-                </nav>
+                <a href="/login">
+                        <p className="rounded-2xl px-3 py-1 bg-white">Login</p>
+                </a>
+                </div>
              </div>
         </div>
+        
         <div className={`w-64 absolute right-0 bg-[#13202A]/80 backdrop-blur-sm transition-all duration-300 ease-in-out overflow-hidden z-20 mx-auto sm:hidden block ${isOpen ? 'max-h-screen' : 'max-h-0'}`}>
             <nav className="p-5">
                 <NavItems />
