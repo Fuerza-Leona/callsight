@@ -30,7 +30,7 @@ const Sidebar = () => {
                 <img src={isOpen ? "/assets/close.svg" : "/assets/menu.svg"} alt="toggle" className="w-6 h-6 mt-4" />
             </button>
 
-            <aside className={`h-screen w-full md:w-64 pt-20 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:relative lg:translate-x-0`}>
+            <aside className={`h-screen w-full md:w-64 pt-20 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:fixed lg:translate-x-0`}>
                 <div className="flex flex-col justify-between h-full py-5">
                     <nav className="lg:flex w-full ml-5">
                         <SideNavItems />
