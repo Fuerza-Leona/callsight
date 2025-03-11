@@ -22,7 +22,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center text-center justify-center mt-24">
+    <div className="relative w-full min-h-screen flex flex-col items-center text-center justify-center">
       <div className="flex flex-col">
         
       <form ref={formRef} onSubmit={handleSubmit}>
