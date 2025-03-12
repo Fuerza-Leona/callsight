@@ -1,4 +1,4 @@
-# Callsigth
+# Callsight
 Proyecto centro de llamadas
 
 ### Plan preliminar del proyecto
