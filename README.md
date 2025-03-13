@@ -2,7 +2,7 @@
 Proyecto centro de llamadas
 
 ### Plan preliminar del proyecto
-https://docs.google.com/document/d/1xdvhfSE-SS-dAxnnjIaDTg3SaxyY7bB-JoMAkqDCzRk/edit?usp=sharing
+https://docs.google.com/document/d/1b-pRfKHMBBcOyIoVHaRqaERhqut8pMnKHl6L-toZdZI/edit?usp=sharing
 
 ### Documento de requerimientos
 https://docs.google.com/document/d/1zJQwHoi3NFCnjgqKQi8zkhANQShcJ0Gd/edit?usp=sharing&ouid=101333936993722605157&rtpof=true&sd=true
