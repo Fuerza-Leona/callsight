@@ -49,15 +49,14 @@ export default function Home() {
       <div className="w-full text-start">
         <p className="mx-20">Regresar</p>
         <div className="flex text-white text-4xl justify-between bg-[#13202A] rounded-2xl mx-22">
-          <p className="mx-20 p-8">Nombre</p>
-          <p className="mx-20 p-8">Fecha</p>
+          <p className="mx-20 p-8">Llamada 1</p>
+          <p className="mx-20 p-8">13/03/2025</p>
         </div>
       </div>
       <div className="flex w-[calc(100%-11rem)] justify-between mt-10">
         <div className="flex flex-col gap-5">
           <div className="flex gap-2">
             <h3 className="text-xl">Categorias:</h3>
-            <p className="rounded-lg bg-[#8AD2E6] px-4 py-1">Tecnología</p>
             <p className="rounded-lg bg-[#8AD2E6] px-4 py-1">Tecnología</p>
           </div>
           <div className="flex flex-col bg-gray-200 w-120 h-35 rounded-2xl justify-start items-center overflow-scroll">

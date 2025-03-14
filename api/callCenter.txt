@@ -1,0 +1,47 @@
+Agent: Hola, gracias por llamar a Consultora SoftTech. Soy el Agent. ¿En qué puedo ayudarle hoy?
+
+Customer: Hola, soy el Customer. Tengo algunas dudas sobre unos cambios que quiero hacer en mi página web y quiero saber si son posibles.
+
+Agent: Con gusto le ayudaré. ¿Me puede proporcionar su correo electrónico y nombre completo?
+
+Customer: Claro. Mi correo es customer@email.com y mi nombre completo es Customer Pérez. He trabajado con SoftTech durante unos cinco años y, hasta ahora, nunca he tenido problemas con modificaciones en mi web.
+
+Agent: Entiendo, Customer. Déme un momento para acceder a su información.
+
+Agent: Bien, ya encontré su cuenta. Veo que recientemente solicitó algunas modificaciones. Específicamente, se implementó una actualización en el diseño del sitio y se optimizó el rendimiento. Según nuestros registros, su cuenta tiene activadas las actualizaciones automáticas, por lo que aplicamos estos cambios como parte de nuestro servicio continuo de optimización.
+
+Customer: Recuerdo haber aceptado mejoras en mi sitio, pero tenía la impresión de que cualquier cambio significativo—especialmente si afectaba el diseño—sería consultado conmigo antes.
+
+Agent: De hecho, le enviamos un correo electrónico el viernes pasado informándole sobre los cambios, y luego aplicamos la actualización el martes. Puede revisar su bandeja de entrada o carpeta de spam para ver los detalles.
+
+Customer: No recuerdo haber visto ningún correo sobre esto. Estos cambios fueron una sorpresa total para mí.
+
+Agent: Bueno, como mencioné, le enviamos una notificación. ¿Ha revisado su carpeta de spam? A veces, los filtros de correo electrónico bloquean mensajes automatizados, y eso podría haber sucedido con nuestra notificación.
+
+Customer: No, no lo he revisado, pero ese no es el punto. Me hubiera gustado recibir un aviso más claro, tal vez un mensaje en el panel de administración antes de aplicar los cambios.
+
+Agent: Dado que usted tiene activadas las actualizaciones automáticas, el sistema simplemente siguió la configuración de su cuenta. Es su responsabilidad revisar esa configuración y cualquier comunicación sobre modificaciones en su sitio.
+
+Customer: Entiendo que el sistema actuó según mis preferencias, pero esto no se trata solo de un proceso automatizado. Se trata de la comunicación con el cliente. ¿Puedo hablar con un supervisor para aclarar esta política?
+
+Agent: ¿Exactamente qué parte de la comunicación le pareció poco clara? Usted aceptó el servicio de actualizaciones automáticas, lo que significa que autorizó estos cambios sin necesidad de confirmación previa.
+
+Customer: Sí, pero asumí que solo serían optimizaciones menores. No esperaba que se modificara el diseño sin consultarme primero.
+
+Agent: Ese no es el funcionamiento del servicio de actualizaciones automáticas. Si esta opción está activada, eso significa que acepta mejoras en su sitio sin necesidad de aprobación manual. Si no desea esto, puede desactivar esa configuración en su cuenta.
+
+Customer: Bueno, ahora lo entiendo, pero aun así quiero hablar con un supervisor.
+
+Agent: Puedo enviar una solicitud para que un supervisor le devuelva la llamada, pero, para ser honesto, le dirá lo mismo que le acabo de explicar. Sin embargo, si insiste, puedo tomar la solicitud.
+
+Customer: Sí, por favor. Quiero discutir esto con un supervisor.
+
+Agent: De acuerdo, enviaré la solicitud para que un supervisor le devuelva la llamada. Mientras tanto, le recomiendo revisar su correo electrónico para mantenerse informado sobre cualquier cambio en su sitio y evitar sorpresas.
+
+Customer: ¿Sabe qué? Mejor transfiérame al departamento de cancelaciones.
+
+Agent: Entiendo si está frustrado. Pero antes de hacer eso, quiero ofrecerle la posibilidad de revertir los cambios sin costo adicional. Si el problema es la actualización, podemos restaurar su diseño anterior de inmediato. ¿Eso resolvería su inquietud?
+
+Customer: No, cariño, no se trata solo del diseño. Se trata de cómo fue manejado el proceso. Solo cancela mi servicio, por favor.
+
+Agent: Entiendo. En ese caso, procederé a transferirlo al departamento de cancelaciones. Espere un momento.
