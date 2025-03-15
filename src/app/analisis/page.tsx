@@ -1,17 +1,26 @@
-
+"use client";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 export default function Home() {
     return (
-        <div className="relative left-64 top-32 w-4/5 min-h-screen grid grid-cols-4 gap-3 auto-rows-min">
-            <div className="row-span-4">
-                <p>Calendario</p>
+        <div className="relative left-64 top-32 w-82/100 min-h-screen grid grid-cols-3 gap-2 auto-rows-min m-2">
+            <div className="row-span-4 text-white bg-[#1E242B] rounded-md">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateCalendar
+                        defaultValue={dayjs("2022-04-17")}
+                        views={["month", "year"]}
+                        openTo="month"
+                    />
+                </LocalizationProvider>
             </div>
             <div className="">
                 <button className="bg-[#1E242B] text-[#FFFFFF] rounded-md h-15 w-full">
                     Categoria
                 </button>
             </div>
-            
+
             <div className="col-span-2 row-span-2 bg-[#1E242B] text-[#FFFFFF] rounded-md flex items-center justify-around">
                 <p className="">Buscar Llamadas</p>
                 <p>-&gt;</p>
@@ -26,7 +35,7 @@ export default function Home() {
                     Exportar como PDF
                 </button>
             </div>
-            
+
             <div className="row-span-2 rounded-md flex items-center justify-center bg-[#E7E6E7]">
                 <p>Tiempo promedio por llamada</p>
             </div>
@@ -51,5 +60,5 @@ export default function Home() {
                 <p>Satisfaccion</p>
             </div>
         </div>
-    )
+    );
 }
