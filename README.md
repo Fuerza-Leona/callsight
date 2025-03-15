@@ -1,6 +1,9 @@
 # Callsight
 Proyecto centro de llamadas
 
+### Presentación (con video de prueba técnica)
+https://www.canva.com/design/DAGgE3VcxmM/W4n3eFV_9duA70334IVQig/edit?utm_content=DAGgE3VcxmM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
 ### Plan preliminar del proyecto
 https://docs.google.com/document/d/1b-pRfKHMBBcOyIoVHaRqaERhqut8pMnKHl6L-toZdZI/edit?usp=sharing
 
