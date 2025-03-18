@@ -31,7 +31,7 @@ export default function Home() {
                 </button>
             </div>
             <div>
-                <button className="bg-[#89D2E6] text-[#FFFFFF] rounded-md h-15 w-full">
+                <button className="bg-[#89D2E6] text-[#FFFFFF] rounded-md h-24 w-full">
                     Exportar como PDF
                 </button>
             </div>
@@ -43,7 +43,7 @@ export default function Home() {
                 <p>Total de llamadas</p>
             </div>
             <div>
-                <button className="bg-[#89D2E6] text-[#FFFFFF] rounded-md h-15 w-full">
+                <button className="bg-[#89D2E6] text-[#FFFFFF] rounded-md h-24 w-full">
                     Exportar como JSON
                 </button>
             </div>
