@@ -30,7 +30,7 @@ export const sideNavLinks = [
   {
     id: 3,
     name: "Subir una llamada",
-    href: "llamada",
+    href: "subirLlamada",
   },
   {
     id: 4,
