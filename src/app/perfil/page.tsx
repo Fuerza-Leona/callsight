@@ -23,7 +23,7 @@ const columns = [
   { label: 'Proyectos', key: 'proyectos' },
 ];
 
-const isUser = true;
+const isUser = false;
 const isAgent = !isUser;
 const isAdmin = false;
 

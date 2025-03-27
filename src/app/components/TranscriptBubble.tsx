@@ -18,7 +18,7 @@ const TranscriptBubble: React.FC<TranscriptBubbleProps> = ({ color, user, messag
 
   return (
     <div className='w-full'>
-        <div className={`w-110 p-4 rounded-lg ${bgColor} ${margin}`}>
+        <div className={`w-[calc(100%-10rem)] max-w-110 min-w-40 p-4 rounded-lg ${bgColor} ${margin}`}>
             {message}
         </div>
     </div>
