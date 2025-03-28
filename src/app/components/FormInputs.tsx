@@ -85,7 +85,6 @@ const FormInputs: React.FC<FormInputsProps> = ({ onFormSubmit }) => {
                 </Select>
             </FormControl>
 
-            {/* Submit Button */}
             <Button type="submit" variant="contained" color="primary">
                 Guardar
             </Button>

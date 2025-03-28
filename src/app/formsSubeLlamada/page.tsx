@@ -22,11 +22,14 @@ const Page: React.FC = () => {
     };
 
     return (
-        <div>
-            <h2>Adjunta una llamada</h2>
-            <FileUploader onFileSelect={handleFileSelect} />
-            <FormInputs onFormSubmit={handleFormSubmit} />
+        <div className="relative left-64 top-32 w-82/100 min-h-screen grid grid-cols-3 gap-2 auto-rows-min m-2">
+            <div>
+            <h1 className="text-black text-2xl font-bold flex items-center justify-center w-full text-center">Adjunta una llamada</h1>
+                <FileUploader onFileSelect={handleFileSelect} />
+                <FormInputs onFormSubmit={handleFormSubmit} />
+            </div>
         </div>
+        
     );
 };
 
