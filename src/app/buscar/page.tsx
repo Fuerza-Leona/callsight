@@ -19,6 +19,7 @@ export default function Home() {
     const [namesEmployees, setNamesEmployees] = useState<string[]>([]);
     const [clients, setClients] = useState<employees[]>([]);
     const [namesClients, setNamesClients] = useState<string[]>([]);
+
     useEffect(() => {
         axios
             .get("http://127.0.0.1:8000/api/v1/users/employees")
@@ -48,7 +49,7 @@ export default function Home() {
     return (
         <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
             <div className="w-3/10 flex flex-col align-center text-center">
-                <p>Filtros</p>
+                <p className="text-3xl">Filtros</p>
                 <MultipleSelectChip title="Usuarios" names={namesEmployees} />
                 <MultipleSelectChip title="Cliente" names={namesClients} />
                 <MultipleSelectChip title="Categorías" names={categorias} />
