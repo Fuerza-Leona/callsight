@@ -7,24 +7,24 @@ import MultipleSelectChip from "../components/MultipleSelectChip";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-interface employees {
+/*interface employees {
     user_id: string;
     user: string;
-}
+}*/
 
 const categorias = ["Tecnología", "Marketing"];
 
 export default function Home() {
-    const [namesPeople, setNamesPeople] = useState<employees[]>([]);
+    //const [namesPeople, setNamesPeople] = useState<employees[]>([]);
     const [namesEmployees, setNamesEmployees] = useState<string[]>([]);
-    const [clients, setClients] = useState<employees[]>([]);
+    //const [clients, setClients] = useState<employees[]>([]);
     const [namesClients, setNamesClients] = useState<string[]>([]);
 
     useEffect(() => {
         axios
             .get("http://127.0.0.1:8000/api/v1/users/employees")
             .then((response) => {
-                setNamesPeople(response.data.data);
+                //setNamesPeople(response.data.data);
                 setNamesEmployees(response.data.users);
             })
             .catch((error) => {
@@ -36,7 +36,7 @@ export default function Home() {
         axios
             .get("http://127.0.0.1:8000/api/v1/users/client")
             .then((response) => {
-                setClients(response.data.data);
+                //setClients(response.data.data);
                 setNamesClients(response.data.users);
             })
             .catch((error) => {
