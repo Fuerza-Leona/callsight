@@ -23,21 +23,22 @@ const columns = [
   { label: 'Proyectos', key: 'proyectos' },
 ];
 
-const isUser = false;
-const isAgent = !isUser;
-const isAdmin = false;
+//Valores harcodeados
+  const isUser = false;
+  const isAgent = !isUser;
+  const isAdmin = false;
 
-const nombre = "Juan"
-const nLlamadas = 192;
-const duracion = 23;
+  const nombre = "Juan"
+  const nLlamadas = 192;
+  const duracion = 23;
 
-//Cliente
-const nProyectos = 1;
-const tickets = 21
+  //Cliente
+  const nProyectos = 1;
+  const tickets = 21
 
-//Agente - Admin
-const satisfaccion = 4.3;
-const empresa = "Neoris";
+  //Agente - Admin
+  const satisfaccion = 4.3;
+  const empresa = "Neoris";
 
 export default function Home() {
   /* const [role, setRole] = useState('');
