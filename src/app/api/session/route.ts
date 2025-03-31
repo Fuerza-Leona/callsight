@@ -8,8 +8,9 @@ export async function POST(req: Request) {
     const sessionData = await req.json()
 
     const encrypted = encrypt(sessionData)
-
-    const cookie = serialize('session', encrypted, {
+    
+    // httpOnly session cookie (for tokens, secure)
+    const sessionCookie = serialize('session', encrypted, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -17,8 +18,19 @@ export async function POST(req: Request) {
       path: '/',
     })
 
+    // plain user_info cookie (for client-side hydration)
+    const user = sessionData.user
+    const userInfoCookie = serialize('user_info', JSON.stringify(user), {
+      httpOnly: false, // client can read this
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+    })
+
     const response = NextResponse.json({ message: 'Session cookie set' })
-    response.headers.set('Set-Cookie', cookie)
+    response.headers.append('Set-Cookie', sessionCookie)
+    response.headers.append('Set-Cookie', userInfoCookie)
 
     return response
   } catch (err) {

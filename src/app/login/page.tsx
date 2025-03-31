@@ -40,7 +40,9 @@ export default function Home() {
           });
 
           if (sessionResponse.ok) {
-            router.push("/perfil");
+            setTimeout(() => {
+              router.push("/perfil");
+            }, 100); // wait 100ms before pushing
           } else {
             console.error("Failed to set session cookie");
           }
