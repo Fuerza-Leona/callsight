@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import TranscriptBubble from "../components/TranscriptBubble";
 import { useMediaQuery } from 'react-responsive';
+import { apiURL } from "../constants";
 
 interface EmotionData {
   overall_sentiment: string;
@@ -21,7 +22,7 @@ export default function Home() {
   const isTablet = useMediaQuery({ minWidth: 1000, maxWidth: 1310 });
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/analyze/callcenter")
+    axios.get(`${apiURL}/analyze/callcenter`)
       .then(response => {
         const summaries = response.data;
         setIssue(summaries["Issue task"]?.issue || "No disponible");
@@ -34,7 +35,7 @@ export default function Home() {
         setLoadingCall(false);
       });
 
-    axios.get("http://127.0.0.1:8000/analyze/emotions")
+      axios.get(`${apiURL}/analyze/emotions`)
       .then(response => {
         const emotionData = response.data.emotions || [];
         setEmotions(emotionData);

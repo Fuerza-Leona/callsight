@@ -6,6 +6,7 @@ import Tag from "../components/Tag";
 import MultipleSelectChip from "../components/MultipleSelectChip";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { apiURL } from "../constants";
 
 /*interface employees {
     user_id: string;
@@ -22,7 +23,7 @@ export default function Home() {
 
     useEffect(() => {
         axios
-            .get("http://127.0.0.1:8000/api/v1/users/employees")
+            .get(`${apiURL}/users/employees`)
             .then((response) => {
                 //setNamesPeople(response.data.data);
                 setNamesEmployees(response.data.users);
@@ -34,7 +35,7 @@ export default function Home() {
                 //add loading
             });
         axios
-            .get("http://127.0.0.1:8000/api/v1/users/client")
+            .get(`${apiURL}/users/client`)
             .then((response) => {
                 //setClients(response.data.data);
                 setNamesClients(response.data.users);
