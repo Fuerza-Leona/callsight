@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
-import { useLogin } from "@/hooks/useFetchData";
+import { useLogin } from "@/hooks/useLogin";
 
 export default function Home() {
   const router = useRouter();

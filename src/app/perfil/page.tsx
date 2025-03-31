@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import CustomPaginationActionsTable from "../components/CustomPaginationActionsTable";
 import SearchBar from "../components/SearchBar";
+import { useUser } from "@/context/UserContext";
 
 const rows = [
   { name: 'BBVA', usuarios: 30, proyectos: 3 },
@@ -24,11 +25,11 @@ const columns = [
 ];
 
 //Valores harcodeados
-  const isUser = false;
-  const isAgent = !isUser;
+  //const isUser = false;
+  //const isAgent = !isUser;
   const isAdmin = false;
 
-  const nombre = "Juan"
+  //const nombre = "Juan"
   const nLlamadas = 192;
   const duracion = 23;
 
@@ -41,6 +42,10 @@ const columns = [
   const empresa = "Neoris";
 
 export default function Home() {
+  const { user } = useUser();
+  const nombre = user?.username;
+  const isUser = (user?.role == "client")
+  const isAgent = !isUser;
   /* const [role, setRole] = useState('');
 
   useEffect(() => {
