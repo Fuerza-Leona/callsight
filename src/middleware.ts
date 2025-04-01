@@ -4,22 +4,15 @@ export function middleware(request: NextRequest) {
   const userCookie = request.cookies.get('user_info')
   const { pathname } = request.nextUrl
 
-  // Redirect to login if not already logged in and trying to access perfil
-  if (pathname === '/perfil' && !userCookie) {
+  // Define protected routes
+  const protectedRoutes = ['/perfil', '/analisis', '/formsSubeLlamada']
+
+  // If trying to access a protected route without user_info cookie, redirect to login
+  if (protectedRoutes.includes(pathname) && !userCookie) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect to login if not already logged in and trying to access analisis de llamadas
-  if (pathname === '/analisis' && !userCookie) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  // Redirect to login if not already logged in and trying to access subir una llamada
-  if (pathname === '/formsSubeLlamada' && !userCookie) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  // Redirect to profile if already logged in and trying to access login
+  // If user is logged in and tries to access login, redirect to profile
   if (pathname === '/login' && userCookie) {
     return NextResponse.redirect(new URL('/perfil', request.url))
   }

@@ -90,9 +90,7 @@ export default function Home() {
               </div>
             </div>
 
-            {error && (
-              <p className="text-red-500 mt-2">{error}</p>
-            )}
+
 
             <div className="flex justify-center m-5">
               <button
@@ -103,6 +101,9 @@ export default function Home() {
                 {loading ? "Cargando..." : "Log In"}
               </button>
             </div>
+            {error && (
+                  <p className="text-red-500 mt-2 absolute">{error}</p>
+                )}
           </div>
         </form>
       </div>
