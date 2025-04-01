@@ -1,36 +1,69 @@
-import React, { useRef } from 'react';
+"use client";
+
+import React, { useState } from "react";
+import { Button, Typography } from "@mui/material";
 
 interface FileUploaderProps {
-    onFileSelect: (file: File) => void;
+  onFileSelect: (file: File) => void;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
-    const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState<string>("");
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length > 0) {
-            onFileSelect(event.target.files[0]);
-        }
-    };
+  // Handle file selection
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
 
-    return (
-        <div>
-            <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                accept="video/*"  
-                className="hidden" 
-            />
+    if (file) {
+      // Validate file type (only allow videos)
+      if (!file.type.startsWith("video/")) {
+        setError("Please upload a valid video file.");
+        setSelectedFile(null);
+        return;
+      }
 
-            <button 
-                onClick={() => fileInputRef.current?.click()} 
-                className="px-4 py-2 border-2 border-gray-500 rounded-lg text-gray-700 hover:bg-gray-200"
-            >
-                Subir Archivo
-            </button>
-        </div>
-    );
+      setError(""); // Clear any previous error
+      setSelectedFile(file);
+      onFileSelect(file); // Pass file to parent component
+    }
+  };
+
+  return (
+    <div style={{ textAlign: "center", padding: "10px" }}>
+      <Typography variant="h6" >
+        Adjunta una llamada
+      </Typography>
+
+      {/* File Input */}
+      <input
+        type="file"
+        accept="video/*"
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+        id="file-input"
+      />
+      <label htmlFor="file-input">
+        <Button variant="outlined" component="span">
+          Choose File
+        </Button>
+      </label>
+
+      {/* Show selected file name only once */}
+      {selectedFile && (
+        <Typography variant="body1" style={{ marginTop: "10px" }}>
+          {selectedFile.name}
+        </Typography>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <Typography variant="body2" color="error" style={{ marginTop: "10px" }}>
+          {error}
+        </Typography>
+      )}
+    </div>
+  );
 };
 
 export default FileUploader;
