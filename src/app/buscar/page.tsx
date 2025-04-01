@@ -48,7 +48,8 @@ export default function Home() {
             });*/
     refetchClients();
     refetchLlamadas();
-  }, [refetchClients, refetchLlamadas]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
       <div className="w-3/10 flex flex-col align-center text-center">
