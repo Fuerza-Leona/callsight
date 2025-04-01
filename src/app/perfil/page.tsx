@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CustomPaginationActionsTable from "../components/CustomPaginationActionsTable";
 import SearchBar from "../components/SearchBar";
 import { useUser } from "@/context/UserContext";
@@ -24,37 +24,28 @@ const columns = [
   { label: 'Proyectos', key: 'proyectos' },
 ];
 
-//Valores harcodeados
+//Harcodead values (whatever is commented is already functional)
   //const isUser = false;
   //const isAgent = !isUser;
   const isAdmin = false;
 
-  //const nombre = "Juan"
-  const nLlamadas = 192;
-  const duracion = 23;
+  //const name = "Juan"
+  const nCalls = 192;
+  const duration = 23;
 
-  //Cliente
-  const nProyectos = 1;
+  //Client
+  const nProyects = 1;
   const tickets = 21
 
   //Agente - Admin
-  const satisfaccion = 4.3;
-  const empresa = "Neoris";
+  const satisfaction = 4.3;
+  const company = "Neoris";
 
 export default function Home() {
   const { user } = useUser();
-  const nombre = user?.username;
+  const name = user?.username;
   const isUser = (user?.role == "client")
-  const isAgent = !isUser;
-  /* const [role, setRole] = useState('');
-
-  useEffect(() => {
-    const storedRole = localStorage.getItem('userRole');
-    setRole(storedRole || '');
-  }, []);
-
-  const isUser = role === 'user';
-  const isAdmin = role === 'admin'; */
+  const isAgent = !isUser; //This is hardcoded. It needs to also get the user role
 
   const [filteredRows, setFilteredRows] = useState(rows);
   const handleSearch = (searchValue: string | null) => {
@@ -72,7 +63,7 @@ export default function Home() {
     <div className="md:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px] pt-[140px] md:pt-28 lg:pt-[65px]">
       <div className="w-full text-start">
         <div className="text-white text-4xl text-start">
-          <p className="bg-[#13202A] rounded-2xl mx-20 p-8">{nombre}</p>
+          <p className="bg-[#13202A] rounded-2xl mx-20 p-8">{name}</p>
         </div>
       </div>
 
@@ -89,7 +80,7 @@ export default function Home() {
             {isUser ? "Tickets abiertos" : "Empresa"}
           </p>
           <h2 className="font-thin text-3xl">
-            {isUser ? tickets : empresa}
+            {isUser ? tickets : company}
           </h2>
         </div>
         
@@ -97,7 +88,7 @@ export default function Home() {
         <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center">
           <p>Duración promedio por llamada</p>
           <div className="flex">
-            <h2 className="font-thin text-3xl">{duracion}</h2>
+            <h2 className="font-thin text-3xl">{duration}</h2>
             <p>min</p>
           </div>
         </div>
@@ -109,12 +100,12 @@ export default function Home() {
             <p>
               {(isAdmin || isAgent) ? "Satisfaccion promedio" : "Proyectos realizados" }
             </p>
-            <h2 className="font-thin text-3xl">{isUser ? nProyectos : satisfaccion}</h2>
+            <h2 className="font-thin text-3xl">{isUser ? nProyects : satisfaction}</h2>
           </div>
 
           <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center">
             <p>Llamadas totales</p>
-            <h2 className="font-thin text-3xl">{nLlamadas}</h2>
+            <h2 className="font-thin text-3xl">{nCalls}</h2>
           </div>
         </div>
 
@@ -140,9 +131,6 @@ export default function Home() {
         }
 
       </div>
-
-      
-
     </div>
   );
 }
