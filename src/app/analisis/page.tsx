@@ -10,8 +10,17 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CallIcon from '@mui/icons-material/Call';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import SearchIcon from '@mui/icons-material/Search';
+import { useFetchClients } from "../hooks/fetchClients";
+import { useEffect } from "react";
 
 export default function Home() {
+
+    const {data, refetchClients} = useFetchClients();
+
+    useEffect(() => {
+        refetchClients()
+    }, [])
+
     return (
         <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
             <div className="flex flex-col md:flex-row items-center justify-between">
@@ -51,7 +60,7 @@ export default function Home() {
                     <div className="">
                         <MultipleSelectChip
                             title="Cliente"
-                            names={["ajskdl"]}
+                            names={data.namesClients}
                         />
                     </div>
                     <div className="">
