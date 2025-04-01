@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { navBarLinks } from "../constants/index.js";
 import Image from "next/image";
+import { useUser } from "@/context/UserContext";
 
 const NavItems = () => {
     return(
@@ -18,9 +19,15 @@ const NavItems = () => {
 }
 
 const Navbar = () => {
+    const { user } = useUser();
 
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
+
+    const handleLogout = async () => {
+        await fetch('/api/logout')
+        window.location.href = '/'
+      }
 
   return (
     <header className="lg:pl-0 fixed top-0 left-0 right-0 z-50 bg-[#13202A]">
@@ -36,9 +43,19 @@ const Navbar = () => {
                 <button className="text-neutral-400 hover:text-white focus:outline-none sm:hidden flex" onClick={toggleMenu} aria-label="Toggle menu">
                     <img src={isOpen ? "/assets/close.svg" : "/assets/chevronDown.png"} alt="toggle" className="w-6 h-6" />
                 </button>
-                <a href="/login">
-                        <p className="rounded-2xl px-3 py-1 bg-white">Login</p>
-                </a>
+                {user && 
+                    <button className="hover:cursor-pointer" onClick={handleLogout}>
+                        <p className="rounded-2xl px-3 py-1 bg-white">Logout</p>
+                    </button>
+                }
+                {!user && 
+                    <a href={"/login"}>
+                            <p className="rounded-2xl px-3 py-1 bg-white">Login</p>
+                    </a> 
+                }
+                {/* <a href={user? "/" : "/login"}>
+                        <p className="rounded-2xl px-3 py-1 bg-white">{user? "Logout" : "Login"}</p>
+                </a> */}
                 </div>
              </div>
         </div>
