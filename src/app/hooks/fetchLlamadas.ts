@@ -5,7 +5,7 @@ import { UUID } from "crypto";
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-interface llamadas {
+export interface llamadas {
     conversation_id: UUID,
     audio_id: UUID,
     start_time: Timestamp,

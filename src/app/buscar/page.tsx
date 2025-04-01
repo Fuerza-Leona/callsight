@@ -3,10 +3,11 @@
 import * as React from "react";
 import MultipleSelectChip from "../components/MultipleSelectChip";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
 import { useFetchClients } from "../hooks/fetchClients";
-import { useFetchLlamadas } from "../hooks/fetchLlamadas";
-import { Llamada } from "../components/Llamada";
+import { llamadas, useFetchLlamadas } from "../hooks/fetchLlamadas";
+import Llamada from "../components/Llamada";
+import { CircularProgress } from "@mui/material";
 
 /*interface employees {
     user_id: string;
@@ -15,15 +16,25 @@ import { Llamada } from "../components/Llamada";
 
 const categorias = ["Tecnología", "Marketing"];
 
+function render(llamadaLista: llamadas[]) {
+  return (
+    <div>
+      {llamadaLista.map((llamada) => {
+        return <Llamada key={llamada.audio_id} nombre={llamada.conversation_id} startTime={llamada.start_time} />;
+      })}
+    </div>
+  );
+}
+
 export default function Home() {
-    //const [namesPeople, setNamesPeople] = useState<employees[]>([]);
-    const [namesEmployees, setNamesEmployees] = useState<string[]>([]);
-    const {data, refetchClients} = useFetchClients()
+  //const [namesPeople, setNamesPeople] = useState<employees[]>([]);
+  const [namesEmployees, setNamesEmployees] = useState<string[]>([]);
+  const { data, refetchClients } = useFetchClients();
 
-    const {dataLlamadas, refetchLlamadas} = useFetchLlamadas()
+  const { dataLlamadas, refetchLlamadas } = useFetchLlamadas();
 
-    useEffect(() => {
-        axios
+  useEffect(() => {
+    /*axios
             .get(`${apiURL}/users/employees`)
             .then((response) => {
                 //setNamesPeople(response.data.data);
@@ -34,25 +45,23 @@ export default function Home() {
             })
             .finally(() => {
                 //add loading
-            });
-        refetchClients()
-        refetchLlamadas()
-    }, []);
-    return (
-        <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
-            <div className="w-3/10 flex flex-col align-center text-center">
-                <p className="text-3xl">Filtros</p>
-                <MultipleSelectChip title="Usuarios" names={namesEmployees} />
-                <MultipleSelectChip title="Cliente" names={data.namesClients} />
-                <MultipleSelectChip title="Categorías" names={categorias} />
-            </div>
-            <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
-                <p>Buscar</p>
-
-                {dataLlamadas.llamadas.length && dataLlamadas.llamadas.forEach((llamada) => {
-                    <Llamada nombre={llamada.conversation_id}/>
-                })}
-            </div>
-        </div>
-    );
+            });*/
+    refetchClients();
+    refetchLlamadas();
+  }, []);
+  return (
+    <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
+      <div className="w-3/10 flex flex-col align-center text-center">
+        <p className="text-3xl">Filtros</p>
+        <MultipleSelectChip title="Usuarios" names={namesEmployees} />
+        <MultipleSelectChip title="Cliente" names={data.namesClients} />
+        <MultipleSelectChip title="Categorías" names={categorias} />
+      </div>
+      <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
+        <p>Buscar</p>
+        {dataLlamadas.loading && <CircularProgress />}
+        {!dataLlamadas.loading && render(dataLlamadas.llamadas)}
+      </div>
+    </div>
+  );
 }
