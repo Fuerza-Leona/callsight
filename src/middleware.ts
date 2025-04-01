@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Define protected routes
-  const protectedRoutes = ['/perfil', '/analisis', '/formsSubeLlamada']
+  const protectedRoutes = ['/perfil', '/analisis', '/formsSubeLlamada', '/llamada']
 
   // If trying to access a protected route without user_info cookie, redirect to login
   if (protectedRoutes.includes(pathname) && !userCookie) {
