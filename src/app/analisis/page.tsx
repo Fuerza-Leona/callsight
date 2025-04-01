@@ -19,7 +19,7 @@ export default function Home() {
 
     useEffect(() => {
         refetchClients()
-    }, [])
+    }, [refetchClients])
 
     return (
         <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">

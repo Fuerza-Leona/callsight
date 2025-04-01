@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import MultipleSelectChip from "../components/MultipleSelectChip";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 //import axios from "axios";
 import { useFetchClients } from "../hooks/fetchClients";
 import { llamadas, useFetchLlamadas } from "../hooks/fetchLlamadas";
@@ -28,7 +28,7 @@ function render(llamadaLista: llamadas[]) {
 
 export default function Home() {
   //const [namesPeople, setNamesPeople] = useState<employees[]>([]);
-  const [namesEmployees, setNamesEmployees] = useState<string[]>([]);
+  //const [namesEmployees, setNamesEmployees] = useState<string[]>([]);
   const { data, refetchClients } = useFetchClients();
 
   const { dataLlamadas, refetchLlamadas } = useFetchLlamadas();
@@ -48,12 +48,12 @@ export default function Home() {
             });*/
     refetchClients();
     refetchLlamadas();
-  }, []);
+  }, [refetchClients, refetchLlamadas]);
   return (
     <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
       <div className="w-3/10 flex flex-col align-center text-center">
         <p className="text-3xl">Filtros</p>
-        <MultipleSelectChip title="Usuarios" names={namesEmployees} />
+        <MultipleSelectChip title="Usuarios" names={["Employee1"]} />
         <MultipleSelectChip title="Cliente" names={data.namesClients} />
         <MultipleSelectChip title="Categorías" names={categorias} />
       </div>
