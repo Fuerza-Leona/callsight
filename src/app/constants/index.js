@@ -17,7 +17,7 @@ export const navBarLinks = [
   },
 ];
 
-export const sideNavLinks = [
+export const sideNavLinksAgent = [
   {
     id: 1,
     name: "Análisis de llamada",
@@ -47,5 +47,27 @@ export const sideNavLinks = [
     id: 6,
     name: "Chatbot",
     href: "chatbot",
+  },
+];
+export const sideNavLinksClient = [
+  {
+    id: 1,
+    name: "Análisis de llamada",
+    href: "analisis",
+  },
+  {
+    id: 2,
+    name: "Chatbot",
+    href: "chatbot",
+  },
+  {
+    id: 3,
+    name: "Mi perfil",
+    href: "perfil",
+  },
+  {
+    id: 4,
+    name: "Support",
+    href: "support",
   },
 ];
