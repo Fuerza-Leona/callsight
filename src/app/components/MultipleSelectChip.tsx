@@ -77,7 +77,7 @@ export default function MultipleSelectChip(props: multipleProps) {
                         </Box>
                     )}
                     MenuProps={MenuProps}>
-                    {props.names.map((name) => (
+                    {props.names && props.names.map((name) => (
                         <MenuItem
                             key={name}
                             value={name}

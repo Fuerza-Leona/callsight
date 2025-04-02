@@ -4,21 +4,22 @@ import * as React from "react";
 import MultipleSelectChip from "../components/MultipleSelectChip";
 import { useEffect } from "react";
 import { useFetchClients } from "../hooks/fetchClients";
-import { llamadas, useFetchLlamadas } from "../hooks/fetchLlamadas";
+import { useFetchLlamadas } from "../hooks/fetchLlamadas";
 import Llamada from "../components/Llamada";
 import { CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
-
-const categorias = ["Tecnología", "Marketing"];
+import { useFetchCategorias } from "../hooks/fetchCategorias";
 
 export default function Home() {
   const { data, refetchClients } = useFetchClients();
   const { dataLlamadas, refetchLlamadas } = useFetchLlamadas();
+  const { datacategorias, refetchcategorias } = useFetchCategorias();
   const router = useRouter();
 
   useEffect(() => {
     refetchClients();
     refetchLlamadas();
+    refetchcategorias();
   }, []);
 
   const handleClick = (callId: string) => {
@@ -31,7 +32,7 @@ export default function Home() {
         <p className="text-3xl">Filtros</p>
         <MultipleSelectChip title="Usuarios" names={["Employee1"]} />
         <MultipleSelectChip title="Cliente" names={data.namesClients} />
-        <MultipleSelectChip title="Categorías" names={categorias} />
+        <MultipleSelectChip title="Categorías" names={datacategorias.categorias} />
       </div>
       <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
         <p>Buscar</p>
