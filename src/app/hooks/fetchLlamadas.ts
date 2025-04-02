@@ -13,6 +13,7 @@ export interface llamadas {
   end_time: Timestamp;
   sentiment_score: number;
   confidence_score?: number;
+  categories: string[];
 }
 
 export const useFetchLlamadas = () => {
