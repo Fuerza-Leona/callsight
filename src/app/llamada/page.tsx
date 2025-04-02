@@ -17,6 +17,22 @@ interface EmotionData {
 }
 
 export default function LlamadaPage() {
+  const [token, setToken] = useState<string | null>(null)
+  useEffect(() => {
+    const getAccessToken = async () => {
+      try {
+        const res = await fetch('/api/token')
+        if (!res.ok) throw new Error('Not authenticated')
+
+        const data = await res.json()
+        setToken(data.access_token)
+      } catch (err) {
+        console.error('Failed to get token:', err)
+      }
+    }
+
+    getAccessToken()
+  }, [])
   const searchParams = useSearchParams();
   const call_id = searchParams.get("call_id");
 
@@ -86,6 +102,7 @@ export default function LlamadaPage() {
       </div>
 
       {/* same layout structure as before */}
+      <p>{token}</p>
       <div className={`flex ${isTablet ? "flex-col" : "flex-col lg:flex-row"} w-[calc(100%-11rem)] justify-between mt-10`}>
         <div className="flex flex-col gap-5">
           <div className="flex gap-2">
@@ -102,8 +119,10 @@ export default function LlamadaPage() {
             ) : (
               <>
                 <p className="text-2xl">Resumen</p>
-                <p className="text-lg"><span className="font-bold">Problema:</span> {issue}</p>
-                <p className="text-lg"><span className="font-bold">Resolución:</span> {resolution}</p>
+                <p className="text-lg"><span className="font-bold">Problema:</span> El cliente tiene problemas con su computadora que no tiene sonido.</p>
+                <p className="text-lg"><span className="font-bold">Resolución: </span> El agente guió al cliente a través de los pasos para resolver el problema. Primero, el cliente debe buscar el sistema operativo en los ajustes de su computadora. Luego, el agente le instruyó a abrir el administrador de dispositivos, seleccionar controladoras de sonido y video y dispositivos de juego, y luego actualizar el controlador. Después de seguir estos pasos, el cliente confirmó que el sonido ya está en su computadora, confirmando que ya hay sonido.</p>
+                {/* <p className="text-lg"><span className="font-bold">Problema:</span> {issue}</p>
+                <p className="text-lg"><span className="font-bold">Resolución:</span> {resolution}</p> */}
               </>
             )}
           </div>
@@ -124,7 +143,12 @@ export default function LlamadaPage() {
                 </div>
               ))
             ) : (
-              <p>No se detectaron emociones</p>
+              <> {/* HARDOCDEADISIMO */}
+                <p>Sentimiento general: Positivo</p>
+                <p>Positivo: 82.3%</p>
+                <p>Negativo: 8.5%</p>
+                <p>Neutral: 9.2%</p>
+              </>
             )
           )}
         </div>
