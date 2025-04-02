@@ -1,70 +1,49 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import axios from "axios";
-import TranscriptBubble from "../components/TranscriptBubble";
 import { useMediaQuery } from 'react-responsive';
-import { apiURL } from "../constants";
+import TranscriptBubble from "../components/TranscriptBubble";
 import { useUser } from "@/context/UserContext";
 import { useMessages } from "@/hooks/useMessages";
-
-interface EmotionData {
-  overall_sentiment: string;
-  positive_score: number;
-  negative_score: number;
-  neutral_score: number;
-}
+import { useSummary } from "@/hooks/useSummary";
 
 export default function LlamadaPage() {
   const searchParams = useSearchParams();
   const call_id = searchParams.get("call_id");
 
-  const [issue, setIssue] = useState("");
-  const [resolution, setResolution] = useState("");
-  const [emotions, setEmotions] = useState<EmotionData[]>([]);
-  const [loadingCall, setLoadingCall] = useState(true);
-  const [loadingEmotions, setLoadingEmotions] = useState(true);
-
   const { user } = useUser();
   const isClient = user?.role === "client";
-  const { getMessages, data: messageData, loading: loadingMessages } = useMessages();
   const isTablet = useMediaQuery({ minWidth: 1000, maxWidth: 1310 });
 
+  const { getMessages, data: messageData, loading: loadingMessages } = useMessages();
+  const { getSummary, data: summaryData, loading: loadingSummary } = useSummary();
+
   useEffect(() => {
-    console.log("call_id inside useEffect:", call_id);
     if (!call_id || call_id.trim() === "") return;
 
-    axios.get(`${apiURL}/analisis/problem/${call_id}`)
-      .then(response => {
-        const summaries = response.data.data;
-        setIssue(summaries.problem || "No disponible");
-        setResolution(summaries.solution || "No disponible");
-      })
-      .catch(error => console.error("Error fetching summary:", error))
-      .finally(() => setLoadingCall(false));
-
-    axios.get(`${apiURL}/analyze/emotions?call_id=${call_id}`)
-      .then(response => {
-        const emotionData = response.data.emotions || [];
-        setEmotions(emotionData);
-      })
-      .catch(error => console.error("Error fetching emotions:", error))
-      .finally(() => setLoadingEmotions(false));
-
+    getSummary(call_id);
     getMessages(call_id);
   }, [call_id]);
+
+  useEffect(() => {
+    if (summaryData) {
+      console.log("SUMMARY DATA UPDATED:", summaryData);
+    }
+  }, [summaryData]);
+
+  const summary = summaryData && summaryData.length > 0 ? summaryData[0] : null;
 
   const renderTranscript = () => {
     if (loadingMessages) return <p className="text-gray-700">Cargando mensajes...</p>;
     if (!messageData || !Array.isArray(messageData)) return <p>No hay mensajes</p>;
-  
+
     const sortedMessages = [...messageData].sort((a, b) => a.offsetmilliseconds - b.offsetmilliseconds);
-  
+
     return sortedMessages.map((msg) => {
       const isFromClient = msg.role === "client";
       const bubbleUser = (isClient && isFromClient) || (!isClient && !isFromClient) ? "me" : "you";
-  
+
       return (
         <TranscriptBubble
           key={msg.message_id}
@@ -85,8 +64,8 @@ export default function LlamadaPage() {
         </div>
       </div>
 
-      {/* same layout structure as before */}
       <div className={`flex ${isTablet ? "flex-col" : "flex-col lg:flex-row"} w-[calc(100%-11rem)] justify-between mt-10`}>
+        {/* Summary */}
         <div className="flex flex-col gap-5">
           <div className="flex gap-2">
             <h3 className="text-xl">Categorías:</h3>
@@ -94,51 +73,47 @@ export default function LlamadaPage() {
           </div>
 
           <div className={`flex flex-col bg-gray-200 ${isTablet ? "w-full mb-5" : "w-full lg:w-120 mb-5 lg:mb-0"} h-47 rounded-2xl justify-start items-center overflow-scroll`}>
-            {loadingCall ? (
+            <p className="text-2xl mt-4">Resumen</p>
+            {loadingSummary ? (
+              <p className="text-lg text-gray-700">Cargando...</p>
+            ) : summary ? (
               <>
-                <p className="text-2xl mt-10">Resumen</p>
-                <p className="text-lg text-gray-700">Cargando...</p>
+                <p className="text-lg"><span className="font-bold">Problema:</span> {summary.problem}</p>
+                <p className="text-lg"><span className="font-bold">Resolución:</span> {summary.solution}</p>
               </>
             ) : (
-              <>
-                <p className="text-2xl">Resumen</p>
-                <p className="text-lg"><span className="font-bold">Problema:</span> El cliente tiene problemas con su computadora que no tiene sonido.</p>
-                <p className="text-lg"><span className="font-bold">Resolución: </span> El agente guió al cliente a través de los pasos para resolver el problema. Primero, el cliente debe buscar el sistema operativo en los ajustes de su computadora. Luego, el agente le instruyó a abrir el administrador de dispositivos, seleccionar controladoras de sonido y video y dispositivos de juego, y luego actualizar el controlador. Después de seguir estos pasos, el cliente confirmó que el sonido ya está en su computadora, confirmando que ya hay sonido.</p>
-                {/* <p className="text-lg"><span className="font-bold">Problema:</span> {issue}</p>
-                <p className="text-lg"><span className="font-bold">Resolución:</span> {resolution}</p> */}
-              </>
+              <p className="text-lg text-gray-700">No hay resumen disponible.</p>
             )}
           </div>
         </div>
 
+        {/* Emotions */}
         <div className={`flex flex-col bg-gray-200 ${isTablet ? "w-full mb-5" : "w-full lg:w-60 mb-5 lg:mb-0"} h-60 rounded-xl justify-center items-center`}>
           <h3 className="font-black">Emociones detectadas</h3>
-          {loadingEmotions ? (
+          {loadingSummary ? (
             <p className="text-lg text-gray-700">Cargando...</p>
+          ) : summary ? (
+            <div className="text-center">
+              <p>Sentimiento general: {
+                summary.positive > summary.negative
+                  ? "Positivo"
+                  : summary.negative > summary.positive
+                  ? "Negativo"
+                  : "Neutral"
+              }</p>
+              <p>Positivo: {(summary.positive * 100).toFixed(2)}%</p>
+              <p>Negativo: {(summary.negative * 100).toFixed(2)}%</p>
+              <p>Neutral: {(summary.neutral * 100).toFixed(2)}%</p>
+            </div>
           ) : (
-            emotions.length > 0 ? (
-              emotions.map((emotion, index) => (
-                <div key={index} className="text-center">
-                  <p>Sentimiento general: {emotion.overall_sentiment}</p>
-                  <p>Positivo: {(emotion.positive_score * 100).toFixed(2)}%</p>
-                  <p>Negativo: {(emotion.negative_score * 100).toFixed(2)}%</p>
-                  <p>Neutral: {(emotion.neutral_score * 100).toFixed(2)}%</p>
-                </div>
-              ))
-            ) : (
-              <> {/* HARDOCDEADISIMO */}
-                <p>Sentimiento general: Positivo</p>
-                <p>Positivo: 82.3%</p>
-                <p>Negativo: 8.5%</p>
-                <p>Neutral: 9.2%</p>
-              </>
-            )
+            <p>No hay datos de emociones.</p>
           )}
         </div>
 
+        {/* Participants + duration */}
         <div className={`flex ${isTablet ? "flex-row" : "flex-col"} gap-5`}>
           <div className="flex bg-gray-200 w-full lg:w-50 h-13 rounded-lg justify-center items-center">
-            <p>Duración: 45 minutos</p>
+            <p>Duración: {summary ? `${summary.duration} minutos` : "..."}</p>
           </div>
           <h3 className="text-xl">Participantes</h3>
           <div className="flex flex-col gap-3">
@@ -154,6 +129,7 @@ export default function LlamadaPage() {
         </div>
       </div>
 
+      {/* Transcript */}
       <div className="flex w-[calc(100%-11rem)] justify-start gap-31 mt-10 bg-gray-200 h-40 overflow-y-scroll">
         <div className="flex flex-col w-full px-4 py-4 gap-2" id="transcript">
           {renderTranscript()}
