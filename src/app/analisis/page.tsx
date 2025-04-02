@@ -13,15 +13,18 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useFetchClients } from "../hooks/fetchClients";
 import { useEffect } from "react";
 import { useFetchEmotions } from "../hooks/fetchEmotions";
+import { useFetchCategorias } from "../hooks/fetchCategorias";
 
 export default function Home() {
 
     const {data, refetchClients} = useFetchClients();
+    const {datacategorias, refetchcategorias} = useFetchCategorias();
     const {refetchEmotions} = useFetchEmotions();
 
     useEffect(() => {
         refetchClients()
         refetchEmotions()
+        refetchcategorias()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -68,10 +71,7 @@ export default function Home() {
                         />
                     </div>
                     <div className="">
-                        <MultipleSelectChip
-                            title="Categoría"
-                            names={["ajskdl"]}
-                        />
+                        <MultipleSelectChip title="Categorías" names={datacategorias.categorias} />
                     </div>
                 </div>
 
