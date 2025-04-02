@@ -19,7 +19,7 @@ const SideNavItems = () => {
                         key={id}
                         className={`
                             ${isActive
-                                ? 'text-white font-bold bg-[#13202A]/50'
+                                ? 'text-white font-bold'
                                 : 'text-neutral-400 hover:text-white'}
                             max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
                         `}
