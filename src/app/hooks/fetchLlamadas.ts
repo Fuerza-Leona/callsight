@@ -1,6 +1,5 @@
 "use client";
 
-import type { User } from '@/interfaces/user'
 import { useUser } from '@/context/UserContext' // Import useUser
 import axios from "axios";
 import { UUID } from "crypto";

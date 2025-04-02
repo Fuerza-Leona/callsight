@@ -22,18 +22,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const cookie = document.cookie
       .split('; ')
       .find((c) => c.startsWith('user_info='))
-      const cookiePrivate = document.cookie
-      .split('; ')
-      .find((c) => c.startsWith('session='))
-
-    console.log(document.cookie)
 
     if (cookie) {
       try {
         const json = decodeURIComponent(cookie.split('=')[1])
         const parsedUser = JSON.parse(json)
         setUser(parsedUser)
-        console.log(cookiePrivate)
       } catch (err) {
         console.error('Error parsing user_info cookie:', err)
         setUser(null)
