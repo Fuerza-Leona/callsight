@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import MultipleSelectChip from "../components/MultipleSelectChip";
+import MultipleSelectChip from "@/components/MultipleSelectChip";
 import { useEffect } from "react";
 import { useFetchClients } from "../hooks/fetchClients";
 import { useFetchLlamadas } from "../hooks/fetchLlamadas";
@@ -28,23 +28,27 @@ export default function Home() {
     refetchClients();
     refetchLlamadas();
     refetchcategorias();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [category, setCategory] = React.useState<string[]>([]);
   const [clients, setClients] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState<string>("");
 
-  const dataCallsFiltered =dataLlamadas? dataLlamadas.llamadas.filter((llamada) => {
-    /*const matchesUsers =
+  const dataCallsFiltered = dataLlamadas
+    ? dataLlamadas.llamadas.filter((llamada) => {
+        /*const matchesUsers =
       users.length === 0 || users.some((user) => llamada.users?.includes(user));*/
-    const matchesCategories =
-      category.length === 0 ||
-      category.some((cat) => llamada.categories?.includes(cat));
-    /*const matchesClients =
+        const matchesCategories =
+          category.length === 0 ||
+          category.some((cat) => llamada.categories?.includes(cat));
+        /*const matchesClients =
       clients.length === 0 || clients.some((client) => llamada.clients?.includes(client));*/
-    const matchesSearch = search == "" || llamada.conversation_id.match(new RegExp(search, "i"))
-    return matchesCategories && matchesSearch;
-  }): [];
+        const matchesSearch =
+          search == "" ||
+          llamada.conversation_id.match(new RegExp(search, "i"));
+        return matchesCategories && matchesSearch;
+      })
+    : [];
 
   const handleClick = (callId: string) => {
     router.push(`/llamada?call_id=${callId}`);
@@ -93,7 +97,8 @@ export default function Home() {
                   <TableRow
                     key={llamada.audio_id}
                     onClick={() => handleClick(llamada.conversation_id)}
-                    className="cursor-pointer">
+                    className="cursor-pointer"
+                  >
                     <TableCell>
                       <p className="">{llamada.conversation_id}</p>
                     </TableCell>

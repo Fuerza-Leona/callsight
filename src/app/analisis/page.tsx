@@ -5,7 +5,7 @@ import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import Link from "next/link";
-import MultipleSelectChip from "../components/MultipleSelectChip";
+import MultipleSelectChip from "@/components/MultipleSelectChip";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CallIcon from "@mui/icons-material/Call";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
