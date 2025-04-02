@@ -22,11 +22,12 @@ export default function Home() {
   const isTablet = useMediaQuery({ minWidth: 1000, maxWidth: 1310 });
 
   useEffect(() => {
-    axios.get(`${apiURL}/analyze/callcenter`)
+    axios.get(`${apiURL}/analisis/problem/dd5b20c7-d36b-47fd-8dda-c3511235429b`)
       .then(response => {
-        const summaries = response.data;
-        setIssue(summaries["Issue task"]?.issue || "No disponible");
-        setResolution(summaries["Resolution task"]?.resolution || "No disponible");
+        const summaries = response.data.data;
+        console.log(summaries)
+        setIssue(summaries.problem || "No disponible");
+        setResolution(summaries.solution || "No disponible");
       })
       .catch(error => {
         console.error("Error fetching summary:", error);
