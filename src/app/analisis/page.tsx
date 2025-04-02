@@ -12,13 +12,16 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import SearchIcon from '@mui/icons-material/Search';
 import { useFetchClients } from "../hooks/fetchClients";
 import { useEffect } from "react";
+import { useFetchEmotions } from "../hooks/fetchEmotions";
 
 export default function Home() {
 
     const {data, refetchClients} = useFetchClients();
+    const {refetchEmotions} = useFetchEmotions();
 
     useEffect(() => {
         refetchClients()
+        refetchEmotions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

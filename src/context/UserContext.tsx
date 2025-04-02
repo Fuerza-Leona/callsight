@@ -6,6 +6,8 @@ import type { User } from '@/interfaces/user'
 interface UserContextType {
   user: User | null
   setUser: (user: User | null) => void
+  token: string | null;
+  setToken: (token: string | null) => void
   logout: () => void
 }
 
@@ -13,6 +15,8 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
+
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
     const cookie = document.cookie
@@ -40,7 +44,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout }}>
+    <UserContext.Provider value={{ user, setUser, token, setToken, logout }}>
       {children}
     </UserContext.Provider>
   )
