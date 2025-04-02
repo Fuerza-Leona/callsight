@@ -7,7 +7,7 @@ export async function GET() {
     const cookieStore = await cookies()
     const sessionCookie = cookieStore.get('session')
 
-    if (!sessionCookie) {
+    if (!sessionCookie) { 
       return NextResponse.json({ error: 'No session cookie found' }, { status: 401 })
     }
 

@@ -1,36 +1,39 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-interface Participant {
-  id: string;
-  name: string;
-}
-
-export const fetchParticipants = (companyId: string) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | unknown>("");
-  const [participants, setParticipants] = useState<Participant[]>([]);
-
-  const fetchParticipantsData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`/companies/${companyId}/list`);
-      if (response.data?.companies) {
-        setParticipants(response.data.companies);
-      }
-    } catch (error) {
-      console.error("Error fetching participants:", error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+export const fetchParticipants = (companyId: string, token: string | null) => {
+  const [participants, setParticipants] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (companyId) {
-      fetchParticipantsData();
-    }
-  }, [companyId]);
+    const fetchParticipantsData = async () => {
+      if (!companyId || !token) {
+        setError('Missing companyId or token');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        console.log(`Fetching participants for company ID: ${companyId}`);
+        const response = await axios.get(`http://0.0.0.0:8000/api/v1/companies/${companyId}/list`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log('Participants Response:', response.data);  // Log the response
+
+        setParticipants(response.data.companies);  // Access participants directly from the response
+      } catch (error) {
+        console.error('Error fetching participants:', error);  // Log the error
+        setError('Error fetching participants');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchParticipantsData();
+  }, [companyId, token]);
 
   return { participants, loading, error };
 };
