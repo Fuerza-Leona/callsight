@@ -39,6 +39,11 @@ export default function Home() {
             body: JSON.stringify(data), // include access_token, refresh_token, user
           });
 
+          const sessionData = await sessionResponse.json();
+          console.log("Session data:", sessionData);
+          localStorage.setItem("ACCESS", data.access_token); // add access token to session data
+          
+
           if (sessionResponse.ok) {
             setTimeout(() => {
               router.push("/perfil");

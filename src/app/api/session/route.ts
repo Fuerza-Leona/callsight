@@ -28,9 +28,11 @@ export async function POST(req: Request) {
       path: '/',
     })
 
-    const response = NextResponse.json({ message: 'Session cookie set' })
+    const response = NextResponse.json({ message: 'Session cookie set',  accessToken: sessionData.accessToken })
     response.headers.append('Set-Cookie', sessionCookie)
     response.headers.append('Set-Cookie', userInfoCookie)
+
+    
 
     return response
   } catch (err) {
