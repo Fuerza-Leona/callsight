@@ -30,7 +30,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "10px" }}>
+    <div style={{ textAlign: "left", padding: "10px" }}>
       <Typography variant="h6" >
         Adjunta una llamada
       </Typography>
@@ -43,6 +43,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
         style={{ display: "none" }}
         id="file-input"
       />
+      <br></br>
       <label htmlFor="file-input">
         <Button variant="outlined" component="span">
           Choose File

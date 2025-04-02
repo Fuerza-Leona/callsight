@@ -1,95 +1,94 @@
-"use client";
-import React, { useState } from 'react';
-import { Box, FormControl, InputLabel, MenuItem, Select, OutlinedInput, Chip, Button, TextField } from '@mui/material';
+import { useState } from 'react';
+import { fetchCompanies } from '../hooks/fetchCompanies'; // Import the updated function
+import { fetchParticipants } from '../hooks/fetchParticipants'; // Import the updated function
 
 interface FormInputsProps {
-    onFormSubmit: (data: { cliente: string; participantes: string[]; fecha: string }) => void;
+  onFormSubmit: (data: { cliente: string; participantes: string[]; fecha: string }) => void;
 }
 
-// List of predefined participants (can be replaced with API data)
-const participantList = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder',
-];
-
 const FormInputs: React.FC<FormInputsProps> = ({ onFormSubmit }) => {
-    const [cliente, setCliente] = useState('');
-    const [fecha, setFecha] = useState('');
-    const [participantes, setParticipantes] = useState<string[]>([]);
+  // State variables
+  const [selectedCompany, setSelectedCompany] = useState<string>('');
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
+  const [date, setDate] = useState<string>('');
 
-    // Handles selection change in the participants dropdown
-    const handleParticipantsChange = (event: any) => {
-        const {
-            target: { value },
-        } = event;
-        setParticipantes(typeof value === 'string' ? value.split(',') : value);
-    };
+  // Use the updated functions
+  const { companies, loading: companiesLoading, error: companiesError } = fetchCompanies();
+  const { participants, loading: participantsLoading, error: participantsError } = fetchParticipants(selectedCompany);
 
-    // Submits the form data
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        onFormSubmit({ cliente, participantes, fecha });
-    };
+  /**
+   * Handles form submission and sends selected data to the parent component
+   */
+  const handleSubmit = () => {
+    onFormSubmit({
+      cliente: selectedCompany,
+      participantes: selectedParticipants,
+      fecha: date,
+    });
+  };
 
-    return (
-        <form onSubmit={handleSubmit}>
-            {/* Cliente Input */}
-            <TextField
-                label="Cliente"
-                fullWidth
-                margin="normal"
-                value={cliente}
-                onChange={(e) => setCliente(e.target.value)}
-            />
+  return (
+    <div className="flex flex-col ">
+      <form className="w-1/3 flex flex-col gap-4">
+        {/* Company Input */}
+        <div className="flex flex-col">
+          <label className="font-semibold mb-1">Cliente</label>
+          <select
+            className="w-full p-3 bg-gray-200 rounded-lg"
+            value={selectedCompany}
+            onChange={(e) => setSelectedCompany(e.target.value)}
+          >
+            <option value="">Seleccionar cliente</option>
+            {companies.map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-            {/* Fecha Input */}
-            <TextField
-                label="Fecha"
-                type="date"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                value={fecha}
-                onChange={(e) => setFecha(e.target.value)}
-            />
+        {/* Participants Input */}
+        <div className="flex flex-col">
+          <label className="font-semibold mb-1">Participantes</label>
+          {participantsLoading && <p>Cargando participantes...</p>}
+          <select
+            multiple
+            className="w-full p-3 bg-gray-200 rounded-lg"
+            value={selectedParticipants}
+            onChange={(e) =>
+              setSelectedParticipants(
+                Array.from(e.target.selectedOptions, (option) => option.value)
+              )
+            }
+            disabled={participantsLoading}
+          >
+            <option value="">Seleccionar participantes</option>
+            {participants.map((participant) => (
+              <option key={participant.id} value={participant.id}>
+                {participant.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-            {/* Multi-Select Participants */}
-            <FormControl fullWidth margin="normal">
-                <InputLabel>Participantes</InputLabel>
-                <Select
-                    multiple
-                    value={participantes}
-                    onChange={handleParticipantsChange}
-                    input={<OutlinedInput label="Participantes" />}
-                    renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => (
-                                <Chip key={value} label={value} />
-                            ))}
-                        </Box>
-                    )}
-                >
-                    {participantList.map((name) => (
-                        <MenuItem key={name} value={name}>
-                            {name}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+        {/* Date Input */}
+        <div className="flex flex-col">
+          <label className="font-semibold mb-1">Fecha</label>
+          <input
+            type="date"
+            className="w-full p-3 bg-gray-200 rounded-lg"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+        </div>
 
-            <Button type="submit" variant="contained" color="primary">
-                Guardar
-            </Button>
-        </form>
-    );
+        {/* Submit Button */}
+        <button type="button" onClick={handleSubmit} className="hidden">
+          Upload
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default FormInputs;
