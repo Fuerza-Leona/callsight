@@ -1,15 +1,26 @@
 "use client";
 
+import { useUser } from "@/context/UserContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 export const useFetchEmotions = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | unknown>("");
-  const emotions = "hi";
+
+  const emotions = "hi"
+
+  const { token } = useUser();
+
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
   const fetchEmotions = async () => {
     axios
-      .get("http://127.0.0.1:8000/api/v1/conversations/myClientEmotions")
+      .get(
+        "http://127.0.0.1:8000/api/v1/conversations/myClientEmotions",
+        config
+      )
       .then((response) => {
         console.log(response.data);
       })

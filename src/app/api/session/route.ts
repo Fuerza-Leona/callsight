@@ -6,7 +6,6 @@ import { encrypt } from '../../../lib/session'
 export async function POST(req: Request) {
   try {
     const sessionData = await req.json()
-
     const encrypted = encrypt(sessionData)
     
     // httpOnly session cookie (for tokens, secure)

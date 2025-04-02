@@ -23,7 +23,7 @@ export const useLogin = () => {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
-  const { setUser } = useUser() // Access context setter
+  const { setUser, setToken } = useUser() // Access context setter
 
   const login = async (email: string, password: string) => {
     setLoading(true)
@@ -37,6 +37,9 @@ export const useLogin = () => {
 
       setData(response.data)
       setUser(response.data.user) // Update context
+      console.log("setting token")
+      setToken(response.data.access_token)
+      console.log("saved token")
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
         const message = err.response?.data?.detail || 'Login failed. Please try again.'

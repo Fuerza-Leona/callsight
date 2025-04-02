@@ -6,6 +6,8 @@ import type { User } from '@/interfaces/user'
 interface UserContextType {
   user: User | null
   setUser: (user: User | null) => void
+  token: string | null;
+  setToken: (token: string | null) => void
   logout: () => void
 }
 
@@ -14,16 +16,24 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
 
+  const [token, setToken] = useState<string | null>(null)
+
   useEffect(() => {
     const cookie = document.cookie
       .split('; ')
       .find((c) => c.startsWith('user_info='))
+      const cookiePrivate = document.cookie
+      .split('; ')
+      .find((c) => c.startsWith('session='))
+
+    console.log(document.cookie)
 
     if (cookie) {
       try {
         const json = decodeURIComponent(cookie.split('=')[1])
         const parsedUser = JSON.parse(json)
         setUser(parsedUser)
+        console.log(cookiePrivate)
       } catch (err) {
         console.error('Error parsing user_info cookie:', err)
         setUser(null)
@@ -40,7 +50,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout }}>
+    <UserContext.Provider value={{ user, setUser, token, setToken, logout }}>
       {children}
     </UserContext.Provider>
   )

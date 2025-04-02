@@ -1,5 +1,7 @@
 "use client";
 
+import type { User } from '@/interfaces/user'
+import { useUser } from '@/context/UserContext' // Import useUser
 import axios from "axios";
 import { UUID } from "crypto";
 import { Timestamp } from "firebase/firestore";
@@ -19,9 +21,16 @@ export const useFetchLlamadas = () => {
   const [error, setError] = useState<string | unknown>("");
   const [llamadas, setLlamadas] = useState<llamadas[]>([]);
 
+  const {token} = useUser();
+
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
   const fetchLlamadas = async () => {
+    console.log(token)
     axios
-      .get("http://127.0.0.1:8000/api/v1/conversations/")
+      .get("http://127.0.0.1:8000/api/v1/conversations/", config)
       .then((response) => {
         setLlamadas(response.data.conversations);
       })
