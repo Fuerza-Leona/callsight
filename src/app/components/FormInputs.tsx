@@ -1,100 +1,127 @@
 import { useState, useEffect } from 'react';
-import { fetchCompanies } from '../hooks/fetchCompanies'; // Import the updated function
-import { fetchParticipants } from '../hooks/fetchParticipants'; // Import the updated function
 import axios from "axios";
+import FileUploader from "./FileUploader";
+import { fetchCompanies } from '../hooks/fetchCompanies';
+import { useParticipants } from '../hooks/fetchParticipants';
 
 interface FormInputsProps {
-  onFormSubmit: (data: { cliente: string; participantes: string[]; fecha: string }) => void;
+  onFormSubmit: (data: { cliente: string; participantes: string[]; fecha: string; file: File | null }) => void;
 }
 
 const FormInputs: React.FC<FormInputsProps> = ({ onFormSubmit }) => {
-  // State variables
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
   const [date, setDate] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  // Fetch the token when the component mounts
   useEffect(() => {
-    const fetchToken = async () => {
+    const getToken = async () => {
       try {
-        const response = await axios.get('/api/token'); // Adjust the URL to match your Next.js API route
+        const response = await axios.get('/api/token');
         setToken(response.data.access_token);
       } catch (error) {
         console.error('Error fetching token:', error);
       }
     };
 
-    fetchToken();
+    getToken();
   }, []);
 
-  // Use the fetchCompanies and fetchParticipants hooks, passing the token
   const { companies, loading: companiesLoading, error: companiesError } = fetchCompanies(token);
-  const { participants, loading: participantsLoading, error: participantsError } = fetchParticipants(selectedCompany, token);
+  const { participants, loading: participantsLoading, error: participantsError } = useParticipants(selectedCompany, token);
 
-  /**
-   * Handles form submission and sends selected data to the parent component
-   */
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
+  };
+
+  const handleParticipantClick = (userId: string) => {
+    setSelectedParticipants((prev) => 
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+    );
+  };
+
+  const removeParticipant = (userId: string) => {
+    setSelectedParticipants((prev) => prev.filter((id) => id !== userId));
+  };
+
   const handleSubmit = () => {
     onFormSubmit({
       cliente: selectedCompany,
       participantes: selectedParticipants,
       fecha: date,
+      file: selectedFile,
     });
   };
 
   return (
-    <div className="flex flex-col ">
-      <form className="w-1/3 flex flex-col gap-4">
-        {/* Company Input */}
+    <div className="flex justify-center">
+      <form className="w-full max-w-md flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md">
+        <FileUploader onFileSelect={handleFileSelect} />
+
         <div className="flex flex-col">
           <label className="font-semibold mb-1">Empresa</label>
           <select
-            className="w-full p-3 bg-gray-200 rounded-lg text-left"
+            className="w-full p-3 bg-gray-200 rounded-lg"
             value={selectedCompany}
             onChange={(e) => setSelectedCompany(e.target.value)}
           >
             <option value="">Seleccionar cliente</option>
-            {companiesLoading ? (
-              <option>Loading...</option>
+            {companiesLoading || !token ? (
+              <option value="" disabled>Cargando empresas...</option>
             ) : companiesError ? (
-              <option>Error cargando empresas</option>
-            ) : (
+              <option value="" disabled>Error cargando empresas</option>
+            ) : companies?.length > 0 ? (
               companies.map((company) => (
-                <option key={company.id} value={company.id}>
+                <option key={company.company_id} value={company.company_id}>
                   {company.name}
                 </option>
               ))
+            ) : (
+              <option value="" disabled>No hay empresas disponibles</option>
             )}
           </select>
         </div>
 
-        {/* Participants Input */}
         <div className="flex flex-col">
           <label className="font-semibold mb-1">Participantes</label>
-          {participantsLoading && <p>Cargando participantes...</p>}
-          <select
-            multiple
-            className="w-full p-3 bg-gray-200 rounded-lg text-left"
-            style={{ whiteSpace: 'nowrap' }}
-            value={selectedParticipants}
-            onChange={(e) =>
-              setSelectedParticipants(
-                Array.from(e.target.selectedOptions, (option) => option.value)
-              )
-            }
-            disabled={participantsLoading}
-          >
-            <option value="">Seleccionar participantes</option>
-            {participants.map((participant) => (
-              <option key={participant.id} value={participant.id}>
-                {participant.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {selectedParticipants.map((userId) => {
+              const participant = participants.find((p) => p.user_id === userId);
+              return (
+                <span
+                  key={userId}
+                  className="bg-[#0f1a22] text-white px-3 py-1 rounded-full cursor-pointer"
+                  onClick={() => removeParticipant(userId)}
+                >
+                  {participant?.username} ✕
+                </span>
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {!selectedCompany ? (
+              <p>Seleccione una empresa primero</p>
+            ) : participantsLoading ? (
+              <p>Cargando participantes...</p>
+            ) : participantsError ? (
+              <p>Error cargando participantes</p>
+            ) : participants.length === 0 ? (
+              <p>No hay participantes disponibles</p>
+            ) : (
+              participants.map((participant) => (
+                <span
+                  key={participant.user_id}
+                  className={`px-3 py-1 rounded-full cursor-pointer ${selectedParticipants.includes(participant.user_id) ? 'bg-[#13202a] text-white' : 'bg-gray-200'}`}
+                  onClick={() => handleParticipantClick(participant.user_id)}
+                >
+                  {participant.username}
+                </span>
+              ))
+            )}
+          </div>
         </div>
 
-        {/* Date Input */}
         <div className="flex flex-col">
           <label className="font-semibold mb-1">Fecha</label>
           <input
@@ -105,11 +132,10 @@ const FormInputs: React.FC<FormInputsProps> = ({ onFormSubmit }) => {
           />
         </div>
 
-        {/* Submit Button */}
         <button
           type="button"
           onClick={handleSubmit}
-          className="w-4/5 p-3 bg-blue-500 text-white rounded-lg mt-4 mx-auto"
+          className="w-full p-3 bg-[#13202a]  text-white rounded-lg hover:bg-blue-600 transition"
         >
           Analizar
         </button>

@@ -1,39 +1,57 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export const fetchParticipants = (companyId: string, token: string | null) => {
-  const [participants, setParticipants] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+interface Participant {
+  user_id: string;
+  username: string;
+}
+
+export function useParticipants(companyId: string, token: string | null) {
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchParticipantsData = async () => {
-      if (!companyId || !token) {
-        setError('Missing companyId or token');
-        setLoading(false);
-        return;
-      }
+    if (!token || !companyId) {
+      setParticipants([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
 
+    const getParticipants = async () => {
       try {
-        console.log(`Fetching participants for company ID: ${companyId}`);
-        const response = await axios.get(`http://0.0.0.0:8000/api/v1/companies/${companyId}/list`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log('Participants Response:', response.data);  // Log the response
+        setLoading(true);
+        setError(null);
 
-        setParticipants(response.data.companies);  // Access participants directly from the response
-      } catch (error) {
-        console.error('Error fetching participants:', error);  // Log the error
-        setError('Error fetching participants');
+        const response = await axios.get(
+          `http://0.0.0.0:8000/api/v1/companies/${companyId}/list`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        console.log('Participants API response:', response.data);
+
+        if (response.data && Array.isArray(response.data.companies)) {
+          setParticipants(response.data.companies);
+        } else if (response.data && Array.isArray(response.data.participants)) {
+          setParticipants(response.data.participants);
+        } else {
+          setParticipants([]);
+          setError('Invalid response format');
+        }
+      } catch (err) {
+        console.error('Error fetching participants:', err);
+        setError('Failed to fetch participants');
+        setParticipants([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchParticipantsData();
+    getParticipants();
   }, [companyId, token]);
 
   return { participants, loading, error };
-};
+}

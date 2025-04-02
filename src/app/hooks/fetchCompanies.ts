@@ -1,39 +1,58 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export const fetchCompanies = (token: string | null) => {
-  const [companies, setCompanies] = useState<any[]>([]);
+interface Company {
+  company_id: string;
+  name: string;
+  logo?: string;
+  category_id?: string;
+}
+
+export function fetchCompanies(token: string | null) {
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCompaniesData = async () => {
-      if (!token) {
-        setError('No token provided');
-        setLoading(false);
-        return;
-      }
+    // Don't fetch if no token is available
+    if (!token) {
+      setLoading(true);
+      return;
+    }
 
+    const getCompanies = async () => {
       try {
-        console.log('Fetching companies...');
+        setLoading(true);
+        setError(null);
+        
         const response = await axios.get('http://0.0.0.0:8000/api/v1/companies/', {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
-        console.log('Response:', response.data);  // Log the response
-
-        setCompanies(response.data.companies);  // Access companies directly from the response
-      } catch (error) {
-        console.error('Error fetching companies:', error);  // Log the error
-        setError('Error fetching companies');
+        
+        console.log('Companies API response:', response.data);
+        
+        if (response.data && Array.isArray(response.data)) {
+          setCompanies(response.data);
+        } else if (response.data && Array.isArray(response.data.companies)) {
+          // Handle if the API returns an object with a companies property
+          setCompanies(response.data.companies);
+        } else {
+          setCompanies([]);
+          setError('Invalid response format');
+        }
+      } catch (err) {
+        console.error('Error fetching companies:', err);
+        setError('Failed to fetch companies');
+        setCompanies([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCompaniesData();
+    getCompanies();
   }, [token]);
 
   return { companies, loading, error };
-};
+}
