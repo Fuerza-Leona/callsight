@@ -17,22 +17,6 @@ interface EmotionData {
 }
 
 export default function LlamadaPage() {
-  const [token, setToken] = useState<string | null>(null)
-  useEffect(() => {
-    const getAccessToken = async () => {
-      try {
-        const res = await fetch('/api/token')
-        if (!res.ok) throw new Error('Not authenticated')
-
-        const data = await res.json()
-        setToken(data.access_token)
-      } catch (err) {
-        console.error('Failed to get token:', err)
-      }
-    }
-
-    getAccessToken()
-  }, [])
   const searchParams = useSearchParams();
   const call_id = searchParams.get("call_id");
 
@@ -102,7 +86,6 @@ export default function LlamadaPage() {
       </div>
 
       {/* same layout structure as before */}
-      <p>{token}</p>
       <div className={`flex ${isTablet ? "flex-col" : "flex-col lg:flex-row"} w-[calc(100%-11rem)] justify-between mt-10`}>
         <div className="flex flex-col gap-5">
           <div className="flex gap-2">
