@@ -14,9 +14,9 @@ interface LoginSuccessResponse {
   user: User
 }
 
-interface LoginErrorResponse {
+/*interface LoginErrorResponse {
   detail: string
-}
+}*/
 
 export const useLogin = () => {
   const [data, setData] = useState<LoginSuccessResponse | null>(null)
@@ -40,6 +40,7 @@ export const useLogin = () => {
       console.log("setting token")
       setToken(response.data.access_token)
       console.log("saved token")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
         const message = err.response?.data?.detail || 'Login failed. Please try again.'

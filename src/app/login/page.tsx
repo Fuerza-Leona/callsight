@@ -53,6 +53,7 @@ export default function Home() {
     };
 
     handleSession();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return (
