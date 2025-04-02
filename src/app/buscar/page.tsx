@@ -48,6 +48,7 @@ export default function Home() {
                 <Llamada
                   nombre={llamada.conversation_id}
                   startTime={llamada.start_time}
+                  tags={llamada.categories}
                 />
               </div>
             ))}
