@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import * as React from "react";
 import MultipleSelectChip from "../components/MultipleSelectChip";
@@ -6,9 +6,17 @@ import { useEffect } from "react";
 import { useFetchClients } from "../hooks/fetchClients";
 import { useFetchLlamadas } from "../hooks/fetchLlamadas";
 import Llamada from "../components/Llamada";
-import { CircularProgress } from "@mui/material";
+import {
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useFetchCategorias } from "../hooks/fetchCategorias";
+import Tag from "../components/Tag";
 
 export default function Home() {
   const { data, refetchClients } = useFetchClients();
@@ -32,26 +40,52 @@ export default function Home() {
         <p className="text-3xl">Filtros</p>
         <MultipleSelectChip title="Usuarios" names={["Employee1"]} />
         <MultipleSelectChip title="Cliente" names={data.namesClients} />
-        <MultipleSelectChip title="Categorías" names={datacategorias.categorias} />
+        <MultipleSelectChip
+          title="Categorías"
+          names={datacategorias.categorias}
+        />
       </div>
       <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
         <p>Buscar</p>
         {dataLlamadas.loading && <CircularProgress />}
         {!dataLlamadas.loading && (
           <div>
-            {dataLlamadas.llamadas.map((llamada) => (
-              <div
-                key={llamada.audio_id}
-                onClick={() => handleClick(llamada.conversation_id)}
-                className="cursor-pointer"
-              >
-                <Llamada
-                  nombre={llamada.conversation_id}
-                  startTime={llamada.start_time}
-                  tags={llamada.categories}
-                />
-              </div>
-            ))}
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell className="w-1/3">Nombre</TableCell>
+                  <TableCell className="w-1/3">Nombre</TableCell>
+                  <TableCell className="w-1/3">Nombre</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {dataLlamadas.llamadas.map((llamada) => (
+                  <TableRow
+                    key={llamada.audio_id}
+                    onClick={() => handleClick(llamada.conversation_id)}
+                    className="cursor-pointer">
+                    <TableCell>
+                      <p className="">{llamada.conversation_id}</p>
+                    </TableCell>
+
+                    <TableCell>
+                      <p className="">
+                        {new Date(
+                          llamada.start_time.toString()
+                        ).toLocaleDateString()}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        {llamada.categories.map((tag, index) => {
+                          return <Tag key={index} text={tag} />;
+                        })}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>
