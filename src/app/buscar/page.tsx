@@ -30,12 +30,21 @@ export default function Home() {
     refetchcategorias();
   }, []);
 
-  const dataLlamadasFiltrados = dataLlamadas.llamadas.filter((llamada) => {
-    return llamada.categories.includes("Categories");
-  });
   const [users, setUsers] = React.useState<string[]>([]);
   const [category, setCategory] = React.useState<string[]>([]);
   const [clients, setClients] = React.useState<string[]>([]);
+
+  const dataCallsFiltered = dataLlamadas.llamadas.filter((llamada) => {
+    /*const matchesUsers =
+      users.length === 0 || users.some((user) => llamada.users?.includes(user));*/
+    const matchesCategories =
+      category.length === 0 ||
+      category.some((cat) => llamada.categories?.includes(cat));
+    /*const matchesClients =
+      clients.length === 0 || clients.some((client) => llamada.clients?.includes(client));*/
+
+    return matchesCategories;
+  });
 
   const handleClick = (callId: string) => {
     router.push(`/llamada?call_id=${callId}`);
@@ -78,7 +87,7 @@ export default function Home() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataLlamadas.llamadas.map((llamada) => (
+                {dataCallsFiltered.map((llamada) => (
                   <TableRow
                     key={llamada.audio_id}
                     onClick={() => handleClick(llamada.conversation_id)}
