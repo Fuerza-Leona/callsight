@@ -36,7 +36,7 @@ export default function Home() {
   const [clients, setClients] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState<string>("");
 
-  const dataCallsFiltered = dataLlamadas.llamadas.filter((llamada) => {
+  const dataCallsFiltered =dataLlamadas? dataLlamadas.llamadas.filter((llamada) => {
     /*const matchesUsers =
       users.length === 0 || users.some((user) => llamada.users?.includes(user));*/
     const matchesCategories =
@@ -46,7 +46,7 @@ export default function Home() {
       clients.length === 0 || clients.some((client) => llamada.clients?.includes(client));*/
     const matchesSearch = search == "" || llamada.conversation_id.match(new RegExp(search, "i"))
     return matchesCategories && matchesSearch;
-  });
+  }): [];
 
   const handleClick = (callId: string) => {
     router.push(`/llamada?call_id=${callId}`);
