@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@/context/UserContext"; // Import useUser
 import axios from "axios";
 import { UUID } from "crypto";
 import { Timestamp } from "firebase/firestore";

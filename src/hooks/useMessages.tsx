@@ -21,7 +21,7 @@ export const useMessages = () => {
       );
       console.log("Response:", response.data); // DEBUG
       setData(response.data.messages);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Message fetch error:", err); // DEBUG
       if (axios.isAxiosError(err)) {
         const message =

@@ -21,7 +21,7 @@ export const useSummary = () => {
       );
       console.log("Response summary:", response.data); // DEBUG
       setData(response.data.summary);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Message fetch error:", err); // DEBUG
       if (axios.isAxiosError(err)) {
         const message =

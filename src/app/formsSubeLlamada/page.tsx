@@ -4,7 +4,7 @@ import FormInputs from "@/components/FormInputs";
 import { saveToFile } from "@/utils/saveToFile";
 
 const Page: React.FC = () => {
-  const [formData, setFormData] = useState<{
+  const [, setFormData] = useState<{
     cliente: string;
     participantes: string[];
     fecha: string;

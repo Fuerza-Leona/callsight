@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import FileUploader from "./FileUploader";
-import { fetchCompanies } from '../hooks/fetchCompanies';
+import { useFetchCompanies } from '../hooks/fetchCompanies';
 import { useParticipants } from '../hooks/fetchParticipants';
 
 interface FormInputsProps {
   onFormSubmit: (data: { cliente: string; participantes: string[]; fecha: string; file: File | null }) => void;
 }
 
-const FormInputs: React.FC<FormInputsProps> = ({ onFormSubmit }) => {
+const FormInputs: React.FC<FormInputsProps> = ({ }) => {
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
   const [date, setDate] = useState<string>('');
@@ -28,7 +28,7 @@ const FormInputs: React.FC<FormInputsProps> = ({ onFormSubmit }) => {
     getToken();
   }, []);
 
-  const { companies, loading: companiesLoading, error: companiesError } = fetchCompanies(token);
+  const { companies, loading: companiesLoading, error: companiesError } = useFetchCompanies(token);
   const { participants, loading: participantsLoading, error: participantsError } = useParticipants(selectedCompany, token);
 
   const handleFileSelect = (file: File) => {

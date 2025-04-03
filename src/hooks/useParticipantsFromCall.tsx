@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-import { apiURL } from '@/app/constants'
+import { apiURL } from '@/constants'
 import { Participant } from '@/interfaces/participants'
 
 export const useParticipants = () => {
@@ -21,7 +21,7 @@ export const useParticipants = () => {
       );
       console.log("Response participants:", response.data); // DEBUG
       setData(response.data.participants);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Message fetch error:", err); // DEBUG
       if (axios.isAxiosError(err)) {
         const message =
