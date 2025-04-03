@@ -11,6 +11,8 @@ import Chip from '@mui/material/Chip';
 interface multipleProps {
     title: string;
     names: string[];
+    value: string[];
+    onChange: (value: string[]) => void;
 }
 
 const ITEM_HEIGHT = 48;
@@ -32,15 +34,15 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
     };
 }
 
+
 export default function MultipleSelectChip(props: multipleProps) {
     const theme = useTheme();
-    const [personName, setPersonName] = React.useState<string[]>([]);
 
-    const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+    const handleChange = (event: SelectChangeEvent<typeof props.value>) => {
         const {
             target: { value },
         } = event;
-        setPersonName(
+        props.onChange(
             // On autofill we get a stringified value.
             typeof value === "string" ? value.split(",") : value
         );
@@ -56,7 +58,7 @@ export default function MultipleSelectChip(props: multipleProps) {
                     labelId="demo-multiple-chip-label"
                     id="demo-multiple-chip"
                     multiple
-                    value={personName}
+                    value={props.value}
                     onChange={handleChange}
                     input={
                         <OutlinedInput
@@ -81,7 +83,7 @@ export default function MultipleSelectChip(props: multipleProps) {
                         <MenuItem
                             key={name}
                             value={name}
-                            style={getStyles(name, personName, theme)}>
+                            style={getStyles(name, props.value, theme)}>
                             {name}
                         </MenuItem>
                     ))}
