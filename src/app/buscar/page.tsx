@@ -13,6 +13,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useFetchCategorias } from "../hooks/fetchCategorias";
@@ -33,6 +34,7 @@ export default function Home() {
   const [users, setUsers] = React.useState<string[]>([]);
   const [category, setCategory] = React.useState<string[]>([]);
   const [clients, setClients] = React.useState<string[]>([]);
+  const [search, setSearch] = React.useState<string>("");
 
   const dataCallsFiltered = dataLlamadas.llamadas.filter((llamada) => {
     /*const matchesUsers =
@@ -42,8 +44,8 @@ export default function Home() {
       category.some((cat) => llamada.categories?.includes(cat));
     /*const matchesClients =
       clients.length === 0 || clients.some((client) => llamada.clients?.includes(client));*/
-
-    return matchesCategories;
+    const matchesSearch = search == "" || llamada.conversation_id.match(new RegExp(search, "i"))
+    return matchesCategories && matchesSearch;
   });
 
   const handleClick = (callId: string) => {
@@ -74,7 +76,15 @@ export default function Home() {
         />
       </div>
       <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
-        <p>Buscar</p>
+        <TextField
+          className="w-[80%]"
+          label="Buscar"
+          variant="outlined"
+          value={search}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearch(event.target.value);
+          }}
+        />
         {dataLlamadas.loading && <CircularProgress />}
         {!dataLlamadas.loading && (
           <div>
