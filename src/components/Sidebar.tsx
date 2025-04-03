@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { sideNavLinksClient, sideNavLinksAgent } from "../constants";
+import { sideNavLinksClient, sideNavLinksAgent } from "@/constants";
 import { useState } from "react";
 import { useUser } from "@/context/UserContext";
 

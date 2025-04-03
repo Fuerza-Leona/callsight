@@ -3,8 +3,8 @@
 import * as React from "react";
 import MultipleSelectChip from "@/components/MultipleSelectChip";
 import { useEffect } from "react";
-import { useFetchClients } from "../hooks/fetchClients";
-import { useFetchLlamadas } from "../hooks/fetchLlamadas";
+import { useFetchClients } from "@/hooks/fetchClients";
+import { useFetchLlamadas } from "@/hooks/fetchLlamadas";
 import {
   CircularProgress,
   Table,
@@ -15,8 +15,8 @@ import {
   TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useFetchCategorias } from "../hooks/fetchCategorias";
-import Tag from "../components/Tag";
+import { useFetchCategorias } from "@/hooks/fetchCategorias";
+import Tag from "@/components/Tag";
 
 export default function Home() {
   const { data, refetchClients } = useFetchClients();

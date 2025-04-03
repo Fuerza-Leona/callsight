@@ -10,10 +10,10 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CallIcon from "@mui/icons-material/Call";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
-import { useFetchClients } from "../hooks/fetchClients";
+import { useFetchClients } from "@/hooks/fetchClients";
 import { useEffect, useState } from "react";
-import { useFetchEmotions } from "../hooks/fetchEmotions";
-import { useFetchCategorias } from "../hooks/fetchCategorias";
+import { useFetchEmotions } from "@/hooks/fetchEmotions";
+import { useFetchCategorias } from "@/hooks/fetchCategorias";
 
 export default function Home() {
   const { data, refetchClients } = useFetchClients();

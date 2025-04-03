@@ -3,7 +3,7 @@
 import axios from "axios";
 import { UUID } from "crypto";
 import { useEffect, useState } from "react";
-import { apiURL } from '../constants';
+import { apiURL } from '@/constants';
 
 export interface categorias {
   category_id: UUID;

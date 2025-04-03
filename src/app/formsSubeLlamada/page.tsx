@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import FormInputs from "@/components/FormInputs";
-import { saveToFile } from "../utils/saveToFile";
+import { saveToFile } from "@/utils/saveToFile";
 
 const Page: React.FC = () => {
   const [formData, setFormData] = useState<{
