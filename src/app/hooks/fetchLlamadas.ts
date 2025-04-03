@@ -21,21 +21,16 @@ export const useFetchLlamadas = () => {
   const [error, setError] = useState<string | unknown>("");
   const [llamadas, setLlamadas] = useState<llamadas[]>([]);
 
-  const { token } = useUser();
-
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
-
   const fetchLlamadas = async () => {
-    console.log(token);
 
     axios
       .get("/api/getToken", { headers: { "Content-Type": "application/json" } })
       .then((response) => {
         const config = {
-          headers: { Authorization: `Bearer ${response.data.user}` },
+          headers: { Authorization: `Bearer ${response.data.user}`, withCredentials: true },
         };
+
+        console.log(config)
         axios
           .get("http://127.0.0.1:8000/api/v1/conversations/mine", config)
           .then((response) => {

@@ -54,8 +54,8 @@ export default function Home() {
               <TableHead>
                 <TableRow>
                   <TableCell className="w-1/3">Nombre</TableCell>
-                  <TableCell className="w-1/3">Nombre</TableCell>
-                  <TableCell className="w-1/3">Nombre</TableCell>
+                  <TableCell className="w-1/3">Fecha</TableCell>
+                  <TableCell className="w-1/3">Categorías</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -77,7 +77,7 @@ export default function Home() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        {llamada.categories.map((tag, index) => {
+                        {llamada.categories && llamada.categories.map((tag, index) => {
                           return <Tag key={index} text={tag} />;
                         })}
                       </div>
