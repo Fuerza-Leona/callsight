@@ -1,7 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
-import { Button, Typography } from "@mui/material";
+import React, { useState } from 'react';
 
 interface FileUploaderProps {
   onFileSelect: (file: File) => void;
@@ -9,59 +6,20 @@ interface FileUploaderProps {
 
 const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [error, setError] = useState<string>("");
 
-  // Handle file selection
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      // Validate file type (only allow videos)
-      if (!file.type.startsWith("video/")) {
-        setError("Please upload a valid video file.");
-        setSelectedFile(null);
-        return;
-      }
-
-      setError(""); // Clear any previous error
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
       setSelectedFile(file);
-      onFileSelect(file); // Pass file to parent component
+      onFileSelect(file); // Call the prop function
     }
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "10px" }}>
-      <Typography variant="h6" >
-        Adjunta una llamada
-      </Typography>
-
-      {/* File Input */}
-      <input
-        type="file"
-        accept="video/*"
-        onChange={handleFileChange}
-        style={{ display: "none" }}
-        id="file-input"
-      />
-      <label htmlFor="file-input">
-        <Button variant="outlined" component="span">
-          Choose File
-        </Button>
-      </label>
-
-      {/* Show selected file name only once */}
-      {selectedFile && (
-        <Typography variant="body1" style={{ marginTop: "10px" }}>
-          {selectedFile.name}
-        </Typography>
-      )}
-
-      {/* Error Message */}
-      {error && (
-        <Typography variant="body2" color="error" style={{ marginTop: "10px" }}>
-          {error}
-        </Typography>
-      )}
+    <div className="flex flex-col">
+      <label className="font-semibold mb-1">Subir Archivo</label>
+      <input type="file" className="p-3 border rounded-lg" onChange={handleFileChange} />
+      {selectedFile && <p className="mt-2 text-sm text-gray-600">Archivo seleccionado: {selectedFile.name}</p>}
     </div>
   );
 };
