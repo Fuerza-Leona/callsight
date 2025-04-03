@@ -3,24 +3,24 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { apiURL } from '@/app/constants'
-import { Summary } from '@/interfaces/summary'
+import { SpecificCall } from '@/interfaces/specificCall'
 
-export const useSummary = () => {
-  const [data, setData] = useState<Summary[] | null>(null)
+export const useSpecificCall = () => {
+  const [data, setData] = useState<SpecificCall[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
-  const getSummary = async (call_id: string) => {
-    console.log("Fetching summary for call_id:", call_id); // DEBUG
+  const getSpecificCall = async (call_id: string) => {
+    console.log("Fetching call with call_id:", call_id); // DEBUG
     setLoading(true);
     setError(null);
   
     try {
-      const response = await axios.get<{ summary: Summary[] }>(
-        `${apiURL}/conversations/call/${call_id}/summary`
+      const response = await axios.get<{ specificCall: SpecificCall[] }>(
+        `${apiURL}/conversations/call/${call_id}`
       );
       console.log("Response summary:", response.data); // DEBUG
-      setData(response.data.summary);
+      setData(response.data.specificCall);
     } catch (err: any) {
       console.error("Message fetch error:", err); // DEBUG
       if (axios.isAxiosError(err)) {
@@ -36,5 +36,5 @@ export const useSummary = () => {
     }
   };
 
-  return { getSummary, data, loading, error }
+  return { getSpecificCall, data, loading, error }
 }

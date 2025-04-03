@@ -7,6 +7,7 @@ import TranscriptBubble from "../components/TranscriptBubble";
 import { useUser } from "@/context/UserContext";
 import { useMessages } from "@/hooks/useMessages";
 import { useSummary } from "@/hooks/useSummary";
+import { useParticipants } from "@/hooks/useParticipantsFromCall";
 
 export default function LlamadaPage() {
   const searchParams = useSearchParams();
@@ -18,12 +19,15 @@ export default function LlamadaPage() {
 
   const { getMessages, data: messageData, loading: loadingMessages } = useMessages();
   const { getSummary, data: summaryData, loading: loadingSummary } = useSummary();
+  const { getParticipants, data: participantsData, loading: loadingParticipants } = useParticipants();
 
   useEffect(() => {
     if (!call_id || call_id.trim() === "") return;
 
     getSummary(call_id);
     getMessages(call_id);
+    getParticipants(call_id);
+    console.log("PARTICIPANTS: ", participantsData) //NULL
   }, [call_id]);
 
   useEffect(() => {
@@ -33,6 +37,7 @@ export default function LlamadaPage() {
   }, [summaryData]);
 
   const summary = summaryData && summaryData.length > 0 ? summaryData[0] : null;
+  const participants = participantsData && participantsData.length > 0 ? participantsData[0] : null;
 
   const renderTranscript = () => {
     if (loadingMessages) return <p className="text-gray-700">Cargando mensajes...</p>;
@@ -54,9 +59,32 @@ export default function LlamadaPage() {
       );
     });
   };
+  const renderParticipants = () => {
+    if (loadingParticipants) return <p className="text-gray-700">Cargando participantes...</p>;
+    if (!participantsData || !Array.isArray(participantsData)) return <p>No hay participantes.</p>;
+  
+    return participantsData.map((participant, index) => {
+      const role = participant.users.role?.toLowerCase() || "";
+      const username = participant.users.username || `Participante ${index + 1}`;
+      const participantIsClient = role === "client";
+  
+      const color = (isClient && participantIsClient) || (!isClient && !participantIsClient)
+        ? "bg-[#F294CD]"
+        : "bg-[#13202A] text-white";
+  
+      return (
+        <div key={index} className="flex bg-gray-200 w-full lg:w-50 h-13 rounded-lg justify-start items-center gap-5 px-4 py-2">
+          <div className={`w-8 h-8 ${color} rounded-3xl flex items-center justify-center font-bold`}>
+            {username[0]}
+          </div>
+          <p>{username}</p>
+        </div>
+      );
+    });
+  };
 
   return (
-    <div className="lg:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px] pt-[140px] lg:pt-28 lg:pt-[65px]">
+    <div className="lg:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px] pt-[140px] lg:pt-28">
       <div className="w-full text-center">
         <div className="flex lg:flex-row flex-col text-white text-4xl justify-between bg-[#13202A] rounded-2xl mx-22">
           <p className="lg:ml-20 p-4 lg:p-8">Llamada</p>
@@ -65,7 +93,7 @@ export default function LlamadaPage() {
       </div>
 
       <div className={`flex ${isTablet ? "flex-col" : "flex-col lg:flex-row"} w-[calc(100%-11rem)] justify-between mt-10`}>
-        {/* Summary */}
+        {/* Left column */}
         <div className="flex flex-col gap-5">
           <div className="flex gap-2">
             <h3 className="text-xl">Categorías:</h3>
@@ -117,14 +145,8 @@ export default function LlamadaPage() {
           </div>
           <h3 className="text-xl">Participantes</h3>
           <div className="flex flex-col gap-3">
-            <div className="flex bg-gray-200 w-full lg:w-50 h-13 rounded-lg justify-center items-center gap-5">
-              <div className="w-8 h-8 bg-black rounded-3xl"></div>
-              <p>Persona 1</p>
-            </div>
-            <div className="flex bg-gray-200 w-full lg:w-50 h-13 rounded-lg justify-center items-center gap-5">
-              <div className="w-8 h-8 bg-black rounded-3xl"></div>
-              <p>Persona 2</p>
-            </div>
+
+            {renderParticipants()}
           </div>
         </div>
       </div>

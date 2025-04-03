@@ -11,18 +11,18 @@ export const useMessages = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const getMessages = async (call_id: string) => {
-    console.log("Fetching messages for call_id:", call_id); // ADD THIS
+    console.log("Fetching messages for call_id:", call_id); // DEBUG
     setLoading(true);
     setError(null);
   
     try {
       const response = await axios.get<{ messages: Messages[] }>(
-        `${apiURL}/conversations/call/${call_id}/messages`
+        `${apiURL}/conversations/${call_id}/messages`
       );
-      console.log("Response:", response.data); // ADD THIS
+      console.log("Response:", response.data); // DEBUG
       setData(response.data.messages);
     } catch (err: any) {
-      console.error("Message fetch error:", err); // ADD THIS
+      console.error("Message fetch error:", err); // DEBUG
       if (axios.isAxiosError(err)) {
         const message =
           err.response?.data?.detail || "Could not find messages. Please try again.";
