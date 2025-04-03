@@ -5,7 +5,6 @@ import MultipleSelectChip from "../components/MultipleSelectChip";
 import { useEffect } from "react";
 import { useFetchClients } from "../hooks/fetchClients";
 import { useFetchLlamadas } from "../hooks/fetchLlamadas";
-import Llamada from "../components/Llamada";
 import {
   CircularProgress,
   Table,
@@ -29,9 +28,8 @@ export default function Home() {
     refetchClients();
     refetchLlamadas();
     refetchcategorias();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const [users, setUsers] = React.useState<string[]>([]);
   const [category, setCategory] = React.useState<string[]>([]);
   const [clients, setClients] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState<string>("");
@@ -56,12 +54,6 @@ export default function Home() {
     <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
       <div className="w-3/10 flex flex-col align-center text-center">
         <p className="text-3xl">Filtros</p>
-        <MultipleSelectChip
-          title="Usuarios"
-          names={["Employee1"]}
-          value={users}
-          onChange={setUsers}
-        />
         <MultipleSelectChip
           title="Cliente"
           names={data.namesClients}
