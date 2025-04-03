@@ -45,13 +45,33 @@ const FormInputs: React.FC<FormInputsProps> = ({ onFormSubmit }) => {
     setSelectedParticipants((prev) => prev.filter((id) => id !== userId));
   };
 
-  const handleSubmit = () => {
-    onFormSubmit({
-      cliente: selectedCompany,
-      participantes: selectedParticipants,
-      fecha: date,
-      file: selectedFile,
+  const handleSubmit = async () => {
+   if (!selectedCompany || !date || !selectedFile){
+    alert("Por favor, completa todos los campos antes de analizar.");
+    return;
+   }
+
+   const formData = new FormData();
+   formData.append("file",selectedFile);
+   formData.append("date_string",`${date} 00:00`);
+   formData.append("company_id",selectedCompany);
+   formData.append("participants",selectedParticipants.join(","));
+
+   try {
+    const response = await axios.post("http://127.0.0.1:8000/api/v1/ai/alternative-analysis", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+        },
     });
+
+    console.log("Response:", response.data);
+    alert("Análisis completado con éxito.");
+} catch (error) {
+    console.error("Error al enviar los datos:", error);
+    alert("Ocurrió un error al procesar el análisis.");
+
+}
   };
 
   return (
