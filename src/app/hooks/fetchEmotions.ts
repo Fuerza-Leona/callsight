@@ -27,10 +27,13 @@ export const useFetchEmotions = () => {
             config
           )
           .then((response) => {
-            console.log(response.data);
-            setPositive(response.data.emotions.positive);
-            setNegative(response.data.emotions.negative);
-            setNeutral(response.data.emotions.neutral);
+            if (response.data.emotions){
+              console.log(response.data);
+              setPositive(response.data.emotions.positive);
+              setNegative(response.data.emotions.negative);
+              setNeutral(response.data.emotions.neutral);
+            }
+              
           })
           .catch((errorA) => {
             console.error("Error fetching emotions:", errorA);
