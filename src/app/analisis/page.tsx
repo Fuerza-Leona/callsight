@@ -116,21 +116,25 @@ export default function Home() {
       <div className="flex flex-col md:flex-row justify-between w-full gap-3">
         <div className="h-full rounded-md flex flex-col items-center justify-around bg-[#E7E6E7] p-5  w-full md:w-[45%]">
           <p>Emociones detectadas</p>
-          <PieChart
-            series={[
-              {
-                arcLabel: (item) => `${item.value}%`,
-                data: [
-                  { id: 0, value: dataEmotions.positive, label: "Positivo" },
-                  { id: 1, value: dataEmotions.neutral, label: "Neutro" },
-                  { id: 2, value: dataEmotions.negative, label: "Negativo" },
-                ],
-              },
-            ]}
-            width={400}
-            height={200}
-            className="font-bold text-xl"
-          />
+          {(dataEmotions.positive != 0) ? (
+            <PieChart
+              series={[
+                {
+                  arcLabel: (item) => `${item.value}%`,
+                  data: [
+                    { id: 0, value: dataEmotions.positive, label: "Positivo" },
+                    { id: 1, value: dataEmotions.neutral, label: "Neutro" },
+                    { id: 2, value: dataEmotions.negative, label: "Negativo" },
+                  ],
+                },
+              ]}
+              width={400}
+              height={200}
+              className="font-bold text-xl"
+            />
+          ): (
+            <p>No hay datos</p>
+          )}
         </div>
 
         <div className=" w-full md:w-[45%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
