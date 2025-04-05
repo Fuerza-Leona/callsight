@@ -21,7 +21,7 @@ export const sideNavLinksAgent = [
   {
     id: 1,
     name: "Análisis de llamada",
-    href: "analisis",
+    href: "calls/dashboard",
   },
   {
     id: 2,
@@ -31,7 +31,7 @@ export const sideNavLinksAgent = [
   {
     id: 3,
     name: "Subir una llamada",
-    href: "formsSubeLlamada",
+    href: "calls/upload",
   },
   {
     id: 4,
@@ -53,7 +53,7 @@ export const sideNavLinksClient = [
   {
     id: 1,
     name: "Análisis de llamada",
-    href: "analisis",
+    href: "calls/dashboard",
   },
   {
     id: 2,

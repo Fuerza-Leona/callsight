@@ -51,7 +51,7 @@ export default function Home() {
     : [];
 
   const handleClick = (callId: string) => {
-    router.push(`/llamada?call_id=${callId}`);
+    router.push(`/calls/detail?call_id=${callId}`);
   };
 
   return (

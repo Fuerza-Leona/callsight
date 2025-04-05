@@ -11,7 +11,7 @@ interface llamadaProps {
 export default function Llamada(props: llamadaProps) {
   return (
     <div>
-      <Link href={"./llamada"}>
+      <Link href={"/calls/detail"}>
         <div className="flex w-full justify-center md:justify-between text-center items-center p-2">
           <p className="w-1/3">{props.nombre}</p>
           <p className="w-1/3">{new Date(props.startTime.toString()).toLocaleDateString()}</p>

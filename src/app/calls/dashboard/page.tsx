@@ -46,7 +46,7 @@ export default function Home() {
             </button>
           </div>
           <Link
-            href={"./buscar"}
+            href={"/calls/search"}
             className="bg-[#1E242B] text-[#FFFFFF] rounded-md">
             <div className="p-2 items-center justify-center text-center flex">
               <p className="">
