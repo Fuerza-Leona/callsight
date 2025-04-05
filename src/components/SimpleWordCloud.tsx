@@ -60,8 +60,8 @@ const SimpleWordCloud: React.FC<WordCloudProps> = ({ words = [], maxWords = 30 }
               transition: 'all 0.3s ease',
               cursor: 'pointer',
               '&:hover': {
-                transform: 'scale(1.1)',
-                color: '#ff5722'
+                transform: 'scale(1.05)',
+                color: 'black'
               },
             }}
             title={`${word.text}: ${word.value}`}
