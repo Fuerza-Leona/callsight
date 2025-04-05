@@ -1,9 +1,9 @@
 'use client';
 
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useMediaQuery } from 'react-responsive';
-import TranscriptBubble from "../components/TranscriptBubble";
+import TranscriptBubble from "@/components/TranscriptBubble";
 import { useUser } from "@/context/UserContext";
 import { useSpecificCall } from "@/hooks/useSpecificCall";
 
@@ -22,6 +22,7 @@ export default function LlamadaPage() {
 
     getSpecificCall(call_id);
     console.log("ENTIRE call data: ", callData) //Ver que respuesta da
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [call_id]);
 
   useEffect(() => {

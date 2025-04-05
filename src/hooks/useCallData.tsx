@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-import { apiURL } from '@/app/constants'
+import { apiURL } from '@/constants'
 import { Call } from '@/interfaces/call'
 
 export const useCallData = () => {
@@ -19,7 +19,7 @@ export const useCallData = () => {
       const response = await axios.post<Call>(`${apiURL}/conversations/call/${call_id}`)
 
       setData(response.data)
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         const message = err.response?.data?.detail || 'Could not find info for selected call. Please try again.'
         setError(message)

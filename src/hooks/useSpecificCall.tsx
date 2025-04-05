@@ -2,8 +2,17 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-import { apiURL } from '@/app/constants'
+import { apiURL } from '@/constants'
 import { SpecificCall } from '@/interfaces/specificCall'
+import { Conversation } from '@/interfaces/conversation'
+
+// Define an interface that matches the API response structure
+interface ApiResponse {
+  conversation: Conversation[];
+  summary: SpecificCall['summary'];
+  messages: SpecificCall['messages'];
+  participants: SpecificCall['participants'];
+}
 
 export const useSpecificCall = () => {
   const [data, setData] = useState<SpecificCall | null>(null)
@@ -16,7 +25,7 @@ export const useSpecificCall = () => {
     setError(null)
 
     try {
-      const response = await axios.get<any>(`${apiURL}/conversations/call/${call_id}`)
+      const response = await axios.get<ApiResponse>(`${apiURL}/conversations/call/${call_id}`)
       console.log("Response summary:", response.data)
 
       // manually unwrap conversation[0]
@@ -27,7 +36,7 @@ export const useSpecificCall = () => {
       }
 
       setData(cleaned)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Message fetch error:", err)
       if (axios.isAxiosError(err)) {
         const message =

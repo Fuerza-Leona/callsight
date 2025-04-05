@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
-import CustomPaginationActionsTable from "../components/CustomPaginationActionsTable";
-import SearchBar from "../components/SearchBar";
+import CustomPaginationActionsTable from "@/components/CustomPaginationActionsTable";
+import SearchBar from "@/components/SearchBar";
 import { useUser } from "@/context/UserContext";
 
 const rows = [

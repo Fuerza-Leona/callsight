@@ -1,10 +1,14 @@
 "use client";
 
-import { useUser } from "@/context/UserContext"; // Import useUser
 import axios from "axios";
 import { UUID } from "crypto";
-import { Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
+
+interface Timestamp {
+  toString(): string;
+  seconds: number;
+  nanoseconds: number;
+}
 
 export interface llamadas {
   conversation_id: UUID;

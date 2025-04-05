@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-import { apiURL } from '@/app/constants'
+import { apiURL } from '@/constants'
 import { Messages } from '@/interfaces/messages'
 
 export const useMessages = () => {
@@ -21,7 +21,7 @@ export const useMessages = () => {
       );
       console.log("Response:", response.data); // DEBUG
       setData(response.data.messages);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Message fetch error:", err); // DEBUG
       if (axios.isAxiosError(err)) {
         const message =

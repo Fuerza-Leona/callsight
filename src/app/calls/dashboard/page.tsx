@@ -5,15 +5,15 @@ import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import Link from "next/link";
-import MultipleSelectChip from "../components/MultipleSelectChip";
+import MultipleSelectChip from "@/components/MultipleSelectChip";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CallIcon from "@mui/icons-material/Call";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
-import { useFetchClients } from "../hooks/fetchClients";
+import { useFetchClients } from "@/hooks/fetchClients";
 import { useEffect, useState } from "react";
-import { useFetchEmotions } from "../hooks/fetchEmotions";
-import { useFetchCategorias } from "../hooks/fetchCategorias";
+import { useFetchEmotions } from "@/hooks/fetchEmotions";
+import { useFetchCategorias } from "@/hooks/fetchCategorias";
 
 export default function Home() {
   const { data, refetchClients } = useFetchClients();
@@ -46,7 +46,7 @@ export default function Home() {
             </button>
           </div>
           <Link
-            href={"./buscar"}
+            href={"/calls/search"}
             className="bg-[#1E242B] text-[#FFFFFF] rounded-md">
             <div className="p-2 items-center justify-center text-center flex">
               <p className="">

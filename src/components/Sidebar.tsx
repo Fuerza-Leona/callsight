@@ -1,9 +1,11 @@
 "use client";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { sideNavLinksClient, sideNavLinksAgent } from "../constants";
+import { sideNavLinksClient, sideNavLinksAgent } from "@/constants";
 import { useState } from "react";
 import { useUser } from "@/context/UserContext";
+
+import Image from "next/image";
 
 const SideNavItems = () => {
     const pathname = usePathname();
@@ -87,11 +89,11 @@ const Sidebar = () => {
             {user &&
                 <div>
                     <button
-                        className="fixed top-4 left-4 z-[100] text-neutral-400 hover:text-white focus:outline-none lg:hidden flex p-3 rounded-md"
-                        onClick={toggleMenu}
-                        aria-label="Toggle menu"
+                      className="fixed top-4 left-4 z-[100] text-neutral-400 hover:text-white focus:outline-none lg:hidden flex p-3 rounded-md"
+                      onClick={toggleMenu}
+                      aria-label="Toggle menu"
                     >
-                        <img src={isOpen ? "/assets/close.svg" : "/assets/menu.svg"} alt="toggle" className="w-6 h-6 mt-4" />
+                      <Image src={isOpen ? "/assets/close.svg" : "/assets/menu.svg"} alt="toggle" width={24} height={24} className="w-6 h-6 mt-4" />
                     </button>
 
                     <aside className={`h-screen w-full md:w-64 pt-20 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:fixed lg:translate-x-0`}>

@@ -8,7 +8,7 @@ interface Company {
   category_id?: string;
 }
 
-export function fetchCompanies(token: string | null) {
+export function useFetchCompanies(token: string | null) {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

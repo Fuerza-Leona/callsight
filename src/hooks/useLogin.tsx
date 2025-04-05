@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-import { apiURL } from '@/app/constants'
+import { apiURL } from '@/constants'
 import type { User } from '@/interfaces/user'
 import { useUser } from '@/context/UserContext' // Import useUser
 

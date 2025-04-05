@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-import { apiURL } from '@/app/constants'
+import { apiURL } from '@/constants'
 import { Summary } from '@/interfaces/summary'
 
 export const useSummary = () => {
@@ -21,7 +21,7 @@ export const useSummary = () => {
       );
       console.log("Response summary:", response.data); // DEBUG
       setData(response.data.summary);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Message fetch error:", err); // DEBUG
       if (axios.isAxiosError(err)) {
         const message =
