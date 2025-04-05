@@ -1,6 +1,11 @@
 import Link from "next/link";
 import Tag from "@/components/Tag";
-import { Timestamp } from "firebase/firestore";
+
+interface Timestamp {
+  toString(): string;
+  seconds: number;
+  nanoseconds: number;
+}
 
 interface llamadaProps {
   nombre: string;
