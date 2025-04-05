@@ -14,11 +14,14 @@ import { useFetchClients } from "@/hooks/fetchClients";
 import { useEffect, useState } from "react";
 import { useFetchEmotions } from "@/hooks/fetchEmotions";
 import { useFetchCategorias } from "@/hooks/fetchCategorias";
+import { useFetchTopics } from "@/hooks/fetchTopics";
+import SimpleWordCloud from "@/components/SimpleWordCloud";
 
 export default function Home() {
   const { data, refetchClients } = useFetchClients();
   const { datacategorias, refetchcategorias } = useFetchCategorias();
   const { dataEmotions, refetchEmotions } = useFetchEmotions();
+  const { topics, loading, error, fetchTopics } = useFetchTopics();
 
   const [clients, setClients] = useState<string[]>([]);
   const [categorias, setCategorias] = useState<string[]>([]);
@@ -27,6 +30,7 @@ export default function Home() {
     refetchClients();
     refetchEmotions();
     refetchcategorias();
+    fetchTopics();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -61,7 +65,7 @@ export default function Home() {
           <div className="text-white bg-[#1E242B] rounded-md">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateCalendar
-                defaultValue={dayjs("2022-04-17")}
+                defaultValue={dayjs("2025-05-05")}
                 views={["month", "year"]}
                 openTo="month"
                 className="bg-[#1E242B] rounded-md w-1/1"
@@ -107,8 +111,25 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="w-full h-full rounded-md flex items-center justify-center bg-[#E7E6E7]">
-            <p>Temas principales detectados</p>
+          <div className="w-full h-full rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] p-3">
+            <p className="text-lg font-medium mb-2">Temas principales detectados</p>
+            {loading ? (
+              <p>Cargando temas...</p>
+            ) : error ? (
+              <p>Error al cargar temas</p>
+            ) : !topics || !Array.isArray(topics) ? (
+              <p>No hay temas disponibles</p>
+            ) : (
+              <div className="w-full h-full">
+                <SimpleWordCloud
+                  words={topics.map((topic) => ({
+                    text: topic.topic,
+                    value: topic.amount,
+                  }))}
+                  maxWords={10}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
