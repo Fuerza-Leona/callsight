@@ -1,34 +1,37 @@
-import * as React from 'react';
-import { Theme, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Chip from '@mui/material/Chip';
-
-interface multipleProps {
-    title: string;
-    names: string[];
-    value: string[];
-    onChange: (value: string[]) => void;
-}
+import * as React from "react";
+import { Theme, useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Chip from "@mui/material/Chip";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
     },
-  },
 };
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
+type ItemType = string | { id: string; name: string };
+
+interface multipleProps {
+    title: string;
+    names: ItemType[];
+    value: string[];
+    onChange: (value: string[]) => void;
+    }
+
+function getStyles(item: ItemType, selectedItems: string[], theme: Theme) {
+    const itemValue = typeof item === 'string' ? item : item.id;
     return {
-        fontWeight: personName.includes(name)
+        fontWeight: selectedItems.includes(itemValue)
             ? theme.typography.fontWeightMedium
             : theme.typography.fontWeightRegular,
     };
@@ -45,6 +48,20 @@ export default function MultipleSelectChip(props: multipleProps) {
         props.onChange(
             // On autofill we get a stringified value.
             typeof value === "string" ? value.split(",") : value
+        );
+    };
+
+    const getItemValue = (item: ItemType): string => {
+        return typeof item === 'string' ? item : item.id;
+    };
+
+    const getItemLabel = (item: ItemType): string => {
+        return typeof item === 'string' ? item : item.name;
+    };
+
+    const getItemById = (id: string): ItemType | undefined => {
+        return props.names.find(item => 
+            typeof item === 'string' ? item === id : item.id === id
         );
     };
 
@@ -73,18 +90,24 @@ export default function MultipleSelectChip(props: multipleProps) {
                                 flexWrap: "wrap",
                                 gap: 0.5,
                             }}>
-                            {selected.map((value) => (
-                                <Chip key={value} label={value} />
-                            ))}
+                            {selected.map((value) => {
+                                const item = getItemById(value);
+                                return (
+                                    <Chip 
+                                        key={value} 
+                                        label={item ? getItemLabel(item) : value} 
+                                    />
+                                );
+                            })}
                         </Box>
                     )}
                     MenuProps={MenuProps}>
-                    {props.names && props.names.map((name) => (
+                    {props.names.map((item) => (
                         <MenuItem
-                            key={name}
-                            value={name}
-                            style={getStyles(name, props.value, theme)}>
-                            {name}
+                            key={getItemValue(item)}
+                            value={getItemValue(item)}
+                            style={getStyles(item, props.value, theme)}>
+                            {getItemLabel(item)}
                         </MenuItem>
                     ))}
                 </Select>

@@ -18,12 +18,12 @@ import { useFetchTopics } from "@/hooks/fetchTopics";
 import SimpleWordCloud from "@/components/SimpleWordCloud";
 
 export default function Home() {
-  const { data, refetchClients } = useFetchClients();
+  const { clients, loadingClients, errorClients, refetchClients } = useFetchClients();
   const { datacategorias, refetchcategorias } = useFetchCategorias();
   const { dataEmotions, refetchEmotions } = useFetchEmotions();
-  const { topics, loading, error, fetchTopics } = useFetchTopics();
+  const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
 
-  const [clients, setClients] = useState<string[]>([]);
+  const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [categorias, setCategorias] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
 
@@ -31,10 +31,22 @@ export default function Home() {
     refetchClients();
     refetchEmotions();
     refetchcategorias();
-    // fetchTopics();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
+  interface Client {
+    user_id: string;
+    username: string;
+  }
+  
+  interface ClientsResponse {
+    data?: Client[];
+    users?: Client[];
+  }
+  
+  interface CategoriasResponse {
+    categorias: string[];
+  }
 
   const initialFetchDone = useRef(false);
   
@@ -49,11 +61,11 @@ export default function Home() {
 
       fetchTopics({
         limit: 10,
-        clients: [],
+        clients: selectedClients,
         startDate: startDate.format('YYYY-MM-DD'),
         endDate: endDate.format('YYYY-MM-DD')
       });
-  }, [selectedDate, clients, categorias]);
+  }, [selectedDate, selectedClients, categorias]);
 
 
   return (
@@ -100,13 +112,43 @@ export default function Home() {
           </div>
           <div className="">
             <MultipleSelectChip
-              title="Cliente"
-              names={data.namesClients}
-              value={clients}
-              onChange={(newClients) => {
-                  setClients(newClients);
+              title={loadingClients ? "Cliente (Cargando...)" : errorClients ? "Cliente (Error)" : "Cliente"}
+              names={(() => {
+                if (loadingClients || errorClients || !clients) {
+                  return [];
                 }
-              }
+
+                if (Array.isArray(clients)) {
+                  return clients.map((client: Client) => ({
+                    id: client.user_id,
+                    name: client.username,
+                  }));
+                }
+
+                if (clients && typeof clients === "object") {
+                  const typedClients = clients as ClientsResponse;
+
+                  if (typedClients.data && Array.isArray(typedClients.data)) {
+                    return typedClients.data.map((client: Client) => ({
+                      id: client.user_id,
+                      name: client.username,
+                    }));
+                  }
+
+                  if (typedClients.users && Array.isArray(typedClients.users)) {
+                    return typedClients.users.map((client: Client) => ({
+                      id: client.user_id,
+                      name: client.username,
+                    }));
+                  }
+                }
+
+                return [];
+              })()}
+              value={selectedClients}
+              onChange={(newClients: string[]) => {
+                setSelectedClients(newClients);
+              }}
             />
           </div>
           <div className="">
@@ -145,9 +187,9 @@ export default function Home() {
           </div>
           <div className="w-full h-full rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] p-3">
             <h1 className="text-lg mt-5 font-bold">Temas principales detectados</h1>
-            {loading ? (
+            {loadingTopics ? (
               <p>Cargando temas...</p>
-            ) : error ? (
+            ) : errorTopics ? (
               <p>Error al cargar temas</p>
             ) : !topics || !Array.isArray(topics) ? (
               <p>No hay temas disponibles</p>

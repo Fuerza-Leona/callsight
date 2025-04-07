@@ -27,22 +27,34 @@ export const useFetchTopics = () => {
     axios
       .get("/api/getToken", { headers: { "Content-Type": "application/json" } })
       .then((response) => {
+        const baseParams: Record<string, any> = {
+          ...(params?.limit && { limit: params.limit }),
+          ...(params?.startDate && { startDate: params.startDate }),
+          ...(params?.endDate && { endDate: params.endDate }),
+        };
+        
+        const searchParams = new URLSearchParams();
+        
+        Object.entries(baseParams).forEach(([key, value]) => {
+          searchParams.append(key, String(value));
+        });
+        
+        if (params?.clients && params.clients.length > 0) {
+          params.clients.forEach(client => {
+            searchParams.append('clients', client);
+          });
+        }
+        
         const config = {
           headers: {
             Authorization: `Bearer ${response.data.user}`,
             withCredentials: true,
-          },
-          params: {
-            ...(params?.limit && { limit: params.limit }),
-            ...(params?.clients && params.clients.length > 0 && { clients: params.clients.join(',') }),
-            ...(params?.startDate && { startDate: params.startDate }),
-            ...(params?.endDate && { endDate: params.endDate }),
           }
         };
         
         axios
           .get(
-            "http://127.0.0.1:8000/api/v1/topics",
+            `http://127.0.0.1:8000/api/v1/topics?${searchParams.toString()}`,
             config
           )
           .then((response) => {
@@ -67,5 +79,5 @@ export const useFetchTopics = () => {
     fetchTopics();
   }, []);
 
-  return { topics, loading, error, fetchTopics };
+  return { topics, loadingTopics: loading, errorTopics: error, fetchTopics };
 };
