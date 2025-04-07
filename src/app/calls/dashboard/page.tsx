@@ -11,7 +11,7 @@ import CallIcon from "@mui/icons-material/Call";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
 import { useFetchClients } from "@/hooks/fetchClients";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetchEmotions } from "@/hooks/fetchEmotions";
 import { useFetchCategorias } from "@/hooks/fetchCategorias";
 import { useFetchTopics } from "@/hooks/fetchTopics";
@@ -25,14 +25,36 @@ export default function Home() {
 
   const [clients, setClients] = useState<string[]>([]);
   const [categorias, setCategorias] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
 
   useEffect(() => {
     refetchClients();
     refetchEmotions();
     refetchcategorias();
-    fetchTopics();
+    // fetchTopics();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+  const initialFetchDone = useRef(false);
+  
+  useEffect(() => {
+      if (!initialFetchDone.current) {
+        initialFetchDone.current = true;
+        return;
+      }
+      
+      const startDate = selectedDate.startOf('month');
+      const endDate = selectedDate.endOf('month');
+
+      fetchTopics({
+        limit: 10,
+        clients: [],
+        startDate: startDate.format('YYYY-MM-DD'),
+        endDate: endDate.format('YYYY-MM-DD')
+      });
+  }, [selectedDate, clients, categorias]);
+
 
   return (
     <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
@@ -65,11 +87,15 @@ export default function Home() {
           <div className="text-white bg-[#1E242B] rounded-md">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateCalendar
-                defaultValue={dayjs("2025-05-05")}
-                views={["month", "year"]}
-                openTo="month"
-                className="bg-[#1E242B] rounded-md w-1/1"
-              />
+                  value={selectedDate}
+                  onChange={(newDate) => {
+                    setSelectedDate(newDate);
+                    
+                  }}
+                  views={["month", "year"]}
+                  openTo="month"
+                  className="bg-[#1E242B] rounded-md w-1/1"
+                />
             </LocalizationProvider>
           </div>
           <div className="">
@@ -77,7 +103,10 @@ export default function Home() {
               title="Cliente"
               names={data.namesClients}
               value={clients}
-              onChange={setClients}
+              onChange={(newClients) => {
+                  setClients(newClients);
+                }
+              }
             />
           </div>
           <div className="">
@@ -85,7 +114,10 @@ export default function Home() {
               title="Categorías"
               names={datacategorias.categorias}
               value={categorias}
-              onChange={setCategorias}
+              onChange={(category) => {
+                  setCategorias(category);
+                }
+              }
             />
           </div>
         </div>
