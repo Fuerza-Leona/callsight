@@ -11,7 +11,9 @@ export async function GET() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const sessionData = decrypt(sessionCookie.value);
+    const sessionData = decrypt(sessionCookie.value) as {
+      access_token: string;
+    };
 
     return NextResponse.json({ user: sessionData.access_token });
   } catch (error) {

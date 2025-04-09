@@ -14,7 +14,7 @@ export async function GET() {
       );
     }
 
-    const decrypted = decrypt(sessionCookie.value);
+    const decrypted = decrypt(sessionCookie.value) as { access_token: string };
 
     if (!decrypted.access_token) {
       return NextResponse.json(
