@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server';
 import { serialize } from 'cookie';
 
 export async function GET() {
-  const response = NextResponse.redirect(
-    new URL('/login', process.env.SITE_URL || '')
-  );
+  const response = NextResponse.redirect('/login');
 
   // Clear the plain user_info cookie
   response.headers.append(
