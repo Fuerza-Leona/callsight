@@ -69,9 +69,6 @@
       "next/typescript"
     ]
   },
-  "commitlint": {
-    "extends": ["@commitlint/config-conventional"]
-  },
   "postcss": {
     "plugins": {
       "@tailwindcss/postcss": {}
