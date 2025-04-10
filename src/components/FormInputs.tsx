@@ -4,7 +4,9 @@ import FileUploader from './FileUploader';
 import { useFetchCompanies } from '../hooks/fetchCompanies';
 import { useParticipants } from '../hooks/fetchParticipants';
 
-import { apiUrl } from '@/constants';
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 interface FormInputsProps {
   onFormSubmit: (data: {

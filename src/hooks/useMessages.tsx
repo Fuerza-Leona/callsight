@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiUrl } from '@/constants';
 import { Messages } from '@/interfaces/messages';
+
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 export const useMessages = () => {
   const [data, setData] = useState<Messages[] | null>(null);
