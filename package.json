@@ -53,25 +53,5 @@
       "npm run format",
       "npm run lint"
     ]
-  },
-  "prettier": {
-    "semi": true,
-    "singleQuote": true,
-    "printWidth": 80,
-    "tabWidth": 2,
-    "useTabs": false,
-    "trailingComma": "es5",
-    "bracketSpacing": true
-  },
-  "eslintConfig": {
-    "extends": [
-      "next/core-web-vitals",
-      "next/typescript"
-    ]
-  },
-  "postcss": {
-    "plugins": {
-      "@tailwindcss/postcss": {}
-    }
   }
 }
