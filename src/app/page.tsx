@@ -1,6 +1,12 @@
 import Image from 'next/image';
 
+import getConfig from 'next/config';
+
 export default function Home() {
+  const { publicRuntimeConfig } = getConfig();
+  console.log('publicRuntimeConfig', publicRuntimeConfig);
+  console.log('publicRuntimeConfig.baseApiUrl', publicRuntimeConfig.baseApiUrl);
+  console.log('publicRuntimeConfig.apiVersion', publicRuntimeConfig.apiVersion);
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center">
       <Image
