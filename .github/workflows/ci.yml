@@ -14,6 +14,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Check commit messages
+        uses: wagoid/commitlint-github-action@v6
+        with: 
+          configFile: commitlint.config.mjs
+
       - name: Use Node.js 20.x
         uses: actions/setup-node@v3
         with:
@@ -22,13 +27,14 @@ jobs:
       - name: Install dependencies
         run: npm ci  # Clean install
       
-      - name: Run lint
+      - name: Check linting
         run: npm run lint
       
-      - name: Run format check
+      - name: Check format with Prettier
         run: npm run format
 
-      - name: Check commit messages
-        uses: wagoid/commitlint-github-action@v6
-        with: 
-          configFile: commitlint.config.mjs
+      - name: Build the app
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test
