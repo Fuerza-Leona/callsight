@@ -1,7 +1,9 @@
-"use client";
+'use client';
 
-import axios from "axios";
-import { useEffect, useState } from "react";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+
+import { apiUrl } from '@/constants';
 
 export interface topic {
   topic: string;
@@ -17,51 +19,48 @@ export interface fetchTopicsParams {
 
 export const useFetchTopics = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | unknown>("");
+  const [error, setError] = useState<string | unknown>('');
   const [topics, setTopics] = useState<topic[]>([]);
 
   const fetchTopics = async (params?: fetchTopicsParams) => {
     setLoading(true);
-    setError("");
-    
+    setError('');
+
     axios
-      .get("/api/getToken", { headers: { "Content-Type": "application/json" } })
+      .get('/api/getToken', { headers: { 'Content-Type': 'application/json' } })
       .then((response) => {
-        const baseParams: Record<string, any> = {
+        const baseParams: Record<string, unknown> = {
           ...(params?.limit && { limit: params.limit }),
           ...(params?.startDate && { startDate: params.startDate }),
           ...(params?.endDate && { endDate: params.endDate }),
         };
-        
+
         const searchParams = new URLSearchParams();
-        
+
         Object.entries(baseParams).forEach(([key, value]) => {
           searchParams.append(key, String(value));
         });
-        
+
         if (params?.clients && params.clients.length > 0) {
-          params.clients.forEach(client => {
+          params.clients.forEach((client) => {
             searchParams.append('clients', client);
           });
         }
-        
+
         const config = {
           headers: {
             Authorization: `Bearer ${response.data.user}`,
             withCredentials: true,
-          }
+          },
         };
-        
+
         axios
-          .get(
-            `http://127.0.0.1:8000/api/v1/topics?${searchParams.toString()}`,
-            config
-          )
+          .get(`${apiUrl}/topics?${searchParams.toString()}`, config)
           .then((response) => {
             setTopics(response.data.topics);
           })
           .catch((err) => {
-            console.error("Error fetching topics:", err);
+            console.error('Error fetching topics:', err);
             setError(err);
           })
           .finally(() => {
@@ -69,7 +68,7 @@ export const useFetchTopics = () => {
           });
       })
       .catch((err) => {
-        console.error("Error in obtaining token: " + err);
+        console.error('Error in obtaining token: ' + err);
         setLoading(false);
         setError(err);
       });

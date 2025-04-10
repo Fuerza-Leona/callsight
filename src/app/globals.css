@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* @tailwind base;
 @tailwind components;
@@ -12,7 +12,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --neoris-blue: #13202A;
+  --neoris-blue: #13202a;
 }
 
 /* @media (prefers-color-scheme: dark) {

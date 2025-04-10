@@ -18,8 +18,16 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
   return (
     <div className="flex flex-col">
       <label className="font-semibold mb-1">Subir Archivo</label>
-      <input type="file" className="p-3 border rounded-lg" onChange={handleFileChange} />
-      {selectedFile && <p className="mt-2 text-sm text-gray-600">Archivo seleccionado: {selectedFile.name}</p>}
+      <input
+        type="file"
+        className="p-3 border rounded-lg"
+        onChange={handleFileChange}
+      />
+      {selectedFile && (
+        <p className="mt-2 text-sm text-gray-600">
+          Archivo seleccionado: {selectedFile.name}
+        </p>
+      )}
     </div>
   );
 };

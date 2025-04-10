@@ -5,6 +5,9 @@ SECRETS_REPO="https://github.com/Fuerza-Leona/callsight-secrets.git"
 ENV_FILE_NAME=".env.front"  # The file name in the secrets repo
 LOCAL_ENV_PATH=".env"      # Where to put it in your project
 
+# Get the original directory
+ORIGINAL_DIR=$(pwd)
+
 # Create a temporary directory
 TEMP_DIR=$(mktemp -d)
 cd "$TEMP_DIR"
@@ -30,8 +33,6 @@ if [ ! -f "$ENV_FILE_NAME" ]; then
   exit 1
 fi
 
-# Get the original directory
-ORIGINAL_DIR=$(pwd)
 
 # Copy the environment file to the correct location
 cp "$ENV_FILE_NAME" "$ORIGINAL_DIR/$LOCAL_ENV_PATH"

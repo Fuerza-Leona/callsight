@@ -1,0 +1,4 @@
+echo "🔍 Linting commit message..."
+npx --no-install commitlint --edit "$1" || { echo "❌ Commit message linting failed"; exit 1; }
+
+echo "✅ Commit message format validated successfully"

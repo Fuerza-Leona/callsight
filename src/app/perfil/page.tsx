@@ -1,27 +1,27 @@
-"use client";
-import { useState } from "react";
-import CustomPaginationActionsTable from "@/components/CustomPaginationActionsTable";
-import SearchBar from "@/components/SearchBar";
-import { useUser } from "@/context/UserContext";
+'use client';
+import { useState } from 'react';
+import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTable';
+import SearchBar from '@/components/SearchBar';
+import { useUser } from '@/context/UserContext';
 
 const rows = [
-  { name: "BBVA", usuarios: 30, proyectos: 3 },
-  { name: "Santander", usuarios: 12, proyectos: 21 },
-  { name: "CaixaBank", usuarios: 18, proyectos: 5 },
-  { name: "Banco Sabadell", usuarios: 25, proyectos: 8 },
-  { name: "ING", usuarios: 10, proyectos: 2 },
-  { name: "Bankinter", usuarios: 8, proyectos: 4 },
-  { name: "Abanca", usuarios: 15, proyectos: 6 },
-  { name: "Kutxabank", usuarios: 9, proyectos: 1 },
-  { name: "Openbank", usuarios: 13, proyectos: 7 },
-  { name: "EVO Banco", usuarios: 6, proyectos: 3 },
-  { name: "Cajamar", usuarios: 22, proyectos: 9 },
+  { name: 'BBVA', usuarios: 30, proyectos: 3 },
+  { name: 'Santander', usuarios: 12, proyectos: 21 },
+  { name: 'CaixaBank', usuarios: 18, proyectos: 5 },
+  { name: 'Banco Sabadell', usuarios: 25, proyectos: 8 },
+  { name: 'ING', usuarios: 10, proyectos: 2 },
+  { name: 'Bankinter', usuarios: 8, proyectos: 4 },
+  { name: 'Abanca', usuarios: 15, proyectos: 6 },
+  { name: 'Kutxabank', usuarios: 9, proyectos: 1 },
+  { name: 'Openbank', usuarios: 13, proyectos: 7 },
+  { name: 'EVO Banco', usuarios: 6, proyectos: 3 },
+  { name: 'Cajamar', usuarios: 22, proyectos: 9 },
 ];
 
 const columns = [
-  { label: "Cliente", key: "name" },
-  { label: "Usuarios", key: "usuarios" },
-  { label: "Proyectos", key: "proyectos" },
+  { label: 'Cliente', key: 'name' },
+  { label: 'Usuarios', key: 'usuarios' },
+  { label: 'Proyectos', key: 'proyectos' },
 ];
 
 //Harcodead values (whatever is commented is already functional)
@@ -39,12 +39,12 @@ const tickets = 21;
 
 //Agente - Admin
 const satisfaction = 4.3;
-const company = "Neoris";
+const company = 'Neoris';
 
 export default function Home() {
   const { user } = useUser();
   const name = user?.username;
-  const isUser = user?.role == "client";
+  const isUser = user?.role == 'client';
   const isAgent = !isUser; //This is hardcoded. It needs to also get the user role
 
   const [filteredRows, setFilteredRows] = useState(rows);
@@ -71,12 +71,12 @@ export default function Home() {
         <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center">
           <p>Rol</p>
           <h2 className="font-thin text-3xl">
-            {isAdmin ? "Admin" : isAgent ? "Agente" : "Usuario"}
+            {isAdmin ? 'Admin' : isAgent ? 'Agente' : 'Usuario'}
           </h2>
         </div>
 
         <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center">
-          <p>{isUser ? "Tickets abiertos" : "Empresa"}</p>
+          <p>{isUser ? 'Tickets abiertos' : 'Empresa'}</p>
           <h2 className="font-thin text-3xl">{isUser ? tickets : company}</h2>
         </div>
 
@@ -94,8 +94,8 @@ export default function Home() {
           <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center">
             <p>
               {isAdmin || isAgent
-                ? "Satisfaccion promedio"
-                : "Proyectos realizados"}
+                ? 'Satisfaccion promedio'
+                : 'Proyectos realizados'}
             </p>
             <h2 className="font-thin text-3xl">
               {isUser ? nProyects : satisfaction}
@@ -123,7 +123,7 @@ export default function Home() {
                 label="Buscar Cliente"
                 options={rows.map((row) => ({ label: row.name }))}
                 onSelect={handleSearch}
-                sx={{ width: "100%" }}
+                sx={{ width: '100%' }}
               />
               <button className="rounded-2xl bg-[#13202A] text-white md:w-50 hover:cursor-pointer hover:bg-[#364550]">
                 Añadir cliente

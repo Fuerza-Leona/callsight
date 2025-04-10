@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import FileUploader from "./FileUploader";
-import { useFetchCompanies } from "../hooks/fetchCompanies";
-import { useParticipants } from "../hooks/fetchParticipants";
-import MultipleSelectChip from "./MultipleSelectChip";
-import SearchBar from "./SearchBar";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import FileUploader from './FileUploader';
+import { useFetchCompanies } from '@/hooks/fetchCompanies';
+import { useParticipants } from '@/hooks/fetchParticipants';
+import SearchBar from './SearchBar';
+import { apiUrl } from '@/constants';
 
 interface FormInputsProps {
   onFormSubmit: (data: {
@@ -16,21 +16,21 @@ interface FormInputsProps {
 }
 
 const FormInputs: React.FC<FormInputsProps> = ({}) => {
-  const [selectedCompany, setSelectedCompany] = useState<string>("");
+  const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
     []
   );
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     const getToken = async () => {
       try {
-        const response = await axios.get("/api/token");
+        const response = await axios.get('/api/token');
         setToken(response.data.access_token);
       } catch (error) {
-        console.error("Error fetching token:", error);
+        console.error('Error fetching token:', error);
       }
     };
 
@@ -66,33 +66,33 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
 
   const handleSubmit = async () => {
     if (!selectedCompany || !date || !selectedFile) {
-      alert("Por favor, completa todos los campos antes de analizar.");
+      alert('Por favor, completa todos los campos antes de analizar.');
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("date_string", `${date} 00:00`);
-    formData.append("company_id", selectedCompany);
-    formData.append("participants", selectedParticipants.join(","));
+    formData.append('file', selectedFile);
+    formData.append('date_string', `${date} 00:00`);
+    formData.append('company_id', selectedCompany);
+    formData.append('participants', selectedParticipants.join(','));
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/v1/ai/alternative-analysis",
+        `${apiUrl}/ai/alternative-analysis`,
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      console.log("Response:", response.data);
-      alert("Análisis completado con éxito.");
+      console.log('Response:', response.data);
+      alert('Análisis completado con éxito.');
     } catch (error) {
-      console.error("Error al enviar los datos:", error);
-      alert("Ocurrió un error al procesar el análisis.");
+      console.error('Error al enviar los datos:', error);
+      alert('Ocurrió un error al procesar el análisis.');
     }
   };
 
@@ -105,39 +105,39 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
           label="Buscar Cliente"
           options={
             companiesLoading
-              ? [{ label: "Cargando empresas..."}]
+              ? [{ label: 'Cargando empresas...' }]
               : companiesError
-              ? [{ label: "Error cargando empresas" }]
-              : companies.map((row) => ({ label: row.name }))
+                ? [{ label: 'Error cargando empresas' }]
+                : companies.map((row) => ({ label: row.name }))
           }
           onSelect={(e) => setSelectedCompany(e!)}
           sx={{
-            width: "100%",
-            backgroundColor: "#f0f0f0",
-            borderColor: "none",
-            boxShadow: "none",
-            color: "black",
-            "& .MuiInputLabel-root": {
-              borderColor: "black",
+            width: '100%',
+            backgroundColor: '#f0f0f0',
+            borderColor: 'none',
+            boxShadow: 'none',
+            color: 'black',
+            '& .MuiInputLabel-root': {
+              borderColor: 'black',
             },
-            "& .Mui-focused": {
-              color: "black",
-              borderColor: "black",
+            '& .Mui-focused': {
+              color: 'black',
+              borderColor: 'black',
             },
-            "label + &": {
-              borderColor: "black",
-              boxShadow: "none",
+            'label + &': {
+              borderColor: 'black',
+              boxShadow: 'none',
             },
-            "& .MuiInputBase-input": {
-              backgroundColor: "#f0f0f0",
-              color: "black",
-              borderColor: "black",
-              boxShadow: "none",
+            '& .MuiInputBase-input': {
+              backgroundColor: '#f0f0f0',
+              color: 'black',
+              borderColor: 'black',
+              boxShadow: 'none',
             },
-            "&:focus": {
+            '&:focus': {
               borderRadius: 4,
-              borderColor: "black",
-              boxShadow: "none",
+              borderColor: 'black',
+              boxShadow: 'none',
             },
           }}
         />
@@ -147,7 +147,8 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
           <select
             className="w-full p-3 bg-gray-200 rounded-lg"
             value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value)}>
+            onChange={(e) => setSelectedCompany(e.target.value)}
+          >
             <option value="">Seleccionar cliente</option>
             {companiesLoading || !token ? (
               <option value="" disabled>
@@ -182,7 +183,8 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
                 <span
                   key={userId}
                   className="bg-[#0f1a22] text-white px-3 py-1 rounded-full cursor-pointer"
-                  onClick={() => removeParticipant(userId)}>
+                  onClick={() => removeParticipant(userId)}
+                >
                   {participant?.username} ✕
                 </span>
               );
@@ -203,10 +205,11 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
                   key={participant.user_id}
                   className={`px-3 py-1 rounded-full cursor-pointer ${
                     selectedParticipants.includes(participant.user_id)
-                      ? "bg-[#13202a] text-white"
-                      : "bg-gray-200"
+                      ? 'bg-[#13202a] text-white'
+                      : 'bg-gray-200'
                   }`}
-                  onClick={() => handleParticipantClick(participant.user_id)}>
+                  onClick={() => handleParticipantClick(participant.user_id)}
+                >
                   {participant.username}
                 </span>
               ))
@@ -227,7 +230,8 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
         <button
           type="button"
           onClick={handleSubmit}
-          className="w-full p-3 bg-[#13202a]  text-white rounded-lg hover:bg-blue-600 transition">
+          className="w-full p-3 bg-[#13202a]  text-white rounded-lg hover:bg-blue-600 transition"
+        >
           Analizar
         </button>
       </form>
