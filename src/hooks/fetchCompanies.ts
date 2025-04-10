@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import { apiUrl } from '@/constants';
+
 interface Company {
   company_id: string;
   name: string;
@@ -25,14 +27,11 @@ export function useFetchCompanies(token: string | null) {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get(
-          'http://0.0.0.0:8000/api/v1/companies/',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${apiUrl}/companies/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         console.log('Companies API response:', response.data);
 
