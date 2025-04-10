@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useMediaQuery } from 'react-responsive';
 import TranscriptBubble from '@/components/TranscriptBubble';
 import { useUser } from '@/context/UserContext';
 import { useSpecificCall } from '@/hooks/useSpecificCall';
 
-export default function LlamadaPage() {
+// Client component that uses useSearchParams
+function CallDetail() {
   const searchParams = useSearchParams();
   const call_id = searchParams.get('call_id');
 
@@ -197,5 +198,15 @@ export default function LlamadaPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Main page component with Suspense
+// example comment
+export default function LlamadaPage() {
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Cargando...</div>}>
+      <CallDetail />
+    </Suspense>
   );
 }
