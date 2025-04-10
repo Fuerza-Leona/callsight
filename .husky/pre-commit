@@ -1,1 +1,4 @@
-lint-staged
+echo "🔍 Running lint-staged checks..."
+lint-staged || { echo "❌ Linting failed, commit aborted"; exit 1; }
+
+echo "✅ Pre-commit checks passed"

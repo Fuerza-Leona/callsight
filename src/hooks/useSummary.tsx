@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 import { Summary } from '@/interfaces/summary';
 
 export const useSummary = () => {
@@ -17,7 +17,7 @@ export const useSummary = () => {
 
     try {
       const response = await axios.get<{ summary: Summary[] }>(
-        `${apiURL}/conversations/call/${call_id}/summary`
+        `${apiUrl}/conversations/call/${call_id}/summary`
       );
       console.log('Response summary:', response.data); // DEBUG
       setData(response.data.summary);

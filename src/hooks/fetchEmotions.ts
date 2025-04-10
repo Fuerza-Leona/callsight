@@ -3,6 +3,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+import { apiUrl } from '@/constants';
+
 export const useFetchEmotions = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | unknown>('');
@@ -22,10 +24,7 @@ export const useFetchEmotions = () => {
         };
         console.log(config);
         axios
-          .get(
-            'http://127.0.0.1:8000/api/v1/conversations/myClientEmotions',
-            config
-          )
+          .get(`${apiUrl}/conversations/myClientEmotions`, config)
           .then((response) => {
             if (response.data.emotions) {
               console.log(response.data);

@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { apiUrl } from '@/constants';
 
 export interface client {
   user_id: string;
@@ -15,7 +16,7 @@ export const useFetchClients = () => {
 
   const refetchClients = async () => {
     axios
-      .get('http://127.0.0.1:8000/api/v1/users/client')
+      .get(`${apiUrl}/users/client`)
       .then((response) => {
         console.log('Response from API:', response.data);
         setClients(response.data);

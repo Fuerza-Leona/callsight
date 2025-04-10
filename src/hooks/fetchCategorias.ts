@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { UUID } from 'crypto';
 import { useEffect, useState } from 'react';
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 
 export interface categorias {
   category_id: UUID;
@@ -17,7 +17,7 @@ export const useFetchCategorias = () => {
 
   const fetchCategorias = async () => {
     axios
-      .get(`${apiURL}/categories`)
+      .get(`${apiUrl}/categories`)
       .then((response) => {
         console.log(response);
         setcategorias(response.data.categories);

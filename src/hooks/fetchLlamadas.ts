@@ -4,6 +4,8 @@ import axios from 'axios';
 import { UUID } from 'crypto';
 import { useEffect, useState } from 'react';
 
+import { apiUrl } from '@/constants';
+
 interface Timestamp {
   toString(): string;
   seconds: number;
@@ -38,7 +40,7 @@ export const useFetchLlamadas = () => {
 
         console.log(config);
         axios
-          .get('http://127.0.0.1:8000/api/v1/conversations/mine', config)
+          .get(`${apiUrl}/conversations/mine`, config)
           .then((response) => {
             setLlamadas(response.data.conversations);
           })

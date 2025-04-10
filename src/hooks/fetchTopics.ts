@@ -3,6 +3,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+import { apiUrl } from '@/constants';
+
 export interface topic {
   topic: string;
   amount: number;
@@ -53,10 +55,7 @@ export const useFetchTopics = () => {
         };
 
         axios
-          .get(
-            `http://127.0.0.1:8000/api/v1/topics?${searchParams.toString()}`,
-            config
-          )
+          .get(`${apiUrl}/topics?${searchParams.toString()}`, config)
           .then((response) => {
             setTopics(response.data.topics);
           })

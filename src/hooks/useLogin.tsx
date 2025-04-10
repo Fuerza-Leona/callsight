@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 import type { User } from '@/interfaces/user';
 import { useUser } from '@/context/UserContext'; // Import useUser
 
-const API_URL = `${apiURL}/auth/login`;
+const API_URL = `${apiUrl}/auth/login`;
 
 interface LoginSuccessResponse {
   access_token: string;
