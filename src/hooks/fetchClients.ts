@@ -2,7 +2,10 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { apiUrl } from '@/constants';
+
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 export interface client {
   user_id: string;

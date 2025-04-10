@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiUrl } from '@/constants';
 import { SpecificCall } from '@/interfaces/specificCall';
 import { Conversation } from '@/interfaces/conversation';
+
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 // Define an interface that matches the API response structure
 interface ApiResponse {

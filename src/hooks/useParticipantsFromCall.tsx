@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiUrl } from '@/constants';
 import { Participant } from '@/interfaces/participants';
+
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 export const useParticipants = () => {
   const [data, setData] = useState<Participant[] | null>(null);
