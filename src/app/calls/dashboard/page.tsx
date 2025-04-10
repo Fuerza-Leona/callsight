@@ -43,10 +43,6 @@ export default function Home() {
     data?: Client[];
     users?: Client[];
   }
-  
-  interface CategoriasResponse {
-    categorias: string[];
-  }
 
   const initialFetchDone = useRef(false);
   

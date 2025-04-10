@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { apiURL } from '@/constants';
 
 interface Participant {
   user_id: string;
@@ -25,7 +26,7 @@ export function useParticipants(companyId: string, token: string | null) {
         setError(null);
 
         const response = await axios.get(
-          `http://0.0.0.0:8000/api/v1/companies/${companyId}/list`,
+          `${apiURL}/companies/${companyId}/list`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
