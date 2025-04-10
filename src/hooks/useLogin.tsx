@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiUrl } from '@/constants';
 import type { User } from '@/interfaces/user';
 import { useUser } from '@/context/UserContext'; // Import useUser
 
-const API_URL = `${apiUrl}/auth/login`;
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 interface LoginSuccessResponse {
   access_token: string;
@@ -30,10 +31,13 @@ export const useLogin = () => {
     setError(null);
 
     try {
-      const response = await axios.post<LoginSuccessResponse>(API_URL, {
-        email,
-        password,
-      });
+      const response = await axios.post<LoginSuccessResponse>(
+        `${apiUrl}/auth/login`,
+        {
+          email,
+          password,
+        }
+      );
 
       setData(response.data);
       setUser(response.data.user); // Update context

@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiUrl } from '@/constants';
 import { Summary } from '@/interfaces/summary';
+
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 export const useSummary = () => {
   const [data, setData] = useState<Summary[] | null>(null);

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { apiUrl } from '@/constants';
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 interface Participant {
   user_id: string;

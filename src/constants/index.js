@@ -1,11 +1,3 @@
-import getConfig from 'next/config';
-
-const { publicRuntimeConfig } = getConfig();
-const baseApiUrl = publicRuntimeConfig.baseApiUrl;
-const apiVersion = publicRuntimeConfig.apiVersion;
-
-export const apiUrl = `${baseApiUrl}/api/${apiVersion}`;
-
 export const navBarLinks = [
   {
     id: 1,

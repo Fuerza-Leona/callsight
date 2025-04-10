@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiUrl } from '@/constants';
 import { Call } from '@/interfaces/call';
+
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 export const useCallData = () => {
   const [data, setData] = useState<Call | null>(null);

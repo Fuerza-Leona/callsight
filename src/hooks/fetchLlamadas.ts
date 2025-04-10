@@ -4,7 +4,9 @@ import axios from 'axios';
 import { UUID } from 'crypto';
 import { useEffect, useState } from 'react';
 
-import { apiUrl } from '@/constants';
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.apiUrl;
 
 interface Timestamp {
   toString(): string;
