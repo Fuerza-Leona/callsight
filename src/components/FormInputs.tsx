@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import FileUploader from './FileUploader';
-import { useFetchCompanies } from '../hooks/fetchCompanies';
-import { useParticipants } from '../hooks/fetchParticipants';
-
+import { useFetchCompanies } from '@/hooks/fetchCompanies';
+import { useParticipants } from '@/hooks/fetchParticipants';
+import SearchBar from './SearchBar';
 import { apiUrl } from '@/constants';
 
 interface FormInputsProps {
@@ -101,6 +101,47 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
       <form className="w-full max-w-md flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md">
         <FileUploader onFileSelect={handleFileSelect} />
 
+        <SearchBar
+          label="Buscar Cliente"
+          options={
+            companiesLoading
+              ? [{ label: 'Cargando empresas...' }]
+              : companiesError
+                ? [{ label: 'Error cargando empresas' }]
+                : companies.map((row) => ({ label: row.name }))
+          }
+          onSelect={(e) => setSelectedCompany(e!)}
+          sx={{
+            width: '100%',
+            backgroundColor: '#f0f0f0',
+            borderColor: 'none',
+            boxShadow: 'none',
+            color: 'black',
+            '& .MuiInputLabel-root': {
+              borderColor: 'black',
+            },
+            '& .Mui-focused': {
+              color: 'black',
+              borderColor: 'black',
+            },
+            'label + &': {
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+            '& .MuiInputBase-input': {
+              backgroundColor: '#f0f0f0',
+              color: 'black',
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+            '&:focus': {
+              borderRadius: 4,
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+          }}
+        />
+
         <div className="flex flex-col">
           <label className="font-semibold mb-1">Empresa</label>
           <select
@@ -162,7 +203,11 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
               participants.map((participant) => (
                 <span
                   key={participant.user_id}
-                  className={`px-3 py-1 rounded-full cursor-pointer ${selectedParticipants.includes(participant.user_id) ? 'bg-[#13202a] text-white' : 'bg-gray-200'}`}
+                  className={`px-3 py-1 rounded-full cursor-pointer ${
+                    selectedParticipants.includes(participant.user_id)
+                      ? 'bg-[#13202a] text-white'
+                      : 'bg-gray-200'
+                  }`}
                   onClick={() => handleParticipantClick(participant.user_id)}
                 >
                   {participant.username}
