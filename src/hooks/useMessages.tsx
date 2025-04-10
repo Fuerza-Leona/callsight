@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 import { Messages } from '@/interfaces/messages';
 
 export const useMessages = () => {
@@ -17,7 +17,7 @@ export const useMessages = () => {
 
     try {
       const response = await axios.get<{ messages: Messages[] }>(
-        `${apiURL}/conversations/${call_id}/messages`
+        `${apiUrl}/conversations/${call_id}/messages`
       );
       console.log('Response:', response.data); // DEBUG
       setData(response.data.messages);

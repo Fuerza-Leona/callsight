@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 import { SpecificCall } from '@/interfaces/specificCall';
 import { Conversation } from '@/interfaces/conversation';
 
@@ -26,7 +26,7 @@ export const useSpecificCall = () => {
 
     try {
       const response = await axios.get<ApiResponse>(
-        `${apiURL}/conversations/call/${call_id}`
+        `${apiUrl}/conversations/call/${call_id}`
       );
       console.log('Response summary:', response.data);
 

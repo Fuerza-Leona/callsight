@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 import { Participant } from '@/interfaces/participants';
 
 export const useParticipants = () => {
@@ -17,7 +17,7 @@ export const useParticipants = () => {
 
     try {
       const response = await axios.get<{ participants: Participant[] }>(
-        `${apiURL}/conversations/call/${call_id}/participants`
+        `${apiUrl}/conversations/call/${call_id}/participants`
       );
       console.log('Response participants:', response.data); // DEBUG
       setData(response.data.participants);

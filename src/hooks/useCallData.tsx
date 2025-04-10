@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 import { Call } from '@/interfaces/call';
 
 export const useCallData = () => {
@@ -16,7 +16,7 @@ export const useCallData = () => {
 
     try {
       const response = await axios.post<Call>(
-        `${apiURL}/conversations/call/${call_id}`
+        `${apiUrl}/conversations/call/${call_id}`
       );
 
       setData(response.data);

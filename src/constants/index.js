@@ -1,4 +1,11 @@
-export const apiURL = 'http://127.0.0.1:8000/api/v1';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const baseApiUrl = publicRuntimeConfig.baseApiUrl;
+const apiVersion = publicRuntimeConfig.apiVersion;
+
+export const apiUrl = `${baseApiUrl}/api/${apiVersion}`;
+
 export const navBarLinks = [
   {
     id: 1,
@@ -49,6 +56,7 @@ export const sideNavLinksAgent = [
     href: 'chatbot',
   },
 ];
+
 export const sideNavLinksClient = [
   {
     id: 1,

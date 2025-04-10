@@ -4,6 +4,8 @@ import FileUploader from './FileUploader';
 import { useFetchCompanies } from '../hooks/fetchCompanies';
 import { useParticipants } from '../hooks/fetchParticipants';
 
+import { apiUrl } from '@/constants';
+
 interface FormInputsProps {
   onFormSubmit: (data: {
     cliente: string;
@@ -76,7 +78,7 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
 
     try {
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/v1/ai/alternative-analysis',
+        `${apiUrl}/ai/alternative-analysis`,
         formData,
         {
           headers: {
