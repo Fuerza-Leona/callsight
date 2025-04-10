@@ -24,15 +24,18 @@ export function useFetchCompanies(token: string | null) {
       try {
         setLoading(true);
         setError(null);
-        
-        const response = await axios.get('http://0.0.0.0:8000/api/v1/companies/', {
-          headers: {
-            Authorization: `Bearer ${token}`
+
+        const response = await axios.get(
+          'http://0.0.0.0:8000/api/v1/companies/',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-        
+        );
+
         console.log('Companies API response:', response.data);
-        
+
         if (response.data && Array.isArray(response.data)) {
           setCompanies(response.data);
         } else if (response.data && Array.isArray(response.data.companies)) {

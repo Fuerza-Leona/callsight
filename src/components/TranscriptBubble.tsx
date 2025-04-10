@@ -6,21 +6,30 @@ interface TranscriptBubbleProps {
   message: string;
 }
 
-const TranscriptBubble: React.FC<TranscriptBubbleProps> = ({ color, user, message }) => {
+const TranscriptBubble: React.FC<TranscriptBubbleProps> = ({
+  color,
+  user,
+  message,
+}) => {
   const bgColor =
-    color === 'pink' ? 'bg-[#F294CD]' :
-    color === 'yellow' ? 'bg-[#F6CF3C]' :
-    color === 'blue' ? 'bg-[#13202A] text-white' : '';
+    color === 'pink'
+      ? 'bg-[#F294CD]'
+      : color === 'yellow'
+        ? 'bg-[#F6CF3C]'
+        : color === 'blue'
+          ? 'bg-[#13202A] text-white'
+          : '';
 
-  const margin = 
-    user === 'me' ? 'ml-10 mr-0' :
-    user === 'you' ? 'mr-10 ml-auto' : '';
+  const margin =
+    user === 'me' ? 'ml-10 mr-0' : user === 'you' ? 'mr-10 ml-auto' : '';
 
   return (
-    <div className='w-full'>
-        <div className={`w-[calc(100%-10rem)] max-w-110 min-w-40 p-4 rounded-lg ${bgColor} ${margin}`}>
-            {message}
-        </div>
+    <div className="w-full">
+      <div
+        className={`w-[calc(100%-10rem)] max-w-110 min-w-40 p-4 rounded-lg ${bgColor} ${margin}`}
+      >
+        {message}
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
-"use client";
-import { useState } from "react";
-import FormInputs from "@/components/FormInputs";
-import { saveToFile } from "@/utils/saveToFile";
+'use client';
+import { useState } from 'react';
+import FormInputs from '@/components/FormInputs';
+import { saveToFile } from '@/utils/saveToFile';
 
 const Page: React.FC = () => {
   const [, setFormData] = useState<{
@@ -19,10 +19,10 @@ const Page: React.FC = () => {
   }) => {
     setFormData(data);
 
-    const fileName = data.file ? data.file.name : "No file uploaded";
+    const fileName = data.file ? data.file.name : 'No file uploaded';
     const formattedData = `Cliente: ${
       data.cliente
-    }, Participantes: ${data.participantes.join(", ")}, Fecha: ${
+    }, Participantes: ${data.participantes.join(', ')}, Fecha: ${
       data.fecha
     }, Archivo: ${fileName}\n`;
 

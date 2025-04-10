@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import MultipleSelectChip from "@/components/MultipleSelectChip";
-import { useEffect } from "react";
-import { useFetchClients } from "@/hooks/fetchClients";
-import { useFetchLlamadas } from "@/hooks/fetchLlamadas";
+import * as React from 'react';
+import MultipleSelectChip from '@/components/MultipleSelectChip';
+import { useEffect } from 'react';
+import { useFetchClients } from '@/hooks/fetchClients';
+import { useFetchLlamadas } from '@/hooks/fetchLlamadas';
 import {
   CircularProgress,
   Table,
@@ -13,10 +13,10 @@ import {
   TableHead,
   TableRow,
   TextField,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useFetchCategorias } from "@/hooks/fetchCategorias";
-import Tag from "@/components/Tag";
+} from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { useFetchCategorias } from '@/hooks/fetchCategorias';
+import Tag from '@/components/Tag';
 
 export default function Home() {
   const { data, refetchClients } = useFetchClients();
@@ -32,7 +32,7 @@ export default function Home() {
   }, []);
   const [category, setCategory] = React.useState<string[]>([]);
   const [clients, setClients] = React.useState<string[]>([]);
-  const [search, setSearch] = React.useState<string>("");
+  const [search, setSearch] = React.useState<string>('');
 
   const dataCallsFiltered = dataLlamadas
     ? dataLlamadas.llamadas.filter((llamada) => {
@@ -44,8 +44,8 @@ export default function Home() {
         /*const matchesClients =
       clients.length === 0 || clients.some((client) => llamada.clients?.includes(client));*/
         const matchesSearch =
-          search == "" ||
-          llamada.conversation_id.match(new RegExp(search, "i"));
+          search == '' ||
+          llamada.conversation_id.match(new RegExp(search, 'i'));
         return matchesCategories && matchesSearch;
       })
     : [];

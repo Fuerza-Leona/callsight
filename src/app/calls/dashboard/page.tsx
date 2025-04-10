@@ -1,24 +1,25 @@
-"use client";
-import { PieChart } from "@mui/x-charts/PieChart";
-import { BarChart } from "@mui/x-charts/BarChart";
-import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import Link from "next/link";
-import MultipleSelectChip from "@/components/MultipleSelectChip";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CallIcon from "@mui/icons-material/Call";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import SearchIcon from "@mui/icons-material/Search";
-import { useFetchClients } from "@/hooks/fetchClients";
-import { useEffect, useRef, useState } from "react";
-import { useFetchEmotions } from "@/hooks/fetchEmotions";
-import { useFetchCategorias } from "@/hooks/fetchCategorias";
-import { useFetchTopics } from "@/hooks/fetchTopics";
-import SimpleWordCloud from "@/components/SimpleWordCloud";
+'use client';
+import { PieChart } from '@mui/x-charts/PieChart';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import Link from 'next/link';
+import MultipleSelectChip from '@/components/MultipleSelectChip';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CallIcon from '@mui/icons-material/Call';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import SearchIcon from '@mui/icons-material/Search';
+import { useFetchClients } from '@/hooks/fetchClients';
+import { useEffect, useRef, useState } from 'react';
+import { useFetchEmotions } from '@/hooks/fetchEmotions';
+import { useFetchCategorias } from '@/hooks/fetchCategorias';
+import { useFetchTopics } from '@/hooks/fetchTopics';
+import SimpleWordCloud from '@/components/SimpleWordCloud';
 
 export default function Home() {
-  const { clients, loadingClients, errorClients, refetchClients } = useFetchClients();
+  const { clients, loadingClients, errorClients, refetchClients } =
+    useFetchClients();
   const { datacategorias, refetchcategorias } = useFetchCategorias();
   const { dataEmotions, refetchEmotions } = useFetchEmotions();
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
@@ -31,42 +32,41 @@ export default function Home() {
     refetchClients();
     refetchEmotions();
     refetchcategorias();
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   interface Client {
     user_id: string;
     username: string;
   }
-  
+
   interface ClientsResponse {
     data?: Client[];
     users?: Client[];
   }
-  
-  interface CategoriasResponse {
-    categorias: string[];
-  }
+
+  // interface CategoriasResponse {
+  //   categorias: string[];
+  // }
 
   const initialFetchDone = useRef(false);
-  
+
   useEffect(() => {
-      if (!initialFetchDone.current) {
-        initialFetchDone.current = true;
-        return;
-      }
-      
-      const startDate = selectedDate.startOf('month');
-      const endDate = selectedDate.endOf('month');
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      return;
+    }
 
-      fetchTopics({
-        limit: 10,
-        clients: selectedClients,
-        startDate: startDate.format('YYYY-MM-DD'),
-        endDate: endDate.format('YYYY-MM-DD')
-      });
-  }, [selectedDate, selectedClients, categorias]);
+    const startDate = selectedDate.startOf('month');
+    const endDate = selectedDate.endOf('month');
 
+    fetchTopics({
+      limit: 10,
+      clients: selectedClients,
+      startDate: startDate.format('YYYY-MM-DD'),
+      endDate: endDate.format('YYYY-MM-DD'),
+    });
+  }, [selectedDate, selectedClients, categorias, fetchTopics]);
 
   return (
     <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
@@ -84,8 +84,9 @@ export default function Home() {
             </button>
           </div>
           <Link
-            href={"/calls/search"}
-            className="bg-[#1E242B] text-[#FFFFFF] rounded-md">
+            href={'/calls/search'}
+            className="bg-[#1E242B] text-[#FFFFFF] rounded-md"
+          >
             <div className="p-2 items-center justify-center text-center flex">
               <p className="">
                 Buscar Llamadas <SearchIcon />
@@ -99,20 +100,25 @@ export default function Home() {
           <div className="text-white bg-[#1E242B] rounded-md">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateCalendar
-                  value={selectedDate}
-                  onChange={(newDate) => {
-                    setSelectedDate(newDate);
-                    
-                  }}
-                  views={["month", "year"]}
-                  openTo="month"
-                  className="bg-[#1E242B] rounded-md w-1/1"
-                />
+                value={selectedDate}
+                onChange={(newDate) => {
+                  setSelectedDate(newDate);
+                }}
+                views={['month', 'year']}
+                openTo="month"
+                className="bg-[#1E242B] rounded-md w-1/1"
+              />
             </LocalizationProvider>
           </div>
           <div className="">
             <MultipleSelectChip
-              title={loadingClients ? "Cliente (Cargando...)" : errorClients ? "Cliente (Error)" : "Cliente"}
+              title={
+                loadingClients
+                  ? 'Cliente (Cargando...)'
+                  : errorClients
+                    ? 'Cliente (Error)'
+                    : 'Cliente'
+              }
               names={(() => {
                 if (loadingClients || errorClients || !clients) {
                   return [];
@@ -125,7 +131,7 @@ export default function Home() {
                   }));
                 }
 
-                if (clients && typeof clients === "object") {
+                if (clients && typeof clients === 'object') {
                   const typedClients = clients as ClientsResponse;
 
                   if (typedClients.data && Array.isArray(typedClients.data)) {
@@ -157,9 +163,8 @@ export default function Home() {
               names={datacategorias.categorias}
               value={categorias}
               onChange={(category) => {
-                  setCategorias(category);
-                }
-              }
+                setCategorias(category);
+              }}
             />
           </div>
         </div>
@@ -180,13 +185,13 @@ export default function Home() {
                 <CallIcon fontSize="small" />
                 <h1>Total de llamadas</h1>
               </div>
-              <p className="text-6xl">
-                30
-              </p>
+              <p className="text-6xl">30</p>
             </div>
           </div>
           <div className="w-full h-full rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] p-3">
-            <h1 className="text-lg mt-5 font-bold">Temas principales detectados</h1>
+            <h1 className="text-lg mt-5 font-bold">
+              Temas principales detectados
+            </h1>
             {loadingTopics ? (
               <p>Cargando temas...</p>
             ) : errorTopics ? (
@@ -211,16 +216,24 @@ export default function Home() {
       <div className="flex flex-col md:flex-row justify-between w-full gap-3">
         <div className="h-full rounded-md flex flex-col items-center justify-around bg-[#E7E6E7] p-5  w-full md:w-[48%]">
           <h1 className="text-lg font-bold py-3">Emociones detectadas</h1>
-          {(dataEmotions.positive != 0) ? (
+          {dataEmotions.positive != 0 ? (
             <div className="mt-2">
               <PieChart
                 series={[
                   {
                     arcLabel: (item) => `${item.value}%`,
                     data: [
-                      { id: 0, value: dataEmotions.positive, label: "Positivo" },
-                      { id: 1, value: dataEmotions.neutral, label: "Neutro" },
-                      { id: 2, value: dataEmotions.negative, label: "Negativo" },
+                      {
+                        id: 0,
+                        value: dataEmotions.positive,
+                        label: 'Positivo',
+                      },
+                      { id: 1, value: dataEmotions.neutral, label: 'Neutro' },
+                      {
+                        id: 2,
+                        value: dataEmotions.negative,
+                        label: 'Negativo',
+                      },
                     ],
                   },
                 ]}
@@ -229,19 +242,18 @@ export default function Home() {
                 className="font-bold text-xl pt-5"
               />
             </div>
-
-          ): (
+          ) : (
             <p>No hay datos</p>
           )}
         </div>
 
         <div className=" w-full md:w-[48%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
-        <h1 className="text-lg font-bold py-3">Categorías</h1>
-        <BarChart
+          <h1 className="text-lg font-bold py-3">Categorías</h1>
+          <BarChart
             yAxis={[
               {
-                scaleType: "band",
-                data: ["group A", "group B", "group C"],
+                scaleType: 'band',
+                data: ['group A', 'group B', 'group C'],
               },
             ]}
             series={[{ data: [4, 1, 2] }]}
@@ -254,19 +266,19 @@ export default function Home() {
       <div className="rounded-md flex flex-col items-center justify-between bg-[#E7E6E7] w-full p-5 mb-5">
         <h1 className="text-lg font-bold py-3">Satisfacción</h1>
         <div className="w-[80%]">
-            <BarChart
-              yAxis={[
-                {
-                  scaleType: "band",
-                  data: ["1", "2", "3", "4", "5"],
-                },
-              ]}
-              series={[{ data: [10, 20, 30, 10, 40] }]}
-              layout="horizontal"
-              height={200}
-              bottomAxis={null}
-            />
-          </div>
+          <BarChart
+            yAxis={[
+              {
+                scaleType: 'band',
+                data: ['1', '2', '3', '4', '5'],
+              },
+            ]}
+            series={[{ data: [10, 20, 30, 10, 40] }]}
+            layout="horizontal"
+            height={200}
+            bottomAxis={null}
+          />
+        </div>
       </div>
     </div>
   );
