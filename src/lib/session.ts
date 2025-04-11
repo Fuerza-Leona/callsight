@@ -1,8 +1,9 @@
 import { createCipheriv, randomBytes, createDecipheriv } from 'crypto';
+import { sessionSecret } from '@/constants';
 
 const algorithm = 'aes-256-cbc';
 const ivLength = 16;
-const key = Buffer.from(process.env.SESSION_SECRET!, 'hex'); // 32-byte key
+const key = Buffer.from(sessionSecret!, 'hex'); // 32-byte key
 
 export function encrypt(data: unknown): string {
   const iv = randomBytes(ivLength);

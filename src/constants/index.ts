@@ -1,11 +1,14 @@
-import getConfig from 'next/config';
+export const apiUrl = `${process.env.BASE_API_URL || 'http://localhost:8000'}/api/${process.env.API_VERSION || 'v1'}`;
 
-export const apiUrl = () => {
-  const { publicRuntimeConfig } = getConfig();
-  return `${publicRuntimeConfig.baseApiUrl}/api/${publicRuntimeConfig.apiVersion}`;
-};
+export const sessionSecret = `${process.env.SESSION_SECRET}`;
 
-export const navBarLinks = [
+interface NavLink {
+  id: number;
+  name: string;
+  href: string;
+}
+
+export const navBarLinks: NavLink[] = [
   {
     id: 1,
     name: '¿Quiénes somos?',
@@ -23,7 +26,7 @@ export const navBarLinks = [
   },
 ];
 
-export const sideNavLinksAgent = [
+export const sideNavLinksAgent: NavLink[] = [
   {
     id: 1,
     name: 'Análisis de llamada',
@@ -56,7 +59,7 @@ export const sideNavLinksAgent = [
   },
 ];
 
-export const sideNavLinksClient = [
+export const sideNavLinksClient: NavLink[] = [
   {
     id: 1,
     name: 'Análisis de llamada',

@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { navBarLinks } from '@/constants/index.js';
+import { navBarLinks } from '@/constants';
 import { useUser } from '@/context/UserContext';
 
 import Image from 'next/image';
