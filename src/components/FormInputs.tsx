@@ -115,6 +115,35 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
                 : companies.map((row) => ({ label: row.name }))
           }
           onSelect={(e) => setSelectedCompany(e!)}
+          sx={{
+            width: '100%',
+            backgroundColor: '#E5E7Eb',
+            borderColor: 'none',
+            boxShadow: 'none',
+            color: 'black',
+            '& .MuiInputLabel-root': {
+              borderColor: 'black',
+            },
+            '& .Mui-focused': {
+              color: 'black',
+              borderColor: 'black',
+            },
+            'label + &': {
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+            '& .MuiInputBase-input': {
+              backgroundColor: '#E5E7Eb',
+              color: 'black',
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+            '&:focus': {
+              borderRadius: 4,
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+          }}
         />
         </div>
 
