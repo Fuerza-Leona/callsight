@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react';
-import axios from "axios";
-import FileUploader from "./FileUploader";
-import { useFetchCompanies } from '../hooks/fetchCompanies';
-import { useParticipants } from '../hooks/fetchParticipants';
+import axios from 'axios';
+import FileUploader from './FileUploader';
+import { useFetchCompanies } from '@/hooks/fetchCompanies';
+import { useParticipants } from '@/hooks/fetchParticipants';
+import SearchBar from './SearchBar';
+import { apiUrl } from '@/constants';
 
 interface FormInputsProps {
-  onFormSubmit: (data: { cliente: string; participantes: string[]; fecha: string; file: File | null }) => void;
+  onFormSubmit: (data: {
+    cliente: string;
+    participantes: string[];
+    fecha: string;
+    file: File | null;
+  }) => void;
 }
 
-const FormInputs: React.FC<FormInputsProps> = ({ }) => {
+const FormInputs: React.FC<FormInputsProps> = ({}) => {
   const [selectedCompany, setSelectedCompany] = useState<string>('');
-  const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
+    []
+  );
   const [date, setDate] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -28,16 +37,26 @@ const FormInputs: React.FC<FormInputsProps> = ({ }) => {
     getToken();
   }, []);
 
-  const { companies, loading: companiesLoading, error: companiesError } = useFetchCompanies(token);
-  const { participants, loading: participantsLoading, error: participantsError } = useParticipants(selectedCompany, token);
+  const {
+    companies,
+    loading: companiesLoading,
+    error: companiesError,
+  } = useFetchCompanies(token);
+  const {
+    participants,
+    loading: participantsLoading,
+    error: participantsError,
+  } = useParticipants(selectedCompany, token);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
   };
 
   const handleParticipantClick = (userId: string) => {
-    setSelectedParticipants((prev) => 
-      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+    setSelectedParticipants((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
     );
   };
 
@@ -46,38 +65,82 @@ const FormInputs: React.FC<FormInputsProps> = ({ }) => {
   };
 
   const handleSubmit = async () => {
-   if (!selectedCompany || !date || !selectedFile){
-    alert("Por favor, completa todos los campos antes de analizar.");
-    return;
-   }
+    if (!selectedCompany || !date || !selectedFile) {
+      alert('Por favor, completa todos los campos antes de analizar.');
+      return;
+    }
 
-   const formData = new FormData();
-   formData.append("file",selectedFile);
-   formData.append("date_string",`${date} 00:00`);
-   formData.append("company_id",selectedCompany);
-   formData.append("participants",selectedParticipants.join(","));
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('date_string', `${date} 00:00`);
+    formData.append('company_id', selectedCompany);
+    formData.append('participants', selectedParticipants.join(','));
 
-   try {
-    const response = await axios.post("http://127.0.0.1:8000/api/v1/ai/alternative-analysis", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
+    try {
+      const response = await axios.post(
+        `${apiUrl}/ai/alternative-analysis`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
-        },
-    });
+          },
+        }
+      );
 
-    console.log("Response:", response.data);
-    alert("Análisis completado con éxito.");
-} catch (error) {
-    console.error("Error al enviar los datos:", error);
-    alert("Ocurrió un error al procesar el análisis.");
-
-}
+      console.log('Response:', response.data);
+      alert('Análisis completado con éxito.');
+    } catch (error) {
+      console.error('Error al enviar los datos:', error);
+      alert('Ocurrió un error al procesar el análisis.');
+    }
   };
 
   return (
     <div className="flex justify-center">
       <form className="w-full max-w-md flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md">
         <FileUploader onFileSelect={handleFileSelect} />
+
+        <SearchBar
+          label="Buscar Cliente"
+          options={
+            companiesLoading
+              ? [{ label: 'Cargando empresas...' }]
+              : companiesError
+                ? [{ label: 'Error cargando empresas' }]
+                : companies.map((row) => ({ label: row.name }))
+          }
+          onSelect={(e) => setSelectedCompany(e!)}
+          sx={{
+            width: '100%',
+            backgroundColor: '#f0f0f0',
+            borderColor: 'none',
+            boxShadow: 'none',
+            color: 'black',
+            '& .MuiInputLabel-root': {
+              borderColor: 'black',
+            },
+            '& .Mui-focused': {
+              color: 'black',
+              borderColor: 'black',
+            },
+            'label + &': {
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+            '& .MuiInputBase-input': {
+              backgroundColor: '#f0f0f0',
+              color: 'black',
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+            '&:focus': {
+              borderRadius: 4,
+              borderColor: 'black',
+              boxShadow: 'none',
+            },
+          }}
+        />
 
         <div className="flex flex-col">
           <label className="font-semibold mb-1">Empresa</label>
@@ -88,9 +151,13 @@ const FormInputs: React.FC<FormInputsProps> = ({ }) => {
           >
             <option value="">Seleccionar cliente</option>
             {companiesLoading || !token ? (
-              <option value="" disabled>Cargando empresas...</option>
+              <option value="" disabled>
+                Cargando empresas...
+              </option>
             ) : companiesError ? (
-              <option value="" disabled>Error cargando empresas</option>
+              <option value="" disabled>
+                Error cargando empresas
+              </option>
             ) : companies?.length > 0 ? (
               companies.map((company) => (
                 <option key={company.company_id} value={company.company_id}>
@@ -98,7 +165,9 @@ const FormInputs: React.FC<FormInputsProps> = ({ }) => {
                 </option>
               ))
             ) : (
-              <option value="" disabled>No hay empresas disponibles</option>
+              <option value="" disabled>
+                No hay empresas disponibles
+              </option>
             )}
           </select>
         </div>
@@ -107,7 +176,9 @@ const FormInputs: React.FC<FormInputsProps> = ({ }) => {
           <label className="font-semibold mb-1">Participantes</label>
           <div className="flex flex-wrap gap-2 mb-2">
             {selectedParticipants.map((userId) => {
-              const participant = participants.find((p) => p.user_id === userId);
+              const participant = participants.find(
+                (p) => p.user_id === userId
+              );
               return (
                 <span
                   key={userId}
@@ -132,7 +203,11 @@ const FormInputs: React.FC<FormInputsProps> = ({ }) => {
               participants.map((participant) => (
                 <span
                   key={participant.user_id}
-                  className={`px-3 py-1 rounded-full cursor-pointer ${selectedParticipants.includes(participant.user_id) ? 'bg-[#13202a] text-white' : 'bg-gray-200'}`}
+                  className={`px-3 py-1 rounded-full cursor-pointer ${
+                    selectedParticipants.includes(participant.user_id)
+                      ? 'bg-[#13202a] text-white'
+                      : 'bg-gray-200'
+                  }`}
                   onClick={() => handleParticipantClick(participant.user_id)}
                 >
                   {participant.username}

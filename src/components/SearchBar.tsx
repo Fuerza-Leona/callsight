@@ -3,18 +3,18 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { SxProps } from '@mui/material/styles';
 
 interface SearchBarProps {
-    options: { label: string }[];
-    label: string;
-    onSelect: (value: string | null) => void;
-    sx?: SxProps;
-  }
+  options: { label: string }[];
+  label: string;
+  onSelect: (value: string | null) => void;
+  sx?: SxProps;
+}
 
 //Combo box
 export default function SearchBar({
-    options,
-    label,
-    onSelect,
-    sx = {},
+  options,
+  label,
+  onSelect,
+  sx = {},
 }: SearchBarProps) {
   return (
     <Autocomplete

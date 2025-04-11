@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import axios from "axios";
-import { UUID } from "crypto";
-import { useEffect, useState } from "react";
-import { apiURL } from '@/constants';
+import axios from 'axios';
+import { UUID } from 'crypto';
+import { useEffect, useState } from 'react';
+import { apiUrl } from '@/constants';
 
 export interface categorias {
   category_id: UUID;
@@ -12,18 +12,18 @@ export interface categorias {
 
 export const useFetchCategorias = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | unknown>("");
+  const [error, setError] = useState<string | unknown>('');
   const [categorias, setcategorias] = useState<string[]>([]);
 
   const fetchCategorias = async () => {
     axios
-      .get(`${apiURL}/categories`)
+      .get(`${apiUrl}/categories`)
       .then((response) => {
-        console.log(response)
+        console.log(response);
         setcategorias(response.data.categories);
       })
       .catch((errorA) => {
-        console.error("Error fetching categories:", errorA);
+        console.error('Error fetching categories:', errorA);
         setError(errorA);
         setcategorias([]);
       })

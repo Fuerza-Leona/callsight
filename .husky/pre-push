@@ -1,0 +1,7 @@
+echo "📦 Building project before push..."
+npm run build || { echo "❌ Build failed, push aborted"; exit 1; }
+
+echo "🧪 Running tests before push..."
+npm test || { echo "❌ Tests failed, push aborted"; exit 1; }
+
+echo "✅ Pre-push checks passed"

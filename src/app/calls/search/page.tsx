@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import MultipleSelectChip from "@/components/MultipleSelectChip";
-import { useEffect } from "react";
-import { useFetchClients } from "@/hooks/fetchClients";
-import { useFetchLlamadas } from "@/hooks/fetchLlamadas";
+import { useState } from 'react';
+import MultipleSelectChip from '@/components/MultipleSelectChip';
+import { useEffect } from 'react';
+import { useFetchClients } from '@/hooks/fetchClients';
+import { useFetchLlamadas } from '@/hooks/fetchLlamadas';
 import {
   CircularProgress,
   Table,
@@ -13,13 +13,20 @@ import {
   TableHead,
   TableRow,
   TextField,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useFetchCategorias } from "@/hooks/fetchCategorias";
-import Tag from "@/components/Tag";
+} from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { useFetchCategorias } from '@/hooks/fetchCategorias';
+import Tag from '@/components/Tag';
+
+interface Client {
+  user_id: string;
+  username: string;
+}
 
 export default function Home() {
-  const { data, refetchClients } = useFetchClients();
+  const { clients, loadingClients, errorClients, refetchClients } =
+    useFetchClients();
+  const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const { dataLlamadas, refetchLlamadas } = useFetchLlamadas();
   const { datacategorias, refetchcategorias } = useFetchCategorias();
   const router = useRouter();
@@ -30,9 +37,8 @@ export default function Home() {
     refetchcategorias();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [category, setCategory] = React.useState<string[]>([]);
-  const [clients, setClients] = React.useState<string[]>([]);
-  const [search, setSearch] = React.useState<string>("");
+  const [category, setCategory] = useState<string[]>([]);
+  const [search, setSearch] = useState<string>('');
 
   const dataCallsFiltered = dataLlamadas
     ? dataLlamadas.llamadas.filter((llamada) => {
@@ -44,8 +50,8 @@ export default function Home() {
         /*const matchesClients =
       clients.length === 0 || clients.some((client) => llamada.clients?.includes(client));*/
         const matchesSearch =
-          search == "" ||
-          llamada.conversation_id.match(new RegExp(search, "i"));
+          search == '' ||
+          llamada.conversation_id.match(new RegExp(search, 'i'));
         return matchesCategories && matchesSearch;
       })
     : [];
@@ -59,14 +65,42 @@ export default function Home() {
       <div className="w-3/10 flex flex-col align-center text-center">
         <p className="text-3xl">Filtros</p>
         <MultipleSelectChip
-          title="Cliente"
-          names={data.namesClients}
-          value={clients}
-          onChange={setClients}
+          title={
+            loadingClients
+              ? 'Cliente (Cargando...)'
+              : errorClients
+                ? 'Cliente (Error)'
+                : 'Cliente'
+          }
+          names={(() => {
+            if (loadingClients || errorClients || !clients) {
+              return [];
+            }
+
+            if (Array.isArray(clients)) {
+              return clients.map((client: Client) => ({
+                id: client.user_id,
+                name: client.username,
+              }));
+            }
+
+            return [];
+          })()}
+          value={selectedClients}
+          onChange={(newClients: string[]) => {
+            setSelectedClients(newClients);
+          }}
         />
         <MultipleSelectChip
           title="Categorías"
-          names={datacategorias.categorias}
+          names={
+            datacategorias && datacategorias.categorias
+              ? datacategorias.categorias.map((cat: string) => ({
+                  id: cat,
+                  name: cat,
+                }))
+              : []
+          }
           value={category}
           onChange={setCategory}
         />
