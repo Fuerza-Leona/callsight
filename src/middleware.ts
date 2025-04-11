@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
     '/calls/dashboard',
     '/calls/upload',
     '/calls/detail',
+    '/tickets',
   ];
 
   // If trying to access a protected route without user_info cookie, redirect to login
