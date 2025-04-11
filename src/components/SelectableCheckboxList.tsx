@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -48,10 +48,7 @@ export default function SelectableCheckboxList({ items }: Props) {
           const labelId = `checkbox-list-label-${item.id}`;
 
           return (
-            <ListItem
-              key={item.id}
-              disablePadding
-            >
+            <ListItem key={item.id} disablePadding>
               <ListItemButton
                 selected={selectedIndex === index}
                 onClick={() => handleSelect(index)}
@@ -88,29 +85,42 @@ export default function SelectableCheckboxList({ items }: Props) {
                     }}
                   />
                 </ListItemIcon>
-                
-                  <ListItemText
-                    id={labelId}
-                    primary={
-                      <div className='flex justify-between items-start w-full'>
-                        <div className='flex flex-col'>
-                          <Typography variant="caption" fontWeight={500}>
-                            {`Abierto hace ${item.daysOpen} días`}
-                          </Typography>
-                          <Typography variant="body1" fontWeight={700} component="div">
-                            {item.label}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary" component="div">
-                          {item.text.length > 70 ? `${item.text.slice(0, 70)}…` : item.text}
-                          </Typography>
-                        </div>
-                        <Typography variant="caption" color="text.secondary" component="div">
-                            {`#${item.id}`}
-                          </Typography>
+
+                <ListItemText
+                  id={labelId}
+                  primary={
+                    <div className="flex justify-between items-start w-full">
+                      <div className="flex flex-col">
+                        <Typography variant="caption" fontWeight={500}>
+                          {`Abierto hace ${item.daysOpen} días`}
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          fontWeight={700}
+                          component="div"
+                        >
+                          {item.label}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          component="div"
+                        >
+                          {item.text.length > 70
+                            ? `${item.text.slice(0, 70)}…`
+                            : item.text}
+                        </Typography>
                       </div>
-                    }
-                  />
-                
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        component="div"
+                      >
+                        {`#${item.id}`}
+                      </Typography>
+                    </div>
+                  }
+                />
               </ListItemButton>
             </ListItem>
           );

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -12,9 +12,16 @@ type Props = {
   sx?: SxProps<Theme>;
 };
 
-export default function MultilineMessageArea({ label, defaultValue, sx }: Props) {
+export default function MultilineMessageArea({
+  label,
+  defaultValue,
+  sx,
+}: Props) {
   return (
-    <Paper elevation={3} sx={{ p: 0, ...sx, display: 'flex', flexDirection: 'column' }}>
+    <Paper
+      elevation={3}
+      sx={{ p: 0, ...sx, display: 'flex', flexDirection: 'column' }}
+    >
       <Typography variant="body1" fontWeight={800} sx={{ my: 1, ml: '2rem' }}>
         {label}
       </Typography>
@@ -22,8 +29,8 @@ export default function MultilineMessageArea({ label, defaultValue, sx }: Props)
       <Box sx={{ flexGrow: 1 }}>
         <textarea
           defaultValue={defaultValue}
-          autoCapitalize='on'
-          autoCorrect='on'
+          autoCapitalize="on"
+          autoCorrect="on"
           style={{
             marginLeft: '2rem',
             marginTop: '2rem',
