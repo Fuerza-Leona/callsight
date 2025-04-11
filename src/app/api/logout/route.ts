@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { serialize } from 'cookie';
 
-export async function GET() {
-  const response = NextResponse.redirect('/login');
+export async function GET(request: NextRequest) {
+  const url = request.nextUrl.clone();
+  url.pathname = '/login';
+  const response = NextResponse.redirect(url);
 
   // Clear the plain user_info cookie
   response.headers.append(
