@@ -48,6 +48,11 @@ export const sideNavLinksAgent = [
     name: "Chatbot",
     href: "chatbot",
   },
+  {
+    id: 7,
+    name: "Tickets",
+    href: "tickets",
+  },
 ];
 export const sideNavLinksClient = [
   {
@@ -69,5 +74,10 @@ export const sideNavLinksClient = [
     id: 4,
     name: "Support",
     href: "support",
+  },
+  {
+    id: 5,
+    name: "Tickets",
+    href: "tickets",
   },
 ];

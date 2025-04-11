@@ -81,31 +81,36 @@ export default function SelectableCheckboxList({ items }: Props) {
                       },
                     }}
                     sx={{
-                      color: '',
+                      color: '#4D4637',
                       '&.Mui-checked': {
                         color: '#4D4637',
                       },
                     }}
                   />
                 </ListItemIcon>
-                <div className="flex flex-col">
+                
                   <ListItemText
                     id={labelId}
                     primary={
-                      <>
-                        <Typography variant="caption" fontWeight={500}>
-                          {`Abierto hace ${item.daysOpen} días`}
-                        </Typography>
-                        <Typography variant="body1" fontWeight={700} component="div">
-                          {item.label}
-                        </Typography>
+                      <div className='flex justify-between items-start w-full'>
+                        <div className='flex flex-col'>
+                          <Typography variant="caption" fontWeight={500}>
+                            {`Abierto hace ${item.daysOpen} días`}
+                          </Typography>
+                          <Typography variant="body1" fontWeight={700} component="div">
+                            {item.label}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" component="div">
+                          {item.text.length > 70 ? `${item.text.slice(0, 70)}…` : item.text}
+                          </Typography>
+                        </div>
                         <Typography variant="caption" color="text.secondary" component="div">
-                          {item.text}
-                        </Typography>
-                      </>
+                            {`#${item.id}`}
+                          </Typography>
+                      </div>
                     }
                   />
-                </div>
+                
               </ListItemButton>
             </ListItem>
           );
