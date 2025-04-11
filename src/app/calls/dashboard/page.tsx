@@ -1,53 +1,37 @@
-'use client';
-import { PieChart } from '@mui/x-charts/PieChart';
-import { BarChart } from '@mui/x-charts/BarChart';
-import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import Link from 'next/link';
-import MultipleSelectChip from '@/components/MultipleSelectChip';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CallIcon from '@mui/icons-material/Call';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import SearchIcon from '@mui/icons-material/Search';
-import { useFetchClients } from '@/hooks/fetchClients';
-import { useEffect, useRef, useState } from 'react';
-import { useFetchEmotions } from '@/hooks/fetchEmotions';
-import { useFetchCategorias } from '@/hooks/fetchCategorias';
-import { useFetchTopics } from '@/hooks/fetchTopics';
-import SimpleWordCloud from '@/components/SimpleWordCloud';
+"use client";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import Link from "next/link";
+import MultipleSelectChip from "@/components/MultipleSelectChip";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CallIcon from "@mui/icons-material/Call";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SearchIcon from "@mui/icons-material/Search";
+import { useFetchClients, Client } from "@/hooks/fetchClients";
+import { useEffect, useRef, useState } from "react";
+import { useFetchEmotions } from "@/hooks/fetchEmotions";
+import { useFetchCategories, Category } from "@/hooks/fetchCategories";
+import { useFetchTopics } from "@/hooks/fetchTopics";
+import SimpleWordCloud from "@/components/SimpleWordCloud";
 
 export default function Home() {
-  const { clients, loadingClients, errorClients, refetchClients } =
-    useFetchClients();
-  const { datacategorias, refetchcategorias } = useFetchCategorias();
+  const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
+  const { categories, loadingCategories, errorCategories, fetchCategories } = useFetchCategories();
   const { dataEmotions, refetchEmotions } = useFetchEmotions();
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
 
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
-  const [categorias, setCategorias] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
 
   useEffect(() => {
-    refetchClients();
+    fetchClients();
     refetchEmotions();
-    refetchcategorias();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchCategories();
   }, []);
-
-  interface Client {
-    user_id: string;
-    username: string;
-  }
-
-  interface ClientsResponse {
-    data?: Client[];
-    users?: Client[];
-  }
-
-  // interface CategoriasResponse {
-  //   categorias: string[];
-  // }
 
   const initialFetchDone = useRef(false);
 
@@ -60,13 +44,15 @@ export default function Home() {
     const startDate = selectedDate.startOf('month');
     const endDate = selectedDate.endOf('month');
 
-    fetchTopics({
-      limit: 10,
-      clients: selectedClients,
-      startDate: startDate.format('YYYY-MM-DD'),
-      endDate: endDate.format('YYYY-MM-DD'),
-    });
-  }, [selectedDate, selectedClients, categorias, fetchTopics]);
+      fetchTopics({
+        limit: 10,
+        clients: selectedClients,
+        startDate: startDate.format('YYYY-MM-DD'),
+        endDate: endDate.format('YYYY-MM-DD'),
+        categories: selectedCategories
+      });
+  }, [selectedDate, selectedClients, selectedCategories]);
+
 
   return (
     <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
@@ -123,33 +109,11 @@ export default function Home() {
                 if (loadingClients || errorClients || !clients) {
                   return [];
                 }
-
-                if (Array.isArray(clients)) {
-                  return clients.map((client: Client) => ({
+                return clients.map((client: Client) => ({
                     id: client.user_id,
                     name: client.username,
-                  }));
-                }
+                }));
 
-                if (clients && typeof clients === 'object') {
-                  const typedClients = clients as ClientsResponse;
-
-                  if (typedClients.data && Array.isArray(typedClients.data)) {
-                    return typedClients.data.map((client: Client) => ({
-                      id: client.user_id,
-                      name: client.username,
-                    }));
-                  }
-
-                  if (typedClients.users && Array.isArray(typedClients.users)) {
-                    return typedClients.users.map((client: Client) => ({
-                      id: client.user_id,
-                      name: client.username,
-                    }));
-                  }
-                }
-
-                return [];
               })()}
               value={selectedClients}
               onChange={(newClients: string[]) => {
@@ -159,11 +123,19 @@ export default function Home() {
           </div>
           <div className="">
             <MultipleSelectChip
-              title="Categorías"
-              names={datacategorias.categorias}
-              value={categorias}
-              onChange={(category) => {
-                setCategorias(category);
+              title={loadingCategories ? "Categorías (Cargando...)" : errorCategories ? "Categorías (Error)" : "Categorías"}
+              names={(() => {
+                if (loadingCategories || errorCategories || !categories) {
+                  return [];
+                }
+                return categories.map((category: Category) => ({
+                    id: category.category_id,
+                    name: category.name,
+                }));
+              })()}
+              value={selectedCategories}
+              onChange={(newCategories: string[]) => {
+                setSelectedCategories(newCategories);
               }}
             />
           </div>
@@ -281,5 +253,6 @@ export default function Home() {
         </div>
       </div>
     </div>
+    
   );
 }

@@ -4,35 +4,36 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { apiUrl } from '@/constants';
 
-export interface client {
-  user_id: string;
-  username: string;
+export interface Client {
+    user_id: string;
+    username: string;
+}
+
+interface ClientsResponse {
+    clients?: Client[];
 }
 
 export const useFetchClients = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | unknown>('');
-  const [clients, setClients] = useState<client[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | unknown>("");
+    const [clients, setClients] = useState<Client[]>([]);
 
-  const refetchClients = async () => {
-    axios
-      .get(`${apiUrl}/users/client`)
-      .then((response) => {
-        console.log('Response from API:', response.data);
-        setClients(response.data);
-      })
-      .catch((errorA) => {
-        console.error('Error fetching summary:', errorA);
-        setError(errorA);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+    const fetchClients = async () => {
+        try {
+            const response = await axios.get<ClientsResponse>(`${apiUrl}/users/client`)
+            setClients(response.data?.clients || []);
+        }
+        catch (err) {
+            console.error("Error:", err);
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  useEffect(() => {
-    refetchClients();
-  }, []);
+    useEffect(() => {
+        fetchClients();
+    }, []);
 
   return {
     clients,
@@ -40,4 +41,5 @@ export const useFetchClients = () => {
     errorClients: error,
     refetchClients,
   };
+    return { clients, loadingClients: loading, errorClients: error, fetchClients };
 };

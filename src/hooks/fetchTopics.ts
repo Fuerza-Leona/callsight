@@ -13,6 +13,7 @@ export interface topic {
 export interface fetchTopicsParams {
   limit: number | null;
   clients: string[] | null;
+  categories: string[] | null;
   startDate: string | null;
   endDate: string | null;
 }
@@ -24,54 +25,43 @@ export const useFetchTopics = () => {
 
   const fetchTopics = async (params?: fetchTopicsParams) => {
     setLoading(true);
-    setError('');
-
-    axios
-      .get('/api/getToken', { headers: { 'Content-Type': 'application/json' } })
-      .then((response) => {
-        const baseParams: Record<string, unknown> = {
-          ...(params?.limit && { limit: params.limit }),
-          ...(params?.startDate && { startDate: params.startDate }),
-          ...(params?.endDate && { endDate: params.endDate }),
-        };
-
-        const searchParams = new URLSearchParams();
-
-        Object.entries(baseParams).forEach(([key, value]) => {
-          searchParams.append(key, String(value));
-        });
-
-        if (params?.clients && params.clients.length > 0) {
-          params.clients.forEach((client) => {
-            searchParams.append('clients', client);
-          });
-        }
-
-        const config = {
-          headers: {
-            Authorization: `Bearer ${response.data.user}`,
-            withCredentials: true,
-          },
-        };
-
-        axios
-          .get(`${apiUrl}/topics?${searchParams.toString()}`, config)
-          .then((response) => {
-            setTopics(response.data.topics);
-          })
-          .catch((err) => {
-            console.error('Error fetching topics:', err);
-            setError(err);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      })
-      .catch((err) => {
-        console.error('Error in obtaining token: ' + err);
-        setLoading(false);
-        setError(err);
+    setError("");
+    
+    try {
+      const tokenResponse = await axios.get("/api/getToken", { 
+        headers: { "Content-Type": "application/json" } 
       });
+      
+      const requestBody = {
+        ...(params?.limit && { limit: params.limit }),
+        ...(params?.startDate && { startDate: params.startDate }),
+        ...(params?.endDate && { endDate: params.endDate }),
+        ...(params?.clients && params.clients.length > 0 && { clients: params.clients }),
+        ...(params?.categories && params.categories.length > 0 && { categories: params.categories }),
+
+      };
+      
+      const config = {
+        headers: {
+          Authorization: `Bearer ${tokenResponse.data.user}`,
+          "Content-Type": "application/json",
+          withCredentials: true,
+        }
+      };
+      
+      const topicsResponse = await axios.post(
+        "http://127.0.0.1:8000/api/v1/topics",
+        requestBody,
+        config
+      );
+      
+      setTopics(topicsResponse.data.topics);
+    } catch (err) {
+      console.error("Error:", err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

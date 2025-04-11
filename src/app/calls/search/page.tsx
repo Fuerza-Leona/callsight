@@ -13,15 +13,10 @@ import {
   TableHead,
   TableRow,
   TextField,
-} from '@mui/material';
-import { useRouter } from 'next/navigation';
-import { useFetchCategorias } from '@/hooks/fetchCategorias';
-import Tag from '@/components/Tag';
-
-interface Client {
-  user_id: string;
-  username: string;
-}
+} from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useFetchCategorias } from "@/hooks/fetchCategories";
+import Tag from "@/components/Tag";
 
 export default function Home() {
   const { clients, loadingClients, errorClients, refetchClients } =
