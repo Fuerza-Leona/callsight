@@ -30,8 +30,8 @@ jobs:
         run: |
           cat > .env << EOL
           SESSION_SECRET=${{ secrets.SESSION_SECRET }}
-          BASE_API_URL=${{ vars.BASE_API_URL }}
-          API_VERSION=${{ vars.API_VERSION }}
+          NEXT_PUBLIC_BASE_API_URL=${{ vars.NEXT_PUBLIC_BASE_API_URL }}
+          NEXT_PUBLIC_API_VERSION=${{ vars.NEXT_PUBLIC_API_VERSION }}
           EOL
 
       - name: Check linting
@@ -63,8 +63,8 @@ jobs:
         run: |
           cat > .env << EOL
           SESSION_SECRET=${{ secrets.SESSION_SECRET }}
-          BASE_API_URL=${{ vars.BASE_API_URL }}
-          API_VERSION=${{ vars.API_VERSION }}
+          NEXT_PUBLIC_BASE_API_URL=${{ vars.NEXT_PUBLIC_BASE_API_URL }}
+          NEXT_PUBLIC_API_VERSION=${{ vars.NEXT_PUBLIC_API_VERSION }}
           EOL
 
       - name: Install Vercel CLI
