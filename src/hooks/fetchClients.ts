@@ -39,7 +39,7 @@ export const useFetchClients = () => {
     clients,
     loadingClients: loading,
     errorClients: error,
-    refetchClients,
+    fetchClients,
   };
-    return { clients, loadingClients: loading, errorClients: error, fetchClients };
+  
 };

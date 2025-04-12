@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 
 export interface Category {
     name: string;
@@ -50,7 +50,7 @@ export const useFetchConversationsCategories = () => {
             };
             
             const categoriesResponse = await axios.post<ConversationsCategoryResponse>(
-              `${apiURL}/conversations/categories`,
+              `${apiUrl}/conversations/categories`,
               requestBody,
               config
             );

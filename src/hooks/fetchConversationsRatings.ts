@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 
 export interface Rating {
     rating: number;
@@ -50,7 +50,7 @@ export const useFetchConversationsRatings = () => {
             };
             
             const ratingsResponse = await axios.post<ConversationsRatingsResponse>(
-              `${apiURL}/conversations/ratings`,
+              `${apiUrl}/conversations/ratings`,
               requestBody,
               config
             );

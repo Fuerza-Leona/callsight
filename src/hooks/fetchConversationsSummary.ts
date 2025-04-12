@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { apiURL } from '@/constants';
+import { apiUrl } from '@/constants';
 
 export interface Summary {
     average_minutes: number;
@@ -51,7 +51,7 @@ export const useFetchConversationsSummary = () => {
             };
             
             const summaryResponse = await axios.post<SummaryResponse>(
-              `${apiURL}/conversations/summary`,
+              `${apiUrl}/conversations/summary`,
               requestBody,
               config
             );
