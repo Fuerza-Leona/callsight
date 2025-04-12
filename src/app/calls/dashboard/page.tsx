@@ -18,7 +18,7 @@ import { useFetchTopics } from "@/hooks/fetchTopics";
 import SimpleWordCloud from "@/components/SimpleWordCloud";
 import { useFetchConversationsSummary } from "@/hooks/fetchConversationsSummary";
 import { useFetchConversationsCategories } from "@/hooks/fetchConversationsCategories";
-
+import { useFetchConversationsRatings } from "@/hooks/fetchConversationsRatings";
 
 export default function Home() {
   const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
@@ -28,6 +28,7 @@ export default function Home() {
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
   const { summary, loadingSummary, errorSummary, fetchConversationsSummary } = useFetchConversationsSummary();
   const { conversationsCategories, loadingConversationsCategories, errorConversationsCategories, fetchConversationsCategories } = useFetchConversationsCategories();
+  const { ratings, loadingRatings, errorRatings, fetchConversationsRatings } = useFetchConversationsRatings();
 
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -50,6 +51,12 @@ export default function Home() {
       const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
       const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
 
+      fetchConversationsRatings({
+        startDate: startDate,
+        endDate: endDate,
+        clients: selectedClients,
+        categories: selectedCategories
+      }); 
 
       fetchConversationsCategories({
         startDate: startDate,
@@ -300,18 +307,51 @@ export default function Home() {
       <div className="rounded-md flex flex-col items-center justify-between bg-[#E7E6E7] w-full p-5 mb-5">
         <h1 className="text-lg font-bold py-3">Satisfacción</h1>
         <div className="w-[80%]">
-          <BarChart
-            yAxis={[
-              {
-                scaleType: 'band',
-                data: ['1', '2', '3', '4', '5'],
-              },
-            ]}
-            series={[{ data: [10, 20, 30, 10, 40] }]}
-            layout="horizontal"
-            height={200}
-            bottomAxis={null}
-          />
+          {loadingRatings ? (
+            <p>Cargando datos de satisfacción...</p>
+          ) : errorRatings ? (
+            <p>Error al cargar datos de satisfacción</p>
+          ) : ratings && ratings.length > 0 ? (
+            <BarChart
+              yAxis={[{
+                scaleType: "band",
+                data: ratings?.map(rating => rating.rating) || [],
+                tickLabelStyle: {
+                  textAnchor: 'end',
+                  fontSize: 12
+                }
+              }]}
+              xAxis={[{
+                scaleType: "linear",
+                tickLabelStyle: {
+                  textAnchor: 'start',
+                  fontSize: 12
+                },
+                tickNumber: 5,
+              }]}
+
+              series={[{
+                data: ratings?.map(rating => rating.count) || [],
+                label: "Número de llamadas"
+              }]}
+              layout="horizontal"
+              width={900}
+              height={200}
+              margin={{ left: 50, right: 50, top: 60, bottom: 30 }}
+              sx={{
+                "& .MuiChartsAxis-tick .MuiChartsAxis-tickLabel": {
+                  fill: "#333"
+                },
+                "& .MuiChartsAxis-tickContainer .MuiChartsAxis-tick .MuiChartsAxis-tickLabel tspan": {
+                  fontSize: "0.875rem",
+                  fontFamily: "inherit"
+                }
+              }}
+            />
+            
+          ) : (
+            <p>No hay datos de calificaciones disponibles</p>
+          )}
         </div>
       </div>
     </div>
