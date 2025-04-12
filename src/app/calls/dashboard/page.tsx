@@ -22,7 +22,7 @@ export default function Home() {
   const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
   const { categories, loadingCategories, errorCategories, fetchCategories } = useFetchCategories();
 
-  const { dataEmotions, refetchEmotions } = useFetchEmotions();
+  const { emotions, loadingEmotions, errorEmotions, fetchEmotions} = useFetchEmotions();
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
   const { summary, loadingSummary, errorSummary, fetchConversationsSummary } = useFetchConversationsSummary();
 
@@ -32,7 +32,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchClients();
-    refetchEmotions();
+
     fetchCategories();
   }, []);
 
@@ -46,6 +46,13 @@ export default function Home() {
       
       const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
       const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
+
+      fetchEmotions({
+        startDate: startDate,
+        endDate: endDate,
+        clients: selectedClients,
+        categories: selectedCategories
+      })
 
       fetchConversationsSummary({
         startDate: startDate,
@@ -212,24 +219,20 @@ export default function Home() {
       <div className="flex flex-col md:flex-row justify-between w-full gap-3">
         <div className="h-full rounded-md flex flex-col items-center justify-around bg-[#E7E6E7] p-5  w-full md:w-[48%]">
           <h1 className="text-lg font-bold py-3">Emociones detectadas</h1>
-          {dataEmotions.positive != 0 ? (
+          {loadingEmotions ? (
+            <p>Cargando emociones...</p>
+          ) : errorEmotions ? (
+            <p>Error al cargar emociones</p>
+          ) : emotions && (emotions.positive !== 0 || emotions.neutral !== 0 || emotions.negative !== 0) ? (
             <div className="mt-2">
               <PieChart
                 series={[
                   {
-                    arcLabel: (item) => `${item.value}%`,
+                    arcLabel: (item) => `${item.value}`,
                     data: [
-                      {
-                        id: 0,
-                        value: dataEmotions.positive,
-                        label: 'Positivo',
-                      },
-                      { id: 1, value: dataEmotions.neutral, label: 'Neutro' },
-                      {
-                        id: 2,
-                        value: dataEmotions.negative,
-                        label: 'Negativo',
-                      },
+                      { id: 0, value: emotions.positive ?? 0, label: "Positivo" },
+                      { id: 1, value: emotions.neutral ?? 0, label: "Neutro" },
+                      { id: 2, value: emotions.negative ?? 0, label: "Negativo" },
                     ],
                   },
                 ]}
