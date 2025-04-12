@@ -1,4 +1,4 @@
-name: CI
+name: CICD
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
 
     steps:
       - name: Checkout Repository
@@ -30,8 +30,8 @@ jobs:
         run: |
           cat > .env << EOL
           SESSION_SECRET=${{ secrets.SESSION_SECRET }}
-          BASE_API_URL=${{ vars.BASE_API_URL }}
-          API_VERSION=${{ vars.API_VERSION }}
+          NEXT_PUBLIC_BASE_API_URL=${{ vars.NEXT_PUBLIC_BASE_API_URL }}
+          NEXT_PUBLIC_API_VERSION=${{ vars.NEXT_PUBLIC_API_VERSION }}
           EOL
 
       - name: Check linting
@@ -49,11 +49,12 @@ jobs:
   cd:
     runs-on: ubuntu-latest
     needs: ci
-    environment: production
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
 
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
 
     steps:
       - name: Checkout Repository
@@ -63,18 +64,18 @@ jobs:
         run: |
           cat > .env << EOL
           SESSION_SECRET=${{ secrets.SESSION_SECRET }}
-          BASE_API_URL=${{ vars.BASE_API_URL }}
-          API_VERSION=${{ vars.API_VERSION }}
+          NEXT_PUBLIC_BASE_API_URL=${{ vars.NEXT_PUBLIC_BASE_API_URL }}
+          NEXT_PUBLIC_API_VERSION=${{ vars.NEXT_PUBLIC_API_VERSION }}
           EOL
 
       - name: Install Vercel CLI
         run: npm install --global vercel
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=${{ env.VERCEL_ENV }} --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --target=${{ env.VERCEL_ENV }} --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --target=${{ env.VERCEL_ENV }} --token=${{ secrets.VERCEL_TOKEN }}

@@ -1,4 +1,4 @@
-export const apiUrl = `${process.env.BASE_API_URL || 'http://localhost:8000'}/api/${process.env.API_VERSION || 'v1'}`;
+export const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/${process.env.NEXT_PUBLIC_API_VERSION}`;
 
 export const sessionSecret = `${process.env.SESSION_SECRET}`;
 
