@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import MultipleSelectChip from '@/components/MultipleSelectChip';
-import { useEffect } from 'react';
-import { useFetchClients } from '@/hooks/fetchClients';
-import { useFetchLlamadas } from '@/hooks/fetchLlamadas';
+import * as React from "react";
+import MultipleSelectChip from "@/components/MultipleSelectChip";
+import { useEffect } from "react";
+import { useFetchClients, Client } from "@/hooks/fetchClients";
+import { useFetchLlamadas } from "@/hooks/fetchLlamadas";
 import {
   CircularProgress,
   Table,
@@ -15,41 +15,25 @@ import {
   TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useFetchCategorias } from "@/hooks/fetchCategories";
+import { useFetchCategories, Category } from "@/hooks/fetchCategories";
 import Tag from "@/components/Tag";
 
 export default function Home() {
-  const { clients, loadingClients, errorClients, refetchClients } =
-    useFetchClients();
-  const [selectedClients, setSelectedClients] = useState<string[]>([]);
+  const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
   const { dataLlamadas, refetchLlamadas } = useFetchLlamadas();
-  const { datacategorias, refetchcategorias } = useFetchCategorias();
+  const { categories, loadingCategories, errorCategories, fetchCategories } = useFetchCategories();
   const router = useRouter();
 
   useEffect(() => {
-    refetchClients();
+    fetchClients();
     refetchLlamadas();
-    refetchcategorias();
+    fetchCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [category, setCategory] = useState<string[]>([]);
-  const [search, setSearch] = useState<string>('');
-
-  const dataCallsFiltered = dataLlamadas
-    ? dataLlamadas.llamadas.filter((llamada) => {
-        /*const matchesUsers =
-      users.length === 0 || users.some((user) => llamada.users?.includes(user));*/
-        const matchesCategories =
-          category.length === 0 ||
-          category.some((cat) => llamada.categories?.includes(cat));
-        /*const matchesClients =
-      clients.length === 0 || clients.some((client) => llamada.clients?.includes(client));*/
-        const matchesSearch =
-          search == '' ||
-          llamada.conversation_id.match(new RegExp(search, 'i'));
-        return matchesCategories && matchesSearch;
-      })
-    : [];
+  
+  const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
+  const [selectedClients, setSelectedClients] = React.useState<string[]>([]);
+  const [search, setSearch] = React.useState<string>("");
 
   const handleClick = (callId: string) => {
     router.push(`/calls/detail?call_id=${callId}`);
@@ -60,44 +44,16 @@ export default function Home() {
       <div className="w-3/10 flex flex-col align-center text-center">
         <p className="text-3xl">Filtros</p>
         <MultipleSelectChip
-          title={
-            loadingClients
-              ? 'Cliente (Cargando...)'
-              : errorClients
-                ? 'Cliente (Error)'
-                : 'Cliente'
-          }
-          names={(() => {
-            if (loadingClients || errorClients || !clients) {
-              return [];
-            }
-
-            if (Array.isArray(clients)) {
-              return clients.map((client: Client) => ({
-                id: client.user_id,
-                name: client.username,
-              }));
-            }
-
-            return [];
-          })()}
+          title="Cliente"
+          names={clients ? clients.map(client => client.username) : []}
           value={selectedClients}
-          onChange={(newClients: string[]) => {
-            setSelectedClients(newClients);
-          }}
+          onChange={setSelectedClients}
         />
         <MultipleSelectChip
           title="Categorías"
-          names={
-            datacategorias && datacategorias.categorias
-              ? datacategorias.categorias.map((cat: string) => ({
-                  id: cat,
-                  name: cat,
-                }))
-              : []
-          }
-          value={category}
-          onChange={setCategory}
+          names={categories ? categories.map(category => category.name) : []}
+          value={selectedCategories}
+          onChange={setSelectedCategories}
         />
       </div>
       <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
@@ -110,8 +66,9 @@ export default function Home() {
             setSearch(event.target.value);
           }}
         />
-        {dataLlamadas.loading && <CircularProgress />}
-        {!dataLlamadas.loading && (
+        {!dataLlamadas.llamadas ? (
+          <CircularProgress />
+        ) : (
           <div>
             <Table>
               <TableHead>
@@ -122,33 +79,32 @@ export default function Home() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataCallsFiltered.map((llamada) => (
-                  <TableRow
-                    key={llamada.audio_id}
-                    onClick={() => handleClick(llamada.conversation_id)}
-                    className="cursor-pointer"
-                  >
-                    <TableCell>
-                      <p className="">{llamada.conversation_id}</p>
-                    </TableCell>
-
-                    <TableCell>
-                      <p className="">
-                        {new Date(
-                          llamada.start_time.toString()
-                        ).toLocaleDateString()}
-                      </p>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        {llamada.categories &&
-                          llamada.categories.map((tag, index) => {
-                            return <Tag key={index} text={tag} />;
-                          })}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {dataLlamadas.llamadas
+                  .map((llamada) => (
+                    <TableRow
+                      key={llamada.audio_id}
+                      onClick={() => handleClick(llamada.conversation_id)}
+                      className="cursor-pointer hover:bg-gray-100"
+                    >
+                      <TableCell>
+                        <p>{llamada.conversation_id}</p>
+                      </TableCell>
+                      <TableCell>
+                        <p>
+                          {llamada.start_time ? 
+                            new Date(llamada.start_time.toString()).toLocaleDateString() : 
+                            'N/A'}
+                        </p>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-2">
+                            {Array.isArray(llamada.categories) && llamada.categories.map((category: string) => (
+                            <Tag key={category} text={category} />
+                            ))}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </div>
