@@ -1,16 +1,15 @@
 'use client';
 
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { apiUrl } from '@/constants';
 
-export interface topic {
+export interface Topic {
   topic: string;
   amount: number;
 }
 
-export interface fetchTopicsParams {
+interface FetchTopicsParams {
   limit: number | null;
   clients: string[] | null;
   categories: string[] | null;
@@ -20,10 +19,10 @@ export interface fetchTopicsParams {
 
 export const useFetchTopics = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | unknown>('');
-  const [topics, setTopics] = useState<topic[]>([]);
+  const [error, setError] = useState<string | unknown>("");
+  const [topics, setTopics] = useState<Topic[]>([]);
 
-  const fetchTopics = async (params?: fetchTopicsParams) => {
+  const fetchTopics = async (params?: FetchTopicsParams) => {
     setLoading(true);
     setError("");
     
@@ -50,7 +49,7 @@ export const useFetchTopics = () => {
       };
       
       const topicsResponse = await axios.post(
-        "http://127.0.0.1:8000/api/v1/topics",
+        `${apiUrl}/topics`,
         requestBody,
         config
       );
