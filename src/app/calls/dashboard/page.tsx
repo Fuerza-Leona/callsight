@@ -16,12 +16,15 @@ import { useFetchEmotions } from "@/hooks/fetchEmotions";
 import { useFetchCategories, Category } from "@/hooks/fetchCategories";
 import { useFetchTopics } from "@/hooks/fetchTopics";
 import SimpleWordCloud from "@/components/SimpleWordCloud";
+import { useFetchConversationsSummary } from "@/hooks/fetchConversationsSummary";
 
 export default function Home() {
   const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
   const { categories, loadingCategories, errorCategories, fetchCategories } = useFetchCategories();
+
   const { dataEmotions, refetchEmotions } = useFetchEmotions();
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
+  const { summary, loadingSummary, errorSummary, fetchConversationsSummary } = useFetchConversationsSummary();
 
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -36,19 +39,26 @@ export default function Home() {
   const initialFetchDone = useRef(false);
 
   useEffect(() => {
-    if (!initialFetchDone.current) {
-      initialFetchDone.current = true;
-      return;
-    }
+      if (!initialFetchDone.current) {
+        initialFetchDone.current = true;
+        return;
+      }
+      
+      const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
+      const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
 
-    const startDate = selectedDate.startOf('month');
-    const endDate = selectedDate.endOf('month');
+      fetchConversationsSummary({
+        startDate: startDate,
+        endDate: endDate,
+        clients: selectedClients,
+        categories: selectedCategories
+      });
 
       fetchTopics({
         limit: 10,
         clients: selectedClients,
-        startDate: startDate.format('YYYY-MM-DD'),
-        endDate: endDate.format('YYYY-MM-DD'),
+        startDate: startDate,
+        endDate: endDate,
         categories: selectedCategories
       });
   }, [selectedDate, selectedClients, selectedCategories]);
@@ -146,18 +156,32 @@ export default function Home() {
             <div className="w-[48%] rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] gap-3 p-3">
               <div className="flex gap-2 text-md items-center font-bold">
                 <AccessTimeIcon fontSize="medium" />
-                <h1>Tiempo promedio por llamada </h1>
+                <h1>Tiempo promedio por llamada (minutos) </h1>
               </div>
-              <p className="text-6xl">
-                30 <span className="text-sm text-gray-500">minutos</span>
-              </p>
+                <div className="text-6xl">
+                  {loadingSummary ? (
+                    <span className="text-2xl">Cargando...</span>
+                  ) : errorSummary ? (
+                    <span className="text-2xl text-red-500">Error</span>
+                  ) : (
+                    summary?.average_minutes || 0
+                  )}
+                </div>
             </div>
             <div className="w-[48%] rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] gap-3 p-3">
               <div className="flex gap-2 text-md items-center font-bold">
                 <CallIcon fontSize="small" />
                 <h1>Total de llamadas</h1>
               </div>
-              <p className="text-6xl">30</p>
+              <div className="text-6xl">
+                {loadingSummary ? (
+                  <span className="text-2xl">Cargando...</span>
+                ) : errorSummary ? (
+                  <span className="text-2xl text-red-500">Error</span>
+                ) : (
+                  summary?.conversation_count || 0
+                )}
+              </div>
             </div>
           </div>
           <div className="w-full h-full rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] p-3">
@@ -165,11 +189,11 @@ export default function Home() {
               Temas principales detectados
             </h1>
             {loadingTopics ? (
-              <p>Cargando temas...</p>
+              <span className="text-2xl">Cargando temas...</span>
             ) : errorTopics ? (
-              <p>Error al cargar temas</p>
+              <span className="text-2xl">Error al cargar temas</span>
             ) : !topics || !Array.isArray(topics) ? (
-              <p>No hay temas disponibles</p>
+              <span className="text-2xl">No hay temas disponibles</span>
             ) : (
               <div className="w-full h-full">
                 <SimpleWordCloud
