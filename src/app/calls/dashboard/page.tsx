@@ -17,6 +17,8 @@ import { useFetchCategories, Category } from "@/hooks/fetchCategories";
 import { useFetchTopics } from "@/hooks/fetchTopics";
 import SimpleWordCloud from "@/components/SimpleWordCloud";
 import { useFetchConversationsSummary } from "@/hooks/fetchConversationsSummary";
+import { useFetchConversationsCategories } from "@/hooks/fetchConversationsCategories";
+
 
 export default function Home() {
   const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
@@ -25,6 +27,7 @@ export default function Home() {
   const { emotions, loadingEmotions, errorEmotions, fetchEmotions} = useFetchEmotions();
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
   const { summary, loadingSummary, errorSummary, fetchConversationsSummary } = useFetchConversationsSummary();
+  const { conversationsCategories, loadingConversationsCategories, errorConversationsCategories, fetchConversationsCategories } = useFetchConversationsCategories();
 
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -46,6 +49,14 @@ export default function Home() {
       
       const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
       const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
+
+
+      fetchConversationsCategories({
+        startDate: startDate,
+        endDate: endDate,
+        clients: selectedClients,
+        categories: selectedCategories
+      });
 
       fetchEmotions({
         startDate: startDate,
@@ -246,20 +257,44 @@ export default function Home() {
           )}
         </div>
 
-        <div className=" w-full md:w-[48%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
-          <h1 className="text-lg font-bold py-3">Categorías</h1>
-          <BarChart
-            yAxis={[
-              {
-                scaleType: 'band',
-                data: ['group A', 'group B', 'group C'],
-              },
-            ]}
-            series={[{ data: [4, 1, 2] }]}
-            layout="horizontal"
-            width={300}
-            height={200}
-          />
+        <div className="w-full md:w-[48%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
+          <h1 className="text-lg font-bold pt-3">Categorías</h1>
+          {loadingConversationsCategories ? (
+            <p>Cargando categorías...</p>
+          ) : errorConversationsCategories ? (
+            <p>Error al cargar categorías</p>
+          ) : conversationsCategories && conversationsCategories.length > 0 ? (
+            <BarChart
+              yAxis={[{
+                scaleType: "band",
+                data: conversationsCategories.map(category => category.name),
+                tickLabelStyle: {
+                  textAnchor: 'end',  // Changed from 'start' to 'end'
+                  fontSize: 12
+                }
+              }]}
+              series={[{
+                data: conversationsCategories.map(category => category.count),
+                label: "Número de llamadas"
+              }]}
+              layout="horizontal"
+              width={450}  // Increased from 300 to 450
+              height={200}
+              margin={{ left: 150, right: 40, top: 60, bottom: 30 }}  // Increased left and right margins
+              sx={{
+                // Custom styling for better appearance
+                "& .MuiChartsAxis-tick .MuiChartsAxis-tickLabel": {
+                  fill: "#333"  // Darker text for better readability
+                },
+                "& .MuiChartsAxis-tickContainer .MuiChartsAxis-tick .MuiChartsAxis-tickLabel tspan": {
+                  fontSize: "0.875rem",
+                  fontFamily: "inherit"
+                }
+              }}
+            />
+          ) : (
+            <p>No hay datos de categorías</p>
+          )}
         </div>
       </div>
       <div className="rounded-md flex flex-col items-center justify-between bg-[#E7E6E7] w-full p-5 mb-5">
