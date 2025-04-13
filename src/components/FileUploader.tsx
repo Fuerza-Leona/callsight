@@ -20,7 +20,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
       <label className="font-semibold mb-1">Subir Archivo</label>
       <input
         type="file"
-        className="p-3 border rounded-lg"
+        className="p-3 border rounded-lg bg-gray-200 border-black"
         onChange={handleFileChange}
       />
       {selectedFile && (

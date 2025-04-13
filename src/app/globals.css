@@ -10,9 +10,13 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #efefef;
   --foreground: #171717;
   --neoris-blue: #13202a;
+  --persian-pink: #F294CD;
+  --sky-blue: #89D2E6;
+  --slate-blue: #6564DB;
+  --jonquil: #F6CF3C;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -23,7 +27,7 @@
 } */
 
 body {
-  color: var(--foreground);
+  color: var(--neoris-blue);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
