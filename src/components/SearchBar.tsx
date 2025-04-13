@@ -14,14 +14,42 @@ export default function SearchBar({
   options,
   label,
   onSelect,
-  sx = {},
 }: SearchBarProps) {
   return (
     <Autocomplete
       disablePortal
       options={options}
       onChange={(_, value) => onSelect(value ? value.label : null)}
-      sx={sx}
+      className='border-black'
+      sx={{
+        width: '100%',
+        backgroundColor: '#E5E7Eb',
+        border: 'none',
+        boxShadow: 'none',
+        color: 'black',
+        '& .MuiInputLabel-root': {
+          border: 'none',
+        },
+        '& .Mui-focused': {
+          color: 'black',
+          border: 'none',
+        },
+        'label + &': {
+          border: 'none',
+          boxShadow: 'none',
+        },
+        '& .MuiInputBase-input': {
+          backgroundColor: '#E5E7Eb',
+          color: 'black',
+          border: 'none',
+          boxShadow: 'none',
+        },
+        '&:focus': {
+          borderRadius: 4,
+          border: 'none',
+          boxShadow: 'none',
+        },
+      }}
       renderInput={(params) => <TextField {...params} label={label} />}
     />
   );

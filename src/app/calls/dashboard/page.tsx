@@ -74,18 +74,19 @@ export default function Home() {
         <p className="text-2xl">Dashboard</p>
         <div className="flex gap-2">
           <div>
-            <button className="bg-[#89D2E6] text-[#FFFFFF] rounded-md p-2 w-full">
+            <button className="text-[#FFFFFF] rounded-md p-2 w-full" style={{ backgroundColor: "var(--sky-blue)" }}>
               Exportar como PDF <FileDownloadIcon />
             </button>
           </div>
           <div>
-            <button className="bg-[#89D2E6] text-[#FFFFFF] rounded-md p-2 w-full">
+            <button className="text-[#FFFFFF] rounded-md p-2 w-full" style={{ backgroundColor: "var(--sky-blue)" }}>
               Exportar como JSON <FileDownloadIcon />
             </button>
           </div>
           <Link
             href={'/calls/search'}
-            className="bg-[#1E242B] text-[#FFFFFF] rounded-md"
+            className="text-[#FFFFFF] rounded-md"
+            style={{ backgroundColor: "var(--neoris-blue)" }}
           >
             <div className="p-2 items-center justify-center text-center flex">
               <p className="">
@@ -171,7 +172,7 @@ export default function Home() {
 
         <div className="flex flex-col grow w-full md:w-[40%] justify-between gap-3">
           <div className="flex w-full h-[30%] justify-between text-center">
-            <div className="w-[48%] rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] gap-3 p-3">
+            <div className="w-[48%] rounded-md flex flex-col items-center justify-center gap-3 p-3" style={{ backgroundColor: "var(--jonquil)" }}>
               <div className="flex gap-2 text-md items-center font-bold">
                 <AccessTimeIcon fontSize="medium" />
                 <h1>Tiempo promedio por llamada </h1>
@@ -180,7 +181,7 @@ export default function Home() {
                 30 <span className="text-sm text-gray-500">minutos</span>
               </p>
             </div>
-            <div className="w-[48%] rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] gap-3 p-3">
+            <div className="w-[48%] rounded-md flex flex-col items-center justify-center gap-3 p-3" style={{ backgroundColor: "var(--persian-pink)" }}>
               <div className="flex gap-2 text-md items-center font-bold">
                 <CallIcon fontSize="small" />
                 <h1>Total de llamadas</h1>
@@ -188,7 +189,7 @@ export default function Home() {
               <p className="text-6xl">30</p>
             </div>
           </div>
-          <div className="w-full h-full rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] p-3">
+          <div className="w-full h-full rounded-md flex flex-col items-center justify-center bg-white p-3">
             <h1 className="text-lg mt-5 font-bold">
               Temas principales detectados
             </h1>
@@ -214,7 +215,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col md:flex-row justify-between w-full gap-3">
-        <div className="h-full rounded-md flex flex-col items-center justify-around bg-[#E7E6E7] p-5  w-full md:w-[48%]">
+        <div className="h-full rounded-md flex flex-col items-center justify-around bg-white p-5  w-full md:w-[48%]">
           <h1 className="text-lg font-bold py-3">Emociones detectadas</h1>
           {dataEmotions.positive != 0 ? (
             <div className="mt-2">
@@ -240,6 +241,7 @@ export default function Home() {
                 width={400}
                 height={200}
                 className="font-bold text-xl pt-5"
+                colors={['#6564DB', '#F6CF3C', '#F294CD']}
               />
             </div>
           ) : (
@@ -247,7 +249,7 @@ export default function Home() {
           )}
         </div>
 
-        <div className=" w-full md:w-[48%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
+        <div className=" w-full md:w-[48%] rounded-md flex items-center justify-center bg-white p-5 flex flex-col">
           <h1 className="text-lg font-bold py-3">Categorías</h1>
           <BarChart
             yAxis={[
@@ -260,10 +262,11 @@ export default function Home() {
             layout="horizontal"
             width={300}
             height={200}
+            colors={['#6564DB']}
           />
         </div>
       </div>
-      <div className="rounded-md flex flex-col items-center justify-between bg-[#E7E6E7] w-full p-5 mb-5">
+      <div className="rounded-md flex flex-col items-center justify-between bg-white w-full p-5 mb-5">
         <h1 className="text-lg font-bold py-3">Satisfacción</h1>
         <div className="w-[80%]">
           <BarChart
@@ -277,6 +280,7 @@ export default function Home() {
             layout="horizontal"
             height={200}
             bottomAxis={null}
+            colors={['#6564DB']}
           />
         </div>
       </div>
