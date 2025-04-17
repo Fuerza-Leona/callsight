@@ -1,72 +1,93 @@
-'use client';
-import { PieChart } from '@mui/x-charts/PieChart';
-import { BarChart } from '@mui/x-charts/BarChart';
-import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import Link from 'next/link';
-import MultipleSelectChip from '@/components/MultipleSelectChip';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CallIcon from '@mui/icons-material/Call';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import SearchIcon from '@mui/icons-material/Search';
-import { useFetchClients } from '@/hooks/fetchClients';
-import { useEffect, useRef, useState } from 'react';
-import { useFetchEmotions } from '@/hooks/fetchEmotions';
-import { useFetchCategorias } from '@/hooks/fetchCategorias';
-import { useFetchTopics } from '@/hooks/fetchTopics';
-import SimpleWordCloud from '@/components/SimpleWordCloud';
+"use client";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import Link from "next/link";
+import MultipleSelectChip from "@/components/MultipleSelectChip";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CallIcon from "@mui/icons-material/Call";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SearchIcon from "@mui/icons-material/Search";
+import { useFetchClients, Client } from "@/hooks/fetchClients";
+import { useEffect, useRef, useState } from "react";
+import { useFetchEmotions } from "@/hooks/fetchEmotions";
+import { useFetchCategories, Category } from "@/hooks/fetchCategories";
+import { useFetchTopics } from "@/hooks/fetchTopics";
+import SimpleWordCloud from "@/components/SimpleWordCloud";
+import { useFetchConversationsSummary } from "@/hooks/fetchConversationsSummary";
+import { useFetchConversationsCategories } from "@/hooks/fetchConversationsCategories";
+import { useFetchConversationsRatings } from "@/hooks/fetchConversationsRatings";
 
 export default function Home() {
-  const { clients, loadingClients, errorClients, refetchClients } =
-    useFetchClients();
-  const { datacategorias, refetchcategorias } = useFetchCategorias();
-  const { dataEmotions, refetchEmotions } = useFetchEmotions();
+  const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
+  const { categories, loadingCategories, errorCategories, fetchCategories } = useFetchCategories();
+
+  const { emotions, loadingEmotions, errorEmotions, fetchEmotions} = useFetchEmotions();
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
+  const { summary, loadingSummary, errorSummary, fetchConversationsSummary } = useFetchConversationsSummary();
+  const { conversationsCategories, loadingConversationsCategories, errorConversationsCategories, fetchConversationsCategories } = useFetchConversationsCategories();
+  const { ratings, loadingRatings, errorRatings, fetchConversationsRatings } = useFetchConversationsRatings();
 
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
-  const [categorias, setCategorias] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
 
   useEffect(() => {
-    refetchClients();
-    refetchEmotions();
-    refetchcategorias();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchClients();
+
+    fetchCategories();
   }, []);
-
-  interface Client {
-    user_id: string;
-    username: string;
-  }
-
-  interface ClientsResponse {
-    data?: Client[];
-    users?: Client[];
-  }
-
-  // interface CategoriasResponse {
-  //   categorias: string[];
-  // }
 
   const initialFetchDone = useRef(false);
 
   useEffect(() => {
-    if (!initialFetchDone.current) {
-      initialFetchDone.current = true;
-      return;
-    }
+      if (!initialFetchDone.current) {
+        initialFetchDone.current = true;
+        return;
+      }
+      
+      const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
+      const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
 
-    const startDate = selectedDate.startOf('month');
-    const endDate = selectedDate.endOf('month');
+      fetchConversationsRatings({
+        startDate: startDate,
+        endDate: endDate,
+        clients: selectedClients,
+        categories: selectedCategories
+      }); 
 
-    fetchTopics({
-      limit: 10,
-      clients: selectedClients,
-      startDate: startDate.format('YYYY-MM-DD'),
-      endDate: endDate.format('YYYY-MM-DD'),
-    });
-  }, [selectedDate, selectedClients, categorias, fetchTopics]);
+      fetchConversationsCategories({
+        startDate: startDate,
+        endDate: endDate,
+        clients: selectedClients,
+        categories: selectedCategories
+      });
+
+      fetchEmotions({
+        startDate: startDate,
+        endDate: endDate,
+        clients: selectedClients,
+        categories: selectedCategories
+      })
+
+      fetchConversationsSummary({
+        startDate: startDate,
+        endDate: endDate,
+        clients: selectedClients,
+        categories: selectedCategories
+      });
+
+      fetchTopics({
+        limit: 10,
+        clients: selectedClients,
+        startDate: startDate,
+        endDate: endDate,
+        categories: selectedCategories
+      });
+  }, [selectedDate, selectedClients, selectedCategories]);
+
 
   return (
     <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
@@ -123,33 +144,11 @@ export default function Home() {
                 if (loadingClients || errorClients || !clients) {
                   return [];
                 }
-
-                if (Array.isArray(clients)) {
-                  return clients.map((client: Client) => ({
+                return clients.map((client: Client) => ({
                     id: client.user_id,
                     name: client.username,
-                  }));
-                }
+                }));
 
-                if (clients && typeof clients === 'object') {
-                  const typedClients = clients as ClientsResponse;
-
-                  if (typedClients.data && Array.isArray(typedClients.data)) {
-                    return typedClients.data.map((client: Client) => ({
-                      id: client.user_id,
-                      name: client.username,
-                    }));
-                  }
-
-                  if (typedClients.users && Array.isArray(typedClients.users)) {
-                    return typedClients.users.map((client: Client) => ({
-                      id: client.user_id,
-                      name: client.username,
-                    }));
-                  }
-                }
-
-                return [];
               })()}
               value={selectedClients}
               onChange={(newClients: string[]) => {
@@ -159,11 +158,19 @@ export default function Home() {
           </div>
           <div className="">
             <MultipleSelectChip
-              title="Categorías"
-              names={datacategorias.categorias}
-              value={categorias}
-              onChange={(category) => {
-                setCategorias(category);
+              title={loadingCategories ? "Categorías (Cargando...)" : errorCategories ? "Categorías (Error)" : "Categorías"}
+              names={(() => {
+                if (loadingCategories || errorCategories || !categories) {
+                  return [];
+                }
+                return categories.map((category: Category) => ({
+                    id: category.category_id,
+                    name: category.name,
+                }));
+              })()}
+              value={selectedCategories}
+              onChange={(newCategories: string[]) => {
+                setSelectedCategories(newCategories);
               }}
             />
           </div>
@@ -174,18 +181,32 @@ export default function Home() {
             <div className="w-[48%] rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] gap-3 p-3">
               <div className="flex gap-2 text-md items-center font-bold">
                 <AccessTimeIcon fontSize="medium" />
-                <h1>Tiempo promedio por llamada </h1>
+                <h1>Tiempo promedio por llamada (minutos) </h1>
               </div>
-              <p className="text-6xl">
-                30 <span className="text-sm text-gray-500">minutos</span>
-              </p>
+                <div className="text-6xl">
+                  {loadingSummary ? (
+                    <span className="text-2xl">Cargando...</span>
+                  ) : errorSummary ? (
+                    <span className="text-2xl text-red-500">Error</span>
+                  ) : (
+                    summary?.average_minutes || 0
+                  )}
+                </div>
             </div>
             <div className="w-[48%] rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] gap-3 p-3">
               <div className="flex gap-2 text-md items-center font-bold">
                 <CallIcon fontSize="small" />
                 <h1>Total de llamadas</h1>
               </div>
-              <p className="text-6xl">30</p>
+              <div className="text-6xl">
+                {loadingSummary ? (
+                  <span className="text-2xl">Cargando...</span>
+                ) : errorSummary ? (
+                  <span className="text-2xl text-red-500">Error</span>
+                ) : (
+                  summary?.conversation_count || 0
+                )}
+              </div>
             </div>
           </div>
           <div className="w-full h-full rounded-md flex flex-col items-center justify-center bg-[#E7E6E7] p-3">
@@ -193,11 +214,11 @@ export default function Home() {
               Temas principales detectados
             </h1>
             {loadingTopics ? (
-              <p>Cargando temas...</p>
+              <span className="text-2xl">Cargando temas...</span>
             ) : errorTopics ? (
-              <p>Error al cargar temas</p>
+              <span className="text-2xl">Error al cargar temas</span>
             ) : !topics || !Array.isArray(topics) ? (
-              <p>No hay temas disponibles</p>
+              <span className="text-2xl">No hay temas disponibles</span>
             ) : (
               <div className="w-full h-full">
                 <SimpleWordCloud
@@ -216,24 +237,20 @@ export default function Home() {
       <div className="flex flex-col md:flex-row justify-between w-full gap-3">
         <div className="h-full rounded-md flex flex-col items-center justify-around bg-[#E7E6E7] p-5  w-full md:w-[48%]">
           <h1 className="text-lg font-bold py-3">Emociones detectadas</h1>
-          {dataEmotions.positive != 0 ? (
+          {loadingEmotions ? (
+            <p>Cargando emociones...</p>
+          ) : errorEmotions ? (
+            <p>Error al cargar emociones</p>
+          ) : emotions && (emotions.positive !== 0 || emotions.neutral !== 0 || emotions.negative !== 0) ? (
             <div className="mt-2">
               <PieChart
                 series={[
                   {
-                    arcLabel: (item) => `${item.value}%`,
+                    arcLabel: (item) => `${item.value}`,
                     data: [
-                      {
-                        id: 0,
-                        value: dataEmotions.positive,
-                        label: 'Positivo',
-                      },
-                      { id: 1, value: dataEmotions.neutral, label: 'Neutro' },
-                      {
-                        id: 2,
-                        value: dataEmotions.negative,
-                        label: 'Negativo',
-                      },
+                      { id: 0, value: emotions.positive ?? 0, label: "Positivo" },
+                      { id: 1, value: emotions.neutral ?? 0, label: "Neutro" },
+                      { id: 2, value: emotions.negative ?? 0, label: "Negativo" },
                     ],
                   },
                 ]}
@@ -247,39 +264,97 @@ export default function Home() {
           )}
         </div>
 
-        <div className=" w-full md:w-[48%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
-          <h1 className="text-lg font-bold py-3">Categorías</h1>
-          <BarChart
-            yAxis={[
-              {
-                scaleType: 'band',
-                data: ['group A', 'group B', 'group C'],
-              },
-            ]}
-            series={[{ data: [4, 1, 2] }]}
-            layout="horizontal"
-            width={300}
-            height={200}
-          />
+        <div className="w-full md:w-[48%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
+          <h1 className="text-lg font-bold pt-3">Categorías</h1>
+          {loadingConversationsCategories ? (
+            <p>Cargando categorías...</p>
+          ) : errorConversationsCategories ? (
+            <p>Error al cargar categorías</p>
+          ) : conversationsCategories && conversationsCategories.length > 0 ? (
+            <BarChart
+              yAxis={[{
+                scaleType: "band",
+                data: conversationsCategories.map(category => category.name),
+                tickLabelStyle: {
+                  textAnchor: 'end',  // Changed from 'start' to 'end'
+                  fontSize: 12
+                }
+              }]}
+              series={[{
+                data: conversationsCategories.map(category => category.count),
+                label: "Número de llamadas"
+              }]}
+              layout="horizontal"
+              width={450}  // Increased from 300 to 450
+              height={200}
+              margin={{ left: 150, right: 40, top: 60, bottom: 30 }}  // Increased left and right margins
+              sx={{
+                // Custom styling for better appearance
+                "& .MuiChartsAxis-tick .MuiChartsAxis-tickLabel": {
+                  fill: "#333"  // Darker text for better readability
+                },
+                "& .MuiChartsAxis-tickContainer .MuiChartsAxis-tick .MuiChartsAxis-tickLabel tspan": {
+                  fontSize: "0.875rem",
+                  fontFamily: "inherit"
+                }
+              }}
+            />
+          ) : (
+            <p>No hay datos de categorías</p>
+          )}
         </div>
       </div>
       <div className="rounded-md flex flex-col items-center justify-between bg-[#E7E6E7] w-full p-5 mb-5">
         <h1 className="text-lg font-bold py-3">Satisfacción</h1>
         <div className="w-[80%]">
-          <BarChart
-            yAxis={[
-              {
-                scaleType: 'band',
-                data: ['1', '2', '3', '4', '5'],
-              },
-            ]}
-            series={[{ data: [10, 20, 30, 10, 40] }]}
-            layout="horizontal"
-            height={200}
-            bottomAxis={null}
-          />
+          {loadingRatings ? (
+            <p>Cargando datos de satisfacción...</p>
+          ) : errorRatings ? (
+            <p>Error al cargar datos de satisfacción</p>
+          ) : ratings && ratings.length > 0 ? (
+            <BarChart
+              yAxis={[{
+                scaleType: "band",
+                data: ratings?.map(rating => rating.rating) || [],
+                tickLabelStyle: {
+                  textAnchor: 'end',
+                  fontSize: 12
+                }
+              }]}
+              xAxis={[{
+                scaleType: "linear",
+                tickLabelStyle: {
+                  textAnchor: 'start',
+                  fontSize: 12
+                },
+                tickNumber: 5,
+              }]}
+
+              series={[{
+                data: ratings?.map(rating => rating.count) || [],
+                label: "Número de llamadas"
+              }]}
+              layout="horizontal"
+              width={900}
+              height={200}
+              margin={{ left: 50, right: 50, top: 60, bottom: 30 }}
+              sx={{
+                "& .MuiChartsAxis-tick .MuiChartsAxis-tickLabel": {
+                  fill: "#333"
+                },
+                "& .MuiChartsAxis-tickContainer .MuiChartsAxis-tick .MuiChartsAxis-tickLabel tspan": {
+                  fontSize: "0.875rem",
+                  fontFamily: "inherit"
+                }
+              }}
+            />
+            
+          ) : (
+            <p>No hay datos de calificaciones disponibles</p>
+          )}
         </div>
       </div>
     </div>
+    
   );
 }

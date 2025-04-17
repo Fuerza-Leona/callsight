@@ -1,56 +1,79 @@
 'use client';
 
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { apiUrl } from '@/constants';
+
+interface EmotionsResponse {
+    emotions?: Emotions;
+}
+
+interface Emotions {
+    positive: number | undefined;
+    negative: number | undefined;
+    neutral: number | undefined;
+}
+
+interface FetchConversationsEmotionsParams {
+  clients: string[] | null;
+  categories: string[] | null;
+  startDate: string | null;
+  endDate: string | null;
+}
 
 export const useFetchEmotions = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | unknown>('');
-  const [positive, setPositive] = useState<number>(0);
-  const [negative, setNegative] = useState<number>(0);
-  const [neutral, setNeutral] = useState<number>(0);
+  const [error, setError] = useState<string | unknown>("");
+  const [emotions, setEmotions] = useState<Emotions>();
 
-  const fetchEmotions = () => {
-    axios
-      .get('/api/getToken', { headers: { 'Content-Type': 'application/json' } })
-      .then((response) => {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${response.data.user}`,
-            withCredentials: true,
-          },
-        };
-        console.log(config);
-        axios
-          .get(`${apiUrl}/conversations/myClientEmotions`, config)
-          .then((response) => {
-            if (response.data.emotions) {
-              console.log(response.data);
-              setPositive(response.data.emotions.positive);
-              setNegative(response.data.emotions.negative);
-              setNeutral(response.data.emotions.neutral);
-            }
-          })
-          .catch((errorA) => {
-            console.error('Error fetching emotions:', errorA);
-            setError(errorA);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      })
-      .catch((errorOuter) => {
-        console.error('Error in obtaining token: ' + errorOuter);
+  const fetchEmotions = async (params?: FetchConversationsEmotionsParams) => {
+    setLoading(true);
+    setError("");
+
+    try {
+
+      const tokenResponse = await axios.get("/api/getToken", { 
+        headers: { "Content-Type": "application/json" } 
       });
+  
+      const requestBody = {
+        ...(params?.startDate && { startDate: params.startDate }),
+        ...(params?.endDate && { endDate: params.endDate }),
+        ...(params?.clients && params.clients.length > 0 && { clients: params.clients }),
+        ...(params?.categories && params.categories.length > 0 && { categories: params.categories }),
+      };
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${tokenResponse.data.user}`,
+          "Content-Type": "application/json",
+          withCredentials: true,
+        }
+      };
+
+      const emotionsResponse = await axios.post<EmotionsResponse>(
+        `${apiUrl}/conversations/myClientEmotions`,
+        requestBody,
+        config
+      );
+      
+      setEmotions(emotionsResponse.data?.emotions);
+
+    } catch (err) {
+      console.error("Error:", err);
+      setError(err);
+    }
+    finally {
+      setLoading(false);
+    }
+          
   };
+
   useEffect(() => {
     fetchEmotions();
   }, []);
 
   return {
-    dataEmotions: { loading, error, positive, negative, neutral },
-    refetchEmotions: fetchEmotions,
+    emotions, loadingEmotions: loading, errorEmotions: error, fetchEmotions
   };
 };
