@@ -61,37 +61,33 @@ export default function Home() {
 
   return (
     <div className="md:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px] pt-[140px] md:pt-28 lg:pt-[65px]">
-      <div className="w-full text-start">
+      <div className="w-full text-start mt-10">
         <div className="text-white text-4xl text-start">
           <p className="bg-[#13202A] rounded-2xl mx-20 p-8">{name}</p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-5 md:gap-5 md:flex-row md:w-[calc(100%-18rem)] justify-between mt-10 w-[calc(100%-10rem)] ">
-        <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center">
+      <div className="flex flex-col gap-5 md:gap-5 md:flex-row md:w-[calc(100%-10rem)] justify-between mt-10 mb-10 w-[calc(100%-10rem)] ">
+        <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center" style={{ backgroundColor: "var(--persian-pink)" }}>
           <p>Rol</p>
           <h2 className="font-thin text-3xl">
             {isAdmin ? 'Admin' : isAgent ? 'Agente' : 'Usuario'}
           </h2>
         </div>
 
-        <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center">
+        <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center" style={{ backgroundColor: "var(--jonquil)" }}>
           <p>{isUser ? 'Tickets abiertos' : 'Empresa'}</p>
           <h2 className="font-thin text-3xl">{isUser ? tickets : company}</h2>
         </div>
 
-        <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center">
+        <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center text-white" style={{ backgroundColor: "var(--neoris-blue)" }}>
           <p>Duración promedio por llamada</p>
           <div className="flex">
             <h2 className="font-thin text-3xl">{duration}</h2>
             <p>min</p>
           </div>
         </div>
-      </div>
-
-      <div className="flex flex-col md:flex-row w-[calc(100%-10rem)] md:w-[calc(100%-18rem)] gap-5 md:items-center justify-between">
-        <div className="flex md:flex-col justify-between gap-10 md:mt-10 mt-5">
-          <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center">
+          <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center text-white" style={{ backgroundColor: "var(--slate-blue)" }}>
             <p>
               {isAdmin || isAgent
                 ? 'Satisfaccion promedio'
@@ -102,11 +98,15 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="flex flex-col bg-gray-200 md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center">
+          <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center" style={{ backgroundColor: "var(--sky-blue)" }}>
             <p>Llamadas totales</p>
             <h2 className="font-thin text-3xl">{nCalls}</h2>
           </div>
-        </div>
+
+      </div>
+
+      <div className="flex flex-col md:flex-row w-[calc(100%-8rem)] md:w-[calc(100%-10rem)] gap-5 md:items-center justify-between">
+        
 
         {isUser && (
           <div className="flex flex-col bg-gray-200 w-full h-80 md:mt-10 rounded-2xl justify-center items-center">

@@ -101,7 +101,11 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
       <form className="w-full max-w-md flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md">
         <FileUploader onFileSelect={handleFileSelect} />
 
-        <SearchBar
+
+
+        <div className="flex flex-col">
+          <label className="font-semibold mb-1">Empresa</label>
+          <SearchBar
           label="Buscar Cliente"
           options={
             companiesLoading
@@ -111,65 +115,7 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
                 : companies.map((row) => ({ label: row.name }))
           }
           onSelect={(e) => setSelectedCompany(e!)}
-          sx={{
-            width: '100%',
-            backgroundColor: '#f0f0f0',
-            borderColor: 'none',
-            boxShadow: 'none',
-            color: 'black',
-            '& .MuiInputLabel-root': {
-              borderColor: 'black',
-            },
-            '& .Mui-focused': {
-              color: 'black',
-              borderColor: 'black',
-            },
-            'label + &': {
-              borderColor: 'black',
-              boxShadow: 'none',
-            },
-            '& .MuiInputBase-input': {
-              backgroundColor: '#f0f0f0',
-              color: 'black',
-              borderColor: 'black',
-              boxShadow: 'none',
-            },
-            '&:focus': {
-              borderRadius: 4,
-              borderColor: 'black',
-              boxShadow: 'none',
-            },
-          }}
         />
-
-        <div className="flex flex-col">
-          <label className="font-semibold mb-1">Empresa</label>
-          <select
-            className="w-full p-3 bg-gray-200 rounded-lg"
-            value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value)}
-          >
-            <option value="">Seleccionar cliente</option>
-            {companiesLoading || !token ? (
-              <option value="" disabled>
-                Cargando empresas...
-              </option>
-            ) : companiesError ? (
-              <option value="" disabled>
-                Error cargando empresas
-              </option>
-            ) : companies?.length > 0 ? (
-              companies.map((company) => (
-                <option key={company.company_id} value={company.company_id}>
-                  {company.name}
-                </option>
-              ))
-            ) : (
-              <option value="" disabled>
-                No hay empresas disponibles
-              </option>
-            )}
-          </select>
         </div>
 
         <div className="flex flex-col">
@@ -221,7 +167,7 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
           <label className="font-semibold mb-1">Fecha</label>
           <input
             type="date"
-            className="w-full p-3 bg-gray-200 rounded-lg"
+            className="w-full p-3 bg-gray-200 rounded-lg border-black"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
