@@ -68,46 +68,58 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-5 md:gap-5 md:flex-row md:w-[calc(100%-10rem)] justify-between mt-10 mb-10 w-[calc(100%-10rem)] ">
-        <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center" style={{ backgroundColor: "var(--persian-pink)" }}>
+        <div
+          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
+          style={{ backgroundColor: 'var(--persian-pink)' }}
+        >
           <p>Rol</p>
           <h2 className="font-thin text-3xl">
             {isAdmin ? 'Admin' : isAgent ? 'Agente' : 'Usuario'}
           </h2>
         </div>
 
-        <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center" style={{ backgroundColor: "var(--jonquil)" }}>
+        <div
+          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
+          style={{ backgroundColor: 'var(--jonquil)' }}
+        >
           <p>{isUser ? 'Tickets abiertos' : 'Empresa'}</p>
           <h2 className="font-thin text-3xl">{isUser ? tickets : company}</h2>
         </div>
 
-        <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center text-white" style={{ backgroundColor: "var(--neoris-blue)" }}>
+        <div
+          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center text-white"
+          style={{ backgroundColor: 'var(--neoris-blue)' }}
+        >
           <p>Duración promedio por llamada</p>
           <div className="flex">
             <h2 className="font-thin text-3xl">{duration}</h2>
             <p>min</p>
           </div>
         </div>
-          <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center text-white" style={{ backgroundColor: "var(--slate-blue)" }}>
-            <p>
-              {isAdmin || isAgent
-                ? 'Satisfaccion promedio'
-                : 'Proyectos realizados'}
-            </p>
-            <h2 className="font-thin text-3xl">
-              {isUser ? nProyects : satisfaction}
-            </h2>
-          </div>
+        <div
+          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center text-white"
+          style={{ backgroundColor: 'var(--slate-blue)' }}
+        >
+          <p>
+            {isAdmin || isAgent
+              ? 'Satisfaccion promedio'
+              : 'Proyectos realizados'}
+          </p>
+          <h2 className="font-thin text-3xl">
+            {isUser ? nProyects : satisfaction}
+          </h2>
+        </div>
 
-          <div className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center" style={{ backgroundColor: "var(--sky-blue)" }}>
-            <p>Llamadas totales</p>
-            <h2 className="font-thin text-3xl">{nCalls}</h2>
-          </div>
-
+        <div
+          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center"
+          style={{ backgroundColor: 'var(--sky-blue)' }}
+        >
+          <p>Llamadas totales</p>
+          <h2 className="font-thin text-3xl">{nCalls}</h2>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row w-[calc(100%-8rem)] md:w-[calc(100%-10rem)] gap-5 md:items-center justify-between">
-        
-
         {isUser && (
           <div className="flex flex-col bg-gray-200 w-full h-80 md:mt-10 rounded-2xl justify-center items-center">
             <p>Clientes</p>

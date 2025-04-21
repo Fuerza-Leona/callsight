@@ -1,17 +1,17 @@
 'use client';
 
-import axios from "axios";
-import { useEffect, useState } from "react";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { apiUrl } from '@/constants';
 
 interface EmotionsResponse {
-    emotions?: Emotions;
+  emotions?: Emotions;
 }
 
 interface Emotions {
-    positive: number | undefined;
-    negative: number | undefined;
-    neutral: number | undefined;
+  positive: number | undefined;
+  negative: number | undefined;
+  neutral: number | undefined;
 }
 
 interface FetchConversationsEmotionsParams {
@@ -23,32 +23,33 @@ interface FetchConversationsEmotionsParams {
 
 export const useFetchEmotions = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | unknown>("");
+  const [error, setError] = useState<string | unknown>('');
   const [emotions, setEmotions] = useState<Emotions>();
 
   const fetchEmotions = async (params?: FetchConversationsEmotionsParams) => {
     setLoading(true);
-    setError("");
+    setError('');
 
     try {
-
-      const tokenResponse = await axios.get("/api/getToken", { 
-        headers: { "Content-Type": "application/json" } 
+      const tokenResponse = await axios.get('/api/getToken', {
+        headers: { 'Content-Type': 'application/json' },
       });
-  
+
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
-        ...(params?.clients && params.clients.length > 0 && { clients: params.clients }),
-        ...(params?.categories && params.categories.length > 0 && { categories: params.categories }),
+        ...(params?.clients &&
+          params.clients.length > 0 && { clients: params.clients }),
+        ...(params?.categories &&
+          params.categories.length > 0 && { categories: params.categories }),
       };
-  
+
       const config = {
         headers: {
           Authorization: `Bearer ${tokenResponse.data.user}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           withCredentials: true,
-        }
+        },
       };
 
       const emotionsResponse = await axios.post<EmotionsResponse>(
@@ -56,17 +57,14 @@ export const useFetchEmotions = () => {
         requestBody,
         config
       );
-      
-      setEmotions(emotionsResponse.data?.emotions);
 
+      setEmotions(emotionsResponse.data?.emotions);
     } catch (err) {
-      console.error("Error:", err);
+      console.error('Error:', err);
       setError(err);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
-          
   };
 
   useEffect(() => {
@@ -74,6 +72,9 @@ export const useFetchEmotions = () => {
   }, []);
 
   return {
-    emotions, loadingEmotions: loading, errorEmotions: error, fetchEmotions
+    emotions,
+    loadingEmotions: loading,
+    errorEmotions: error,
+    fetchEmotions,
   };
 };
