@@ -1,10 +1,10 @@
 'use client';
 
-import * as React from "react";
-import MultipleSelectChip from "@/components/MultipleSelectChip";
-import { useEffect } from "react";
-import { useFetchClients, Client } from "@/hooks/fetchClients";
-import { useFetchLlamadas } from "@/hooks/fetchLlamadas";
+import * as React from 'react';
+import MultipleSelectChip from '@/components/MultipleSelectChip';
+import { useEffect } from 'react';
+import { useFetchClients } from '@/hooks/fetchClients';
+import { useFetchLlamadas } from '@/hooks/fetchLlamadas';
 import {
   CircularProgress,
   Table,
@@ -13,15 +13,15 @@ import {
   TableHead,
   TableRow,
   TextField,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useFetchCategories, Category } from "@/hooks/fetchCategories";
-import Tag from "@/components/Tag";
+} from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { useFetchCategories } from '@/hooks/fetchCategories';
+import Tag from '@/components/Tag';
 
 export default function Home() {
-  const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
+  const { clients, fetchClients } = useFetchClients();
   const { dataLlamadas, refetchLlamadas } = useFetchLlamadas();
-  const { categories, loadingCategories, errorCategories, fetchCategories } = useFetchCategories();
+  const { categories, fetchCategories } = useFetchCategories();
   const router = useRouter();
 
   useEffect(() => {
@@ -30,10 +30,12 @@ export default function Home() {
     fetchCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
-  const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
+
+  const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
+    []
+  );
   const [selectedClients, setSelectedClients] = React.useState<string[]>([]);
-  const [search, setSearch] = React.useState<string>("");
+  const [search, setSearch] = React.useState<string>('');
 
   const handleClick = (callId: string) => {
     router.push(`/calls/detail?call_id=${callId}`);
@@ -45,13 +47,13 @@ export default function Home() {
         <p className="text-3xl">Filtros</p>
         <MultipleSelectChip
           title="Cliente"
-          names={clients ? clients.map(client => client.username) : []}
+          names={clients ? clients.map((client) => client.username) : []}
           value={selectedClients}
           onChange={setSelectedClients}
         />
         <MultipleSelectChip
           title="Categorías"
-          names={categories ? categories.map(category => category.name) : []}
+          names={categories ? categories.map((category) => category.name) : []}
           value={selectedCategories}
           onChange={setSelectedCategories}
         />
@@ -79,32 +81,34 @@ export default function Home() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataLlamadas.llamadas
-                  .map((llamada) => (
-                    <TableRow
-                      key={llamada.audio_id}
-                      onClick={() => handleClick(llamada.conversation_id)}
-                      className="cursor-pointer hover:bg-gray-100"
-                    >
-                      <TableCell>
-                        <p>{llamada.conversation_id}</p>
-                      </TableCell>
-                      <TableCell>
-                        <p>
-                          {llamada.start_time ? 
-                            new Date(llamada.start_time.toString()).toLocaleDateString() : 
-                            'N/A'}
-                        </p>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-2">
-                            {Array.isArray(llamada.categories) && llamada.categories.map((category: string) => (
+                {dataLlamadas.llamadas.map((llamada) => (
+                  <TableRow
+                    key={llamada.audio_id}
+                    onClick={() => handleClick(llamada.conversation_id)}
+                    className="cursor-pointer hover:bg-gray-100"
+                  >
+                    <TableCell>
+                      <p>{llamada.conversation_id}</p>
+                    </TableCell>
+                    <TableCell>
+                      <p>
+                        {llamada.start_time
+                          ? new Date(
+                              llamada.start_time.toString()
+                            ).toLocaleDateString()
+                          : 'N/A'}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-2">
+                        {Array.isArray(llamada.categories) &&
+                          llamada.categories.map((category: string) => (
                             <Tag key={category} text={category} />
-                            ))}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                          ))}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>
