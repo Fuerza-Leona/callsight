@@ -164,7 +164,7 @@ const Tickets = () => {
           className="flex flex-col justify-end items-center w-[53rem] fixed bottom-5 right-0"
           style={{
             height: `${textFieldHeight}px`,
-            transition: 'height 0.15s ease-in-out',
+            transition: 'height 0.02s ease-in-out',
           }}
         >
           <MultilineTextFields

@@ -10,12 +10,18 @@ type Props = {
   label: string;
   defaultValue?: string;
   sx?: SxProps<Theme>;
+  divider?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  value?: string;
 };
 
 export default function MultilineMessageArea({
   label,
   defaultValue,
   sx,
+  divider = true,
+  onChange,
+  value,
 }: Props) {
   return (
     <Paper
@@ -25,24 +31,25 @@ export default function MultilineMessageArea({
       <Typography variant="body1" fontWeight={800} sx={{ my: 1, ml: '2rem' }}>
         {label}
       </Typography>
-      <Divider />
-      <Box sx={{ flexGrow: 1 }}>
+      {divider && <Divider />}
+      <Box sx={{ flexGrow: 1, px: '2rem' }}>
         <textarea
+          value={value}
           defaultValue={defaultValue}
           autoCapitalize="on"
           autoCorrect="on"
+          onChange={onChange}
           style={{
-            marginLeft: '2rem',
-            marginTop: '2rem',
             width: '100%',
             height: '100%',
             resize: 'none',
             border: 'none',
             outline: 'none',
-            padding: '0',
+            padding: 0,
             fontSize: '0.9rem',
             fontFamily: 'inherit',
             backgroundColor: 'transparent',
+            boxSizing: 'border-box',
           }}
         />
       </Box>
