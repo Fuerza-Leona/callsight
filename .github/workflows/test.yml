@@ -1,0 +1,32 @@
+name: 'Test'
+
+on:
+  pull_request:
+    branches: ['main', 'staging']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm ci # Clean install
+
+      - name: Prepare .env
+        run: |
+          cat > .env << EOL
+          SESSION_SECRET=${{ secrets.SESSION_SECRET }}
+          NEXT_PUBLIC_BASE_API_URL=${{ vars.NEXT_PUBLIC_BASE_API_URL }}
+          NEXT_PUBLIC_API_VERSION=${{ vars.NEXT_PUBLIC_API_VERSION }}
+          EOL
+
+      - name: Run tests
+        run: npm run test

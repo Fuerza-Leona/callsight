@@ -1,0 +1,43 @@
+name: 'Integration'
+
+on:
+  pull_request:
+    branches: ['main', 'staging']
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check commit messages
+        uses: wagoid/commitlint-github-action@v6
+        with:
+          configFile: commitlint.config.mjs
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm ci # Clean install
+
+      - name: Prepare .env
+        run: |
+          cat > .env << EOL
+          SESSION_SECRET=${{ secrets.SESSION_SECRET }}
+          NEXT_PUBLIC_BASE_API_URL=${{ vars.NEXT_PUBLIC_BASE_API_URL }}
+          NEXT_PUBLIC_API_VERSION=${{ vars.NEXT_PUBLIC_API_VERSION }}
+          EOL
+
+      - name: Check linting
+        run: npm run lint
+
+      - name: Check format with Prettier
+        run: npm run format
+
+      - name: Build the app
+        run: npm run build
