@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import axios from "axios";
-import { UUID } from "crypto";
-import { useEffect, useState } from "react";
+import axios from 'axios';
+import { UUID } from 'crypto';
+import { useEffect, useState } from 'react';
 import { apiUrl } from '@/constants';
 
 export interface Category {
@@ -16,16 +16,18 @@ interface CategoriesResponse {
 
 export const useFetchCategories = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | unknown>("");
+  const [error, setError] = useState<string | unknown>('');
   const [categories, setCategories] = useState<Category[]>([]);
 
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const response = await axios.get<CategoriesResponse>(`${apiUrl}/categories`);
+      const response = await axios.get<CategoriesResponse>(
+        `${apiUrl}/categories`
+      );
       setCategories(response.data?.categories || []);
-    } catch(err) {
-      console.error("Error:", err);
+    } catch (err) {
+      console.error('Error:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -36,5 +38,10 @@ export const useFetchCategories = () => {
     fetchCategories();
   }, []);
 
-  return { categories, loadingCategories: loading, errorCategories: error, fetchCategories };
+  return {
+    categories,
+    loadingCategories: loading,
+    errorCategories: error,
+    fetchCategories,
+  };
 };

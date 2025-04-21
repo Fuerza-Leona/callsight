@@ -13,10 +13,10 @@
   --background: #efefef;
   --foreground: #171717;
   --neoris-blue: #13202a;
-  --persian-pink: #F294CD;
-  --sky-blue: #89D2E6;
-  --slate-blue: #6564DB;
-  --jonquil: #F6CF3C;
+  --persian-pink: #f294cd;
+  --sky-blue: #89d2e6;
+  --slate-blue: #6564db;
+  --jonquil: #f6cf3c;
 }
 
 /* @media (prefers-color-scheme: dark) {

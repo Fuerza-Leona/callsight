@@ -101,21 +101,19 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
       <form className="w-full max-w-md flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md">
         <FileUploader onFileSelect={handleFileSelect} />
 
-
-
         <div className="flex flex-col">
           <label className="font-semibold mb-1">Empresa</label>
           <SearchBar
-          label="Buscar Cliente"
-          options={
-            companiesLoading
-              ? [{ label: 'Cargando empresas...' }]
-              : companiesError
-                ? [{ label: 'Error cargando empresas' }]
-                : companies.map((row) => ({ label: row.name }))
-          }
-          onSelect={(e) => setSelectedCompany(e!)}
-        />
+            label="Buscar Cliente"
+            options={
+              companiesLoading
+                ? [{ label: 'Cargando empresas...' }]
+                : companiesError
+                  ? [{ label: 'Error cargando empresas' }]
+                  : companies.map((row) => ({ label: row.name }))
+            }
+            onSelect={(e) => setSelectedCompany(e!)}
+          />
         </div>
 
         <div className="flex flex-col">

@@ -20,7 +20,7 @@ export default function SearchBar({
       disablePortal
       options={options}
       onChange={(_, value) => onSelect(value ? value.label : null)}
-      className='border-black'
+      className="border-black"
       sx={{
         width: '100%',
         backgroundColor: '#E5E7Eb',
