@@ -1,34 +1,44 @@
-"use client";
-import { PieChart } from "@mui/x-charts/PieChart";
-import { BarChart } from "@mui/x-charts/BarChart";
-import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import Link from "next/link";
-import MultipleSelectChip from "@/components/MultipleSelectChip";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CallIcon from "@mui/icons-material/Call";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import SearchIcon from "@mui/icons-material/Search";
-import { useFetchClients, Client } from "@/hooks/fetchClients";
-import { useEffect, useRef, useState } from "react";
-import { useFetchEmotions } from "@/hooks/fetchEmotions";
-import { useFetchCategories, Category } from "@/hooks/fetchCategories";
-import { useFetchTopics } from "@/hooks/fetchTopics";
-import SimpleWordCloud from "@/components/SimpleWordCloud";
-import { useFetchConversationsSummary } from "@/hooks/fetchConversationsSummary";
-import { useFetchConversationsCategories } from "@/hooks/fetchConversationsCategories";
-import { useFetchConversationsRatings } from "@/hooks/fetchConversationsRatings";
+'use client';
+import { PieChart } from '@mui/x-charts/PieChart';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import Link from 'next/link';
+import MultipleSelectChip from '@/components/MultipleSelectChip';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CallIcon from '@mui/icons-material/Call';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import SearchIcon from '@mui/icons-material/Search';
+import { useFetchClients, Client } from '@/hooks/fetchClients';
+import { useEffect, useRef, useState } from 'react';
+import { useFetchEmotions } from '@/hooks/fetchEmotions';
+import { useFetchCategories, Category } from '@/hooks/fetchCategories';
+import { useFetchTopics } from '@/hooks/fetchTopics';
+import SimpleWordCloud from '@/components/SimpleWordCloud';
+import { useFetchConversationsSummary } from '@/hooks/fetchConversationsSummary';
+import { useFetchConversationsCategories } from '@/hooks/fetchConversationsCategories';
+import { useFetchConversationsRatings } from '@/hooks/fetchConversationsRatings';
 
 export default function Home() {
-  const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
-  const { categories, loadingCategories, errorCategories, fetchCategories } = useFetchCategories();
+  const { clients, loadingClients, errorClients, fetchClients } =
+    useFetchClients();
+  const { categories, loadingCategories, errorCategories, fetchCategories } =
+    useFetchCategories();
 
-  const { emotions, loadingEmotions, errorEmotions, fetchEmotions} = useFetchEmotions();
+  const { emotions, loadingEmotions, errorEmotions, fetchEmotions } =
+    useFetchEmotions();
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
-  const { summary, loadingSummary, errorSummary, fetchConversationsSummary } = useFetchConversationsSummary();
-  const { conversationsCategories, loadingConversationsCategories, errorConversationsCategories, fetchConversationsCategories } = useFetchConversationsCategories();
-  const { ratings, loadingRatings, errorRatings, fetchConversationsRatings } = useFetchConversationsRatings();
+  const { summary, loadingSummary, errorSummary, fetchConversationsSummary } =
+    useFetchConversationsSummary();
+  const {
+    conversationsCategories,
+    loadingConversationsCategories,
+    errorConversationsCategories,
+    fetchConversationsCategories,
+  } = useFetchConversationsCategories();
+  const { ratings, loadingRatings, errorRatings, fetchConversationsRatings } =
+    useFetchConversationsRatings();
 
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -38,56 +48,64 @@ export default function Home() {
     fetchClients();
 
     fetchCategories();
-  }, []);
+  }, [fetchClients, fetchCategories]);
 
   const initialFetchDone = useRef(false);
 
   useEffect(() => {
-      if (!initialFetchDone.current) {
-        initialFetchDone.current = true;
-        return;
-      }
-      
-      const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
-      const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      return;
+    }
 
-      fetchConversationsRatings({
-        startDate: startDate,
-        endDate: endDate,
-        clients: selectedClients,
-        categories: selectedCategories
-      }); 
+    const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
+    const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
 
-      fetchConversationsCategories({
-        startDate: startDate,
-        endDate: endDate,
-        clients: selectedClients,
-        categories: selectedCategories
-      });
+    fetchConversationsRatings({
+      startDate: startDate,
+      endDate: endDate,
+      clients: selectedClients,
+      categories: selectedCategories,
+    });
 
-      fetchEmotions({
-        startDate: startDate,
-        endDate: endDate,
-        clients: selectedClients,
-        categories: selectedCategories
-      })
+    fetchConversationsCategories({
+      startDate: startDate,
+      endDate: endDate,
+      clients: selectedClients,
+      categories: selectedCategories,
+    });
 
-      fetchConversationsSummary({
-        startDate: startDate,
-        endDate: endDate,
-        clients: selectedClients,
-        categories: selectedCategories
-      });
+    fetchEmotions({
+      startDate: startDate,
+      endDate: endDate,
+      clients: selectedClients,
+      categories: selectedCategories,
+    });
 
-      fetchTopics({
-        limit: 10,
-        clients: selectedClients,
-        startDate: startDate,
-        endDate: endDate,
-        categories: selectedCategories
-      });
-  }, [selectedDate, selectedClients, selectedCategories]);
+    fetchConversationsSummary({
+      startDate: startDate,
+      endDate: endDate,
+      clients: selectedClients,
+      categories: selectedCategories,
+    });
 
+    fetchTopics({
+      limit: 10,
+      clients: selectedClients,
+      startDate: startDate,
+      endDate: endDate,
+      categories: selectedCategories,
+    });
+  }, [
+    selectedDate,
+    selectedClients,
+    selectedCategories,
+    fetchConversationsRatings,
+    fetchConversationsCategories,
+    fetchEmotions,
+    fetchConversationsSummary,
+    fetchTopics,
+  ]);
 
   return (
     <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
@@ -95,19 +113,25 @@ export default function Home() {
         <p className="text-2xl">Dashboard</p>
         <div className="flex gap-2">
           <div>
-            <button className="text-[#FFFFFF] rounded-md p-2 w-full" style={{ backgroundColor: "var(--sky-blue)" }}>
+            <button
+              className="text-[#FFFFFF] rounded-md p-2 w-full"
+              style={{ backgroundColor: 'var(--sky-blue)' }}
+            >
               Exportar como PDF <FileDownloadIcon />
             </button>
           </div>
           <div>
-            <button className="text-[#FFFFFF] rounded-md p-2 w-full" style={{ backgroundColor: "var(--sky-blue)" }}>
+            <button
+              className="text-[#FFFFFF] rounded-md p-2 w-full"
+              style={{ backgroundColor: 'var(--sky-blue)' }}
+            >
               Exportar como JSON <FileDownloadIcon />
             </button>
           </div>
           <Link
             href={'/calls/search'}
             className="text-[#FFFFFF] rounded-md"
-            style={{ backgroundColor: "var(--neoris-blue)" }}
+            style={{ backgroundColor: 'var(--neoris-blue)' }}
           >
             <div className="p-2 items-center justify-center text-center flex">
               <p className="">
@@ -146,10 +170,9 @@ export default function Home() {
                   return [];
                 }
                 return clients.map((client: Client) => ({
-                    id: client.user_id,
-                    name: client.username,
+                  id: client.user_id,
+                  name: client.username,
                 }));
-
               })()}
               value={selectedClients}
               onChange={(newClients: string[]) => {
@@ -159,14 +182,20 @@ export default function Home() {
           </div>
           <div className="">
             <MultipleSelectChip
-              title={loadingCategories ? "Categorías (Cargando...)" : errorCategories ? "Categorías (Error)" : "Categorías"}
+              title={
+                loadingCategories
+                  ? 'Categorías (Cargando...)'
+                  : errorCategories
+                    ? 'Categorías (Error)'
+                    : 'Categorías'
+              }
               names={(() => {
                 if (loadingCategories || errorCategories || !categories) {
                   return [];
                 }
                 return categories.map((category: Category) => ({
-                    id: category.category_id,
-                    name: category.name,
+                  id: category.category_id,
+                  name: category.name,
                 }));
               })()}
               value={selectedCategories}
@@ -179,22 +208,28 @@ export default function Home() {
 
         <div className="flex flex-col grow w-full md:w-[40%] justify-between gap-3">
           <div className="flex w-full h-[30%] justify-between text-center">
-            <div className="w-[48%] rounded-md flex flex-col items-center justify-center gap-3 p-3" style={{ backgroundColor: "var(--jonquil)" }}>
+            <div
+              className="w-[48%] rounded-md flex flex-col items-center justify-center gap-3 p-3"
+              style={{ backgroundColor: 'var(--jonquil)' }}
+            >
               <div className="flex gap-2 text-md items-center font-bold">
                 <AccessTimeIcon fontSize="medium" />
                 <h1>Tiempo promedio por llamada (minutos) </h1>
               </div>
-                <div className="text-6xl">
-                  {loadingSummary ? (
-                    <span className="text-2xl">Cargando...</span>
-                  ) : errorSummary ? (
-                    <span className="text-2xl text-red-500">Error</span>
-                  ) : (
-                    summary?.average_minutes || 0
-                  )}
-                </div>
+              <div className="text-6xl">
+                {loadingSummary ? (
+                  <span className="text-2xl">Cargando...</span>
+                ) : errorSummary ? (
+                  <span className="text-2xl text-red-500">Error</span>
+                ) : (
+                  summary?.average_minutes || 0
+                )}
+              </div>
             </div>
-            <div className="w-[48%] rounded-md flex flex-col items-center justify-center gap-3 p-3" style={{ backgroundColor: "var(--persian-pink)" }}>
+            <div
+              className="w-[48%] rounded-md flex flex-col items-center justify-center gap-3 p-3"
+              style={{ backgroundColor: 'var(--persian-pink)' }}
+            >
               <div className="flex gap-2 text-md items-center font-bold">
                 <CallIcon fontSize="small" />
                 <h1>Total de llamadas</h1>
@@ -242,16 +277,27 @@ export default function Home() {
             <p>Cargando emociones...</p>
           ) : errorEmotions ? (
             <p>Error al cargar emociones</p>
-          ) : emotions && (emotions.positive !== 0 || emotions.neutral !== 0 || emotions.negative !== 0) ? (
+          ) : emotions &&
+            (emotions.positive !== 0 ||
+              emotions.neutral !== 0 ||
+              emotions.negative !== 0) ? (
             <div className="mt-2">
               <PieChart
                 series={[
                   {
                     arcLabel: (item) => `${item.value}`,
                     data: [
-                      { id: 0, value: emotions.positive ?? 0, label: "Positivo" },
-                      { id: 1, value: emotions.neutral ?? 0, label: "Neutro" },
-                      { id: 2, value: emotions.negative ?? 0, label: "Negativo" },
+                      {
+                        id: 0,
+                        value: emotions.positive ?? 0,
+                        label: 'Positivo',
+                      },
+                      { id: 1, value: emotions.neutral ?? 0, label: 'Neutro' },
+                      {
+                        id: 2,
+                        value: emotions.negative ?? 0,
+                        label: 'Negativo',
+                      },
                     ],
                   },
                 ]}
@@ -274,31 +320,40 @@ export default function Home() {
             <p>Error al cargar categorías</p>
           ) : conversationsCategories && conversationsCategories.length > 0 ? (
             <BarChart
-              yAxis={[{
-                scaleType: "band",
-                data: conversationsCategories.map(category => category.name),
-                tickLabelStyle: {
-                  textAnchor: 'end',  // Changed from 'start' to 'end'
-                  fontSize: 12
-                }
-              }]}
-              series={[{
-                data: conversationsCategories.map(category => category.count),
-                label: "Número de llamadas"
-              }]}
+              yAxis={[
+                {
+                  scaleType: 'band',
+                  data: conversationsCategories.map(
+                    (category) => category.name
+                  ),
+                  tickLabelStyle: {
+                    textAnchor: 'end', // Changed from 'start' to 'end'
+                    fontSize: 12,
+                  },
+                },
+              ]}
+              series={[
+                {
+                  data: conversationsCategories.map(
+                    (category) => category.count
+                  ),
+                  label: 'Número de llamadas',
+                },
+              ]}
               layout="horizontal"
-              width={450}  // Increased from 300 to 450
+              width={450} // Increased from 300 to 450
               height={200}
-              margin={{ left: 150, right: 40, top: 60, bottom: 30 }}  // Increased left and right margins
+              margin={{ left: 150, right: 40, top: 60, bottom: 30 }} // Increased left and right margins
               sx={{
                 // Custom styling for better appearance
-                "& .MuiChartsAxis-tick .MuiChartsAxis-tickLabel": {
-                  fill: "#333"  // Darker text for better readability
+                '& .MuiChartsAxis-tick .MuiChartsAxis-tickLabel': {
+                  fill: '#333', // Darker text for better readability
                 },
-                "& .MuiChartsAxis-tickContainer .MuiChartsAxis-tick .MuiChartsAxis-tickLabel tspan": {
-                  fontSize: "0.875rem",
-                  fontFamily: "inherit"
-                }
+                '& .MuiChartsAxis-tickContainer .MuiChartsAxis-tick .MuiChartsAxis-tickLabel tspan':
+                  {
+                    fontSize: '0.875rem',
+                    fontFamily: 'inherit',
+                  },
               }}
             />
           ) : (
@@ -315,48 +370,52 @@ export default function Home() {
             <p>Error al cargar datos de satisfacción</p>
           ) : ratings && ratings.length > 0 ? (
             <BarChart
-              yAxis={[{
-                scaleType: "band",
-                data: ratings?.map(rating => rating.rating) || [],
-                tickLabelStyle: {
-                  textAnchor: 'end',
-                  fontSize: 12
-                }
-              }]}
-              xAxis={[{
-                scaleType: "linear",
-                tickLabelStyle: {
-                  textAnchor: 'start',
-                  fontSize: 12
+              yAxis={[
+                {
+                  scaleType: 'band',
+                  data: ratings?.map((rating) => rating.rating) || [],
+                  tickLabelStyle: {
+                    textAnchor: 'end',
+                    fontSize: 12,
+                  },
                 },
-                tickNumber: 5,
-              }]}
-
-              series={[{
-                data: ratings?.map(rating => rating.count) || [],
-                label: "Número de llamadas"
-              }]}
+              ]}
+              xAxis={[
+                {
+                  scaleType: 'linear',
+                  tickLabelStyle: {
+                    textAnchor: 'start',
+                    fontSize: 12,
+                  },
+                  tickNumber: 5,
+                },
+              ]}
+              series={[
+                {
+                  data: ratings?.map((rating) => rating.count) || [],
+                  label: 'Número de llamadas',
+                },
+              ]}
               layout="horizontal"
               width={900}
               height={200}
               margin={{ left: 50, right: 50, top: 60, bottom: 30 }}
               sx={{
-                "& .MuiChartsAxis-tick .MuiChartsAxis-tickLabel": {
-                  fill: "#333"
+                '& .MuiChartsAxis-tick .MuiChartsAxis-tickLabel': {
+                  fill: '#333',
                 },
-                "& .MuiChartsAxis-tickContainer .MuiChartsAxis-tick .MuiChartsAxis-tickLabel tspan": {
-                  fontSize: "0.875rem",
-                  fontFamily: "inherit"
-                }
+                '& .MuiChartsAxis-tickContainer .MuiChartsAxis-tick .MuiChartsAxis-tickLabel tspan':
+                  {
+                    fontSize: '0.875rem',
+                    fontFamily: 'inherit',
+                  },
               }}
             />
-            
           ) : (
             <p>No hay datos de calificaciones disponibles</p>
           )}
         </div>
       </div>
     </div>
-    
   );
 }
