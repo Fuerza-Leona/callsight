@@ -1,11 +1,42 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { sideNavLinksClient, sideNavLinksAgent } from '@/constants';
+import { sideNavLinksClient, sideNavLinksAgent, chatTemp } from '@/constants';
 import { useState } from 'react';
 import { useUser } from '@/context/UserContext';
 
 import Image from 'next/image';
+
+const ChatbotSideNavItems = () => {
+  return (
+    <div className="overflow-y-auto max-h-[calc(30vh)] bg-gray-950/60 rounded-3xl">
+      {' '}
+      {/* Adjust 8rem as needed for spacing */}
+      <ul className="flex flex-col items-center text-center gap-4 lg:gap-6 relative z-20 pt-15 md:pt-10">
+        <>
+          <p className="text-neutral-400 italic">Historial de chats</p>
+          {chatTemp.map(({ id, href, name }) => {
+            return (
+              <li
+                key={id}
+                className={
+                  ' max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5 text-neutral-400 hover:text-white'
+                }
+              >
+                <Link
+                  href={`/${href}`}
+                  className="text-lg lg:text-base transition-colors w-full block hover:text-white"
+                >
+                  {name}
+                </Link>
+              </li>
+            );
+          })}
+        </>
+      </ul>
+    </div>
+  );
+};
 
 const SideNavItems = () => {
   const pathname = usePathname();
@@ -84,6 +115,7 @@ const SideNavItems = () => {
 };
 
 const Sidebar = () => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
   const { user } = useUser();
@@ -110,8 +142,10 @@ const Sidebar = () => {
             className={`h-screen w-full md:w-64 pt-20 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:fixed lg:translate-x-0`}
           >
             <div className="flex flex-col justify-between h-full py-5">
-              <nav className="lg:flex w-full justify-center">
+              <nav className="lg:flex flex-col w-full justify-center">
                 <SideNavItems />
+                {/* Check if the current pathname includes the href chatbot */}
+                {pathname.includes('chatbot') && <ChatbotSideNavItems />}
               </nav>
             </div>
           </aside>
