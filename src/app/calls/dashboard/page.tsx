@@ -48,7 +48,8 @@ export default function Home() {
     fetchClients();
 
     fetchCategories();
-  }, [fetchClients, fetchCategories]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialFetchDone = useRef(false);
 
@@ -96,16 +97,8 @@ export default function Home() {
       endDate: endDate,
       categories: selectedCategories,
     });
-  }, [
-    selectedDate,
-    selectedClients,
-    selectedCategories,
-    fetchConversationsRatings,
-    fetchConversationsCategories,
-    fetchEmotions,
-    fetchConversationsSummary,
-    fetchTopics,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, selectedClients, selectedCategories]);
 
   return (
     <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
