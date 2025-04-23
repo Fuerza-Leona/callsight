@@ -42,11 +42,21 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
     loading: companiesLoading,
     error: companiesError,
   } = useFetchCompanies(token);
+
   const {
     participants,
-    loading: participantsLoading,
-    error: participantsError,
-  } = useParticipants(selectedCompany, token);
+    loadingParticipants,
+    errorParticipants,
+    fetchParticipants,
+  } = useParticipants();
+
+  useEffect(() => {
+    console.log('Selected company:', selectedCompany);
+    if (selectedCompany) {
+      console.log('SS', selectedCompany)
+      fetchParticipants(selectedCompany);
+    }
+  }, [selectedCompany]);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -104,15 +114,27 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
         <div className="flex flex-col">
           <label className="font-semibold mb-1">Empresa</label>
           <SearchBar
-            label="Buscar Cliente"
+            label="Seleccionar Empresa"
             options={
               companiesLoading
-                ? [{ label: 'Cargando empresas...' }]
+                ? [{ label: 'Cargando empresas...', value: '' }]
                 : companiesError
-                  ? [{ label: 'Error cargando empresas' }]
-                  : companies.map((row) => ({ label: row.name }))
+                  ? [{ label: 'Error cargando empresas', value: '' }]
+                  : companies.map((row) => ({ 
+                      label: row.name,
+                      value: row.company_id
+                    }))
             }
-            onSelect={(e) => setSelectedCompany(e!)}
+            onSelect={(value) => {
+              const selectedCompany = companies.find(
+                (company) => company.name == value
+              );
+
+              if (selectedCompany) {
+                console.log(selectedCompany.company_id);
+                setSelectedCompany(selectedCompany.company_id);
+              }
+            }}
           />
         </div>
 
@@ -137,9 +159,9 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
           <div className="flex flex-wrap gap-2">
             {!selectedCompany ? (
               <p>Seleccione una empresa primero</p>
-            ) : participantsLoading ? (
+            ) : loadingParticipants ? (
               <p>Cargando participantes...</p>
-            ) : participantsError ? (
+            ) : errorParticipants ? (
               <p>Error cargando participantes</p>
             ) : participants.length === 0 ? (
               <p>No hay participantes disponibles</p>
