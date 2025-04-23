@@ -5,6 +5,7 @@ import SuggestedPrompt from '@/components/SuggestedPrompt';
 import TextBubble from '@/components/TextBubble';
 import { useChatbot } from '@/hooks/useChatbot';
 import { useSuggestedPrompts } from '@/hooks/useSuggestedPrompts';
+import { useChatbotConversation } from '@/hooks/useChatbotConversation';
 
 const formatSteps = (text: string): string[] => {
   //Enumarate steps if response has them
@@ -16,7 +17,34 @@ const formatSteps = (text: string): string[] => {
 };
 
 const Chatbot = () => {
+  const handleStartConversationFromPrompt = (message_value: string) => {
+    setInputText('');
+    setLastSentMessage(message_value);
+    postChatbot(message_value);
+    setHasSent(true);
+  };
+
+  const handleButtonSubmit = () => {
+    if (!hasSent) {
+      setHasSent(true);
+      postChatbot(inputText);
+      setLastSentMessage(inputText);
+      setInputText('');
+    } else {
+      setLastSentMessage(inputText);
+      postChatbotConversation(currentConversationID!, inputText);
+      setInputText('');
+    }
+  };
+
   const { postChatbot, data, loading, error } = useChatbot();
+  const {
+    postChatbotConversation,
+    data: newConversationMessage,
+    loading: newConversationMessageLoading,
+    error: newConversationMessageError,
+  } = useChatbotConversation();
+
   const {
     getSuggestions,
     data: promptsData,
@@ -26,11 +54,20 @@ const Chatbot = () => {
   const [inputText, setInputText] = useState('');
   const [hasSent, setHasSent] = useState(false);
   const [lastSentMessage, setLastSentMessage] = useState('');
+  const [currentConversationID, setCurrentConversationID] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     getSuggestions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (data?.conversation_id) {
+      setCurrentConversationID(data.conversation_id);
+    }
+  }, [data]);
 
   return (
     <>
@@ -48,28 +85,19 @@ const Chatbot = () => {
               <SuggestedPrompt
                 title={promptsData?.[0] || 'Prompt 1'}
                 onClick={() => {
-                  setInputText('');
-                  setLastSentMessage(promptsData?.[0] || '');
-                  setHasSent(true);
-                  postChatbot(promptsData?.[0] || '');
+                  handleStartConversationFromPrompt(promptsData?.[0] || '');
                 }}
               />
               <SuggestedPrompt
                 title={promptsData?.[1] || 'Prompt 2'}
                 onClick={() => {
-                  setInputText('');
-                  setLastSentMessage(promptsData?.[1] || '');
-                  setHasSent(true);
-                  postChatbot(promptsData?.[1] || '');
+                  handleStartConversationFromPrompt(promptsData?.[1] || '');
                 }}
               />
               <SuggestedPrompt
                 title={promptsData?.[2] || 'Prompt 3'}
                 onClick={() => {
-                  setInputText('');
-                  setLastSentMessage(promptsData?.[2] || '');
-                  setHasSent(true);
-                  postChatbot(promptsData?.[2] || '');
+                  handleStartConversationFromPrompt(promptsData?.[2] || '');
                 }}
               />
             </div>
@@ -88,15 +116,47 @@ const Chatbot = () => {
           {hasSent && (
             <div className="flex flex-col justify-start gap-10 p-20 min-h-[32rem] h-[32rem] overflow-scroll">
               {loading && <p>loading...</p>}
-              {data && (
-                <>
-                  <TextBubble message={lastSentMessage} isUser={true} />
-                  <TextBubble
-                    message={formatSteps(data).join('\n\n')}
-                    isUser={false}
-                  />
-                </>
-              )}
+              {data &&
+                !newConversationMessage &&
+                ((!newConversationMessageLoading && (
+                  <>
+                    <TextBubble message={lastSentMessage} isUser={true} />
+                    <TextBubble
+                      message={formatSteps(data.response).join('\n\n')}
+                      isUser={false}
+                    />
+                  </>
+                )) ||
+                  (newConversationMessageLoading && (
+                    <div className="relative w-full flex flex-col items-center text-center">
+                      <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
+                      <p className="text-lg text-gray-600">
+                        Cargando respuesta...
+                      </p>
+                    </div>
+                  )))}
+              {data &&
+                newConversationMessage &&
+                ((!newConversationMessageLoading &&
+                  !newConversationMessageError && (
+                    <>
+                      <TextBubble message={lastSentMessage} isUser={true} />
+                      <TextBubble
+                        message={formatSteps(newConversationMessage!).join(
+                          '\n\n'
+                        )}
+                        isUser={false}
+                      />
+                    </>
+                  )) ||
+                  (newConversationMessageLoading && (
+                    <div className="relative w-full flex flex-col items-center text-center">
+                      <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
+                      <p className="text-lg text-gray-600">
+                        Cargando respuesta...
+                      </p>
+                    </div>
+                  )))}
             </div>
           )}
           <div className="w-full flex flex-col justify-center items-center h-full my-10">
@@ -109,10 +169,7 @@ const Chatbot = () => {
             />
             <button
               onClick={() => {
-                setHasSent(true);
-                postChatbot(inputText);
-                setLastSentMessage(inputText);
-                setInputText('');
+                handleButtonSubmit();
               }}
               className="rounded-xl my-10 hover:cursor-pointer bg-[#13202A] text-white p-2"
             >
