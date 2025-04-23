@@ -305,7 +305,7 @@ export default function Home() {
           )}
         </div>
 
-        <div className="w-full md:w-[48%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
+        <div className="w-full md:w-[48%] rounded-md flex items-center justify-center bg-white p-5 flex flex-col">
           <h1 className="text-lg font-bold pt-3">Categorías</h1>
           {loadingConversationsCategories ? (
             <p>Cargando categorías...</p>
