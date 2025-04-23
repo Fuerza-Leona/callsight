@@ -76,6 +76,7 @@ export default function Home() {
                   required
                   className="w-full rounded-lg bg-gray-200 py-[2px] placeholder:text-neutral-500 text-black focus:outline-none px-2"
                   placeholder="Johndoe@gmail.com"
+                  id="email"
                 />
 
                 <h2 className="font-bold mt-4">Contraseña</h2>
@@ -87,6 +88,7 @@ export default function Home() {
                   onChange={handleChange}
                   required
                   className="w-full rounded-lg bg-gray-200 py-[2px] placeholder:text-neutral-500 text-black focus:outline-none px-2"
+                  id="password"
                 />
               </div>
             </div>

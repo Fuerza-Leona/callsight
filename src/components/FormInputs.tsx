@@ -168,6 +168,7 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
             className="w-full p-3 bg-gray-200 rounded-lg border-black"
             value={date}
             onChange={(e) => setDate(e.target.value)}
+            id="dateinput"
           />
         </div>
 

@@ -67,6 +67,7 @@ export default function Home() {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearch(event.target.value);
           }}
+          id="BuscarInput"
         />
         {!dataLlamadas.llamadas ? (
           <CircularProgress />

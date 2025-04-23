@@ -22,6 +22,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
         type="file"
         className="p-3 border rounded-lg bg-gray-200 border-black"
         onChange={handleFileChange}
+        id="fileInput"
       />
       {selectedFile && (
         <p className="mt-2 text-sm text-gray-600">
