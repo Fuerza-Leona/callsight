@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import MultipleSelectChip from '@/components/MultipleSelectChip';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFetchClients, Client } from '@/hooks/fetchClients';
 import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -23,49 +23,82 @@ import dayjs from 'dayjs';
 
 export default function Home() {
   const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
-
-  const {conversations, loadingConversations, errorConversations, fetchConversations} = useFetchConversations();
-  const { categories, loadingCategories, errorCategories ,fetchCategories } = useFetchCategories();
-  const [selectedDate, setSelectedDate] = React.useState<dayjs.Dayjs>(dayjs());
+  const { conversations, loadingConversations, errorConversations, fetchConversations } = useFetchConversations();
+  const { categories, loadingCategories, errorCategories, fetchCategories } = useFetchCategories();
   
-  const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
-  const [selectedClients, setSelectedClients] = React.useState<string[]>([]);
-  const [search, setSearch] = React.useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedClients, setSelectedClients] = useState<string[]>([]);
+  const [search, setSearch] = useState<string>('');
+  
+  // Track if filters have been changed by user
+  const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
+  const initialFetchDone = useRef<boolean>(false);
+  const initialLoadCompleted = useRef<boolean>(false);
 
   const router = useRouter();
 
   useEffect(() => {
     fetchClients();
-    fetchConversations();
+    
     fetchCategories();
+    initialLoadCompleted.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initialFetchDone = useRef(false);
-
+  // Separate effect for initial conversations fetch - runs only once
   useEffect(() => {
 
     if (!initialFetchDone.current) {
+      fetchConversations();
       initialFetchDone.current = true;
-      return;
+
     }
-
-      const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
-      const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
-
-      fetchConversations({
-        clients: selectedClients,
-        categories: selectedCategories,
-        startDate: startDate,
-        endDate: endDate,
-        conversation_id: search,
-      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  }, [selectedDate, selectedClients, selectedCategories, search]);
+  // Handle filter changes after initial load
+  useEffect(() => {
+    if (!initialLoadCompleted.current) return;
+    if (!filtersChanged) return;
+
+    const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
+    const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
+
+    fetchConversations({
+      clients: selectedClients,
+      categories: selectedCategories,
+      startDate: startDate,
+      endDate: endDate,
+      conversation_id: search,
+    });
+    
+    setFiltersChanged(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtersChanged]);
 
   const handleClick = (callId: string) => {
     router.push(`/calls/detail?call_id=${callId}`);
+  };
+
+  const handleDateChange = (newDate: dayjs.Dayjs) => {
+    setSelectedDate(newDate);
+    setFiltersChanged(true);
+  };
+
+  const handleClientsChange = (newClients: string[]) => {
+    setSelectedClients(newClients);
+    setFiltersChanged(true);
+  };
+
+  const handleCategoriesChange = (newCategories: string[]) => {
+    setSelectedCategories(newCategories);
+    setFiltersChanged(true);
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+    setFiltersChanged(true);
   };
 
   return (
@@ -75,69 +108,59 @@ export default function Home() {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateCalendar
                 value={selectedDate}
-                onChange={(newDate) => {
-                  setSelectedDate(newDate);
-                }}
+                onChange={handleDateChange}
                 views={['month', 'year']}
                 openTo="month"
                 className="bg-[#1E242B] rounded-md w-1/1"
               />
             </LocalizationProvider>
           </div>
-            <MultipleSelectChip
-              title={
-                loadingClients
-                  ? 'Cliente (Cargando...)'
-                  : errorClients
-                    ? 'Cliente (Error)'
-                    : 'Cliente'
+          <MultipleSelectChip
+            title={
+              loadingClients
+                ? 'Cliente (Cargando...)'
+                : errorClients
+                  ? 'Cliente (Error)'
+                  : 'Cliente'
+            }
+            names={(() => {
+              if (loadingClients || errorClients || !clients) {
+                return [];
               }
-              names={(() => {
-                if (loadingClients || errorClients || !clients) {
-                  return [];
-                }
-                return clients.map((client: Client) => ({
-                  id: client.user_id,
-                  name: client.username,
+              return clients.map((client: Client) => ({
+                id: client.user_id,
+                name: client.username,
+              }));
+            })()}
+            value={selectedClients}
+            onChange={handleClientsChange}
+          />
+          <MultipleSelectChip
+            title={
+              loadingCategories
+                ? 'Categorías (Cargando...)'
+                : errorCategories
+                ? 'Categorías (Error)'
+                : 'Categorías'
+            }
+            names={(() => {
+              if (loadingCategories || errorCategories || !categories) {
+                return [];
+              }
+              return categories.map((category: Category) => ({
+                id: category.category_id,
+                name: category.name,
                 }));
-              })()}
-              value={selectedClients}
-              onChange={(newClients: string[]) => {
-                setSelectedClients(newClients);
-              }}
-            />
-                    <MultipleSelectChip
-                      title={
-                        loadingCategories
-                          ? 'Categorías (Cargando...)'
-                          : errorCategories
-                            ? 'Categorías (Error)'
-                            : 'Categorías'
-                      }
-                      names={(() => {
-                        if (loadingCategories || errorCategories || !categories) {
-                          return [];
-                        }
-                        return categories.map((category: Category) => ({
-                          id: category.category_id,
-                          name: category.name,
-                        }));
-                      })()}
-                      value={selectedCategories}
-                      onChange={(newCategories: string[]) => {
-                        setSelectedCategories(newCategories);
-                      }}
-                    />
-        
+            })()}
+            value={selectedCategories}
+            onChange={handleCategoriesChange}
+          />
       </div>
       <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
       <TextField
           label="Buscar por ID"
           value={search}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setSearch(event.target.value);
-          }}
-          id="BuscarInput"
+          onChange={handleSearchChange}
         />
         {loadingConversations ? (
           <CircularProgress />
@@ -177,7 +200,6 @@ export default function Home() {
                             <Tag key={conversation.category} text={conversation.category} />
                           )
                         }
-                        
                       </div>
                     </TableCell>
                   </TableRow>

@@ -67,11 +67,7 @@ export const useFetchConversationsSummary = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchConversationsSummary();
-  }, []);
-
+  
   return {
     summary,
     loadingSummary: loading,

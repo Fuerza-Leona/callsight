@@ -64,9 +64,7 @@ export const useFetchTopics = () => {
     }
   };
 
-  useEffect(() => {
-    fetchTopics();
-  }, []);
+  
 
   return { topics, loadingTopics: loading, errorTopics: error, fetchTopics };
 };
