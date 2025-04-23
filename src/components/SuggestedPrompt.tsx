@@ -8,7 +8,7 @@ type Props = {
 const SuggestedPrompt = ({ title, onClick }: Props) => {
   return (
     <div
-      className="border border-gray-400 w-full px-5 py-18 text-center rounded-3xl text-2xl hover:bg-[#F6CF3C] hover:transition-colors hover:cursor-pointer"
+      className="border border-gray-400 w-full px-5 h-[12rem] text-center rounded-3xl text-xl hover:bg-[#F6CF3C] hover:transition-colors hover:cursor-pointer flex justify-center items-center"
       onClick={onClick}
     >
       {title}

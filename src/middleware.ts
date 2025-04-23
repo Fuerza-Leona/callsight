@@ -10,7 +10,8 @@ export function middleware(request: NextRequest) {
     '/calls/dashboard',
     '/calls/upload',
     '/calls/detail',
-    '/tickets',
+    '/support',
+    '/chatbot',
   ];
 
   // If trying to access a protected route without user_info cookie, redirect to login
@@ -21,6 +22,11 @@ export function middleware(request: NextRequest) {
   // If user is logged in and tries to access login, redirect to profile
   if (pathname === '/login' && userCookie) {
     return NextResponse.redirect(new URL('/perfil', request.url));
+  }
+
+  // If user tries to access tickets, redirect to support
+  if (pathname === '/tickets') {
+    return NextResponse.redirect(new URL('/support', request.url));
   }
 
   return NextResponse.next();

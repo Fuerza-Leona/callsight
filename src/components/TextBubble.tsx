@@ -21,7 +21,7 @@ const TextBubble = ({ message, isUser = false }: Props) => {
         my: 1,
       }}
     >
-      <Typography>{message}</Typography>
+      <Typography sx={{ whiteSpace: 'pre-wrap' }}>{message}</Typography>
     </Paper>
   );
 };
