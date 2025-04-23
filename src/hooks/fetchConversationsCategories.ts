@@ -67,11 +67,7 @@ export const useFetchConversationsCategories = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchConversationsCategories();
-  }, []);
-
+  
   return {
     conversationsCategories,
     loadingConversationsCategories: loading,

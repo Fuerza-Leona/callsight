@@ -67,9 +67,7 @@ export const useFetchEmotions = () => {
     }
   };
 
-  useEffect(() => {
-    fetchEmotions();
-  }, []);
+  
 
   return {
     emotions,

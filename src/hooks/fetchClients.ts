@@ -19,6 +19,8 @@ export const useFetchClients = () => {
   const [clients, setClients] = useState<Client[]>([]);
 
   const fetchClients = async () => {
+    setLoading(true);
+    setError('');
     try {
       const response = await axios.get<ClientsResponse>(
         `${apiUrl}/users/client`
@@ -31,11 +33,7 @@ export const useFetchClients = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchClients();
-  }, []);
-
+  
   return {
     clients,
     loadingClients: loading,

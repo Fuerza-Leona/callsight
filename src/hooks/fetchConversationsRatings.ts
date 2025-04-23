@@ -66,11 +66,7 @@ export const useFetchConversationsRatings = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchConversationsRatings();
-  }, []);
-
+  
   return {
     ratings,
     loadingRatings: loading,
