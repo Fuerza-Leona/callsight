@@ -171,7 +171,7 @@ const Chatbot = () => {
               onClick={() => {
                 handleButtonSubmit();
               }}
-              className="rounded-xl my-10 hover:cursor-pointer bg-[#13202A] text-white p-2"
+              className="rounded-xl my-5 hover:cursor-pointer bg-[#13202A] text-white p-2"
             >
               Submit
             </button>
