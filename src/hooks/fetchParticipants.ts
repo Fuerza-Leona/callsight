@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 import { apiUrl } from '@/constants';
@@ -8,52 +8,35 @@ interface Participant {
   username: string;
 }
 
-export function useParticipants(companyId: string, token: string | null) {
+interface ParticipantsResponse {
+  participants?: Participant[];
+}
+
+export const useParticipants = () => {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!token || !companyId) {
-      setParticipants([]);
+  const fetchParticipants = async (companyId: string) => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await axios.get<ParticipantsResponse>(
+        `${apiUrl}/companies/${companyId}/list`
+      );
+      setParticipants(response.data?.participants || []);
+    } catch (err) {
+      console.error('Error:', err);
+      setError("Error");
+    } finally {
       setLoading(false);
-      setError(null);
-      return;
     }
-
-    const getParticipants = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await axios.get(
-          `${apiUrl}/companies/${companyId}/list`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        console.log('Participants API response:', response.data);
-
-        if (response.data && Array.isArray(response.data.companies)) {
-          setParticipants(response.data.companies);
-        } else if (response.data && Array.isArray(response.data.participants)) {
-          setParticipants(response.data.participants);
-        } else {
-          setParticipants([]);
-          setError('Invalid response format');
-        }
-      } catch (err) {
-        console.error('Error fetching participants:', err);
-        setError('Failed to fetch participants');
-        setParticipants([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getParticipants();
-  }, [companyId, token]);
-
-  return { participants, loading, error };
-}
+  };
+  
+  return {
+    participants,
+    loadingParticipants: loading,
+    errorParticipants: error,
+    fetchParticipants,
+  };
+};
