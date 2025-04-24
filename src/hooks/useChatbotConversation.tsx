@@ -6,15 +6,17 @@ import { apiUrl } from '@/constants';
 
 interface ApiResponse {
   response: string;
-  conversation_id: string;
 }
 
-export const useChatbot = () => {
-  const [data, setData] = useState<ApiResponse | null>(null);
+export const useChatbotConversation = () => {
+  const [data, setData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const postChatbot = async (prompt: string) => {
+  const postChatbotConversation = async (
+    conversation_id: string,
+    prompt: string
+  ) => {
     console.log('Sending prompt to OpenAI API:', prompt);
     setLoading(true);
     setError(null);
@@ -32,7 +34,7 @@ export const useChatbot = () => {
 
       //Request with Auth header
       const response = await axios.post<ApiResponse>(
-        `${apiUrl}/chatbot/chat`,
+        `${apiUrl}/chatbot/continue/${conversation_id}`,
         { prompt },
         {
           headers: {
@@ -42,7 +44,7 @@ export const useChatbot = () => {
       );
 
       console.log('Chatbot response:', response.data);
-      setData(response.data);
+      setData(response.data.response);
     } catch (err: unknown) {
       console.error('Chatbot fetch error:', err);
       if (axios.isAxiosError(err)) {
@@ -59,5 +61,5 @@ export const useChatbot = () => {
     }
   };
 
-  return { postChatbot, data, loading, error };
+  return { postChatbotConversation, data, loading, error };
 };

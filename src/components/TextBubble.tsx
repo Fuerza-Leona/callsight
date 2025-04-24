@@ -14,7 +14,7 @@ const TextBubble = ({ message, isUser = false }: Props) => {
       sx={{
         p: 2,
         borderRadius: 2,
-        bgcolor: isUser ? '#13202A' : 'grey.200',
+        bgcolor: isUser ? '#13202A' : 'gray.100',
         color: isUser ? 'white' : 'black',
         alignSelf: isUser ? 'flex-end' : 'flex-start',
         maxWidth: '75%',

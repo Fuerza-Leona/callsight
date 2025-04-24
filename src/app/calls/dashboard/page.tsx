@@ -44,61 +44,67 @@ export default function Home() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
 
-  useEffect(() => {
-    fetchClients();
+  const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
 
-    fetchCategories();
+  const isLoadingRef = useRef(false);
+
+  useEffect(() => {
+    const loadAllData = async () => {
+      await Promise.all([fetchClients(), fetchCategories()]);
+    };
+
+    loadAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initialFetchDone = useRef(false);
-
   useEffect(() => {
-    if (!initialFetchDone.current) {
-      initialFetchDone.current = true;
-      return;
-    }
-
     const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
     const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
-
-    fetchConversationsRatings({
-      startDate: startDate,
-      endDate: endDate,
+    const params = {
+      startDate,
+      endDate,
       clients: selectedClients,
       categories: selectedCategories,
-    });
+    };
 
-    fetchConversationsCategories({
-      startDate: startDate,
-      endDate: endDate,
-      clients: selectedClients,
-      categories: selectedCategories,
-    });
+    const loadAllData = async () => {
+      if (isLoadingRef.current) return;
 
-    fetchEmotions({
-      startDate: startDate,
-      endDate: endDate,
-      clients: selectedClients,
-      categories: selectedCategories,
-    });
+      isLoadingRef.current = true;
+      try {
+        await Promise.all([
+          fetchConversationsRatings(params),
+          fetchConversationsCategories(params),
+          fetchEmotions(params),
+          fetchConversationsSummary(params),
+          fetchTopics({ ...params, limit: 10 }),
+        ]);
+        setFiltersChanged(false);
+      } finally {
+        isLoadingRef.current = false;
+      }
+    };
 
-    fetchConversationsSummary({
-      startDate: startDate,
-      endDate: endDate,
-      clients: selectedClients,
-      categories: selectedCategories,
-    });
-
-    fetchTopics({
-      limit: 10,
-      clients: selectedClients,
-      startDate: startDate,
-      endDate: endDate,
-      categories: selectedCategories,
-    });
+    loadAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, selectedClients, selectedCategories]);
+  }, [filtersChanged]);
+
+  const handleDateChange = (newDate: dayjs.Dayjs | null) => {
+    if (newDate) {
+      setSelectedDate(newDate);
+      setFiltersChanged(true);
+    }
+  };
+
+  const handleClientsChange = (newClients: string[]) => {
+    setSelectedClients(newClients);
+    setFiltersChanged(true);
+  };
+
+  const handleCategoriesChange = (newCategories: string[]) => {
+    setSelectedCategories(newCategories);
+    setFiltersChanged(true);
+  };
 
   return (
     <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
@@ -140,9 +146,7 @@ export default function Home() {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateCalendar
                 value={selectedDate}
-                onChange={(newDate) => {
-                  setSelectedDate(newDate);
-                }}
+                onChange={handleDateChange}
                 views={['month', 'year']}
                 openTo="month"
                 className="bg-[#1E242B] rounded-md w-1/1"
@@ -168,9 +172,7 @@ export default function Home() {
                 }));
               })()}
               value={selectedClients}
-              onChange={(newClients: string[]) => {
-                setSelectedClients(newClients);
-              }}
+              onChange={handleClientsChange}
             />
           </div>
           <div className="">
@@ -192,9 +194,7 @@ export default function Home() {
                 }));
               })()}
               value={selectedCategories}
-              onChange={(newCategories: string[]) => {
-                setSelectedCategories(newCategories);
-              }}
+              onChange={handleCategoriesChange}
             />
           </div>
         </div>
@@ -305,7 +305,7 @@ export default function Home() {
           )}
         </div>
 
-        <div className="w-full md:w-[48%] rounded-md flex items-center justify-center bg-[#E7E6E7] p-5 flex flex-col">
+        <div className="w-full md:w-[48%] rounded-md flex items-center justify-center bg-white p-5 flex flex-col">
           <h1 className="text-lg font-bold pt-3">Categorías</h1>
           {loadingConversationsCategories ? (
             <p>Cargando categorías...</p>
