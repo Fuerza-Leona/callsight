@@ -1,7 +1,7 @@
 'use client';
 
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { apiUrl } from '@/constants';
 
 export interface Topic {
@@ -63,8 +63,6 @@ export const useFetchTopics = () => {
       setLoading(false);
     }
   };
-
-  
 
   return { topics, loadingTopics: loading, errorTopics: error, fetchTopics };
 };

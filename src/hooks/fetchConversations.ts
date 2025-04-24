@@ -1,7 +1,7 @@
 'use client';
 
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { apiUrl } from '@/constants';
 
 export interface Conversation {
@@ -12,7 +12,7 @@ export interface Conversation {
 }
 
 interface ConversationsResponse {
-    conversations?: Conversation[];
+  conversations?: Conversation[];
 }
 
 interface FetchConversationsParams {
@@ -28,9 +28,7 @@ export const useFetchConversations = () => {
   const [error, setError] = useState<string | unknown>('');
   const [conversations, setConversations] = useState<Conversation[]>([]);
 
-  const fetchConversations = async (
-    params?: FetchConversationsParams
-  ) => {
+  const fetchConversations = async (params?: FetchConversationsParams) => {
     setLoading(true);
     setError('');
     try {
@@ -45,8 +43,9 @@ export const useFetchConversations = () => {
           params.clients.length > 0 && { clients: params.clients }),
         ...(params?.categories &&
           params.categories.length > 0 && { categories: params.categories }),
-          ...(params?.conversation_id && { conversation_id: params.conversation_id }),
-
+        ...(params?.conversation_id && {
+          conversation_id: params.conversation_id,
+        }),
       };
 
       const config = {
@@ -57,12 +56,11 @@ export const useFetchConversations = () => {
         },
       };
 
-      const conversationsResponse =
-        await axios.post<ConversationsResponse>(
-          `${apiUrl}/conversations/mine`,
-          requestBody,
-          config
-        );
+      const conversationsResponse = await axios.post<ConversationsResponse>(
+        `${apiUrl}/conversations/mine`,
+        requestBody,
+        config
+      );
 
       setConversations(conversationsResponse.data?.conversations || []);
     } catch (err) {

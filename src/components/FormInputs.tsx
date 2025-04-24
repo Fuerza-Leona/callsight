@@ -53,10 +53,10 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
   useEffect(() => {
     console.log('Selected company:', selectedCompany);
     if (selectedCompany) {
-      console.log('SS', selectedCompany)
+      console.log('SS', selectedCompany);
       fetchParticipants(selectedCompany);
     }
-  }, [selectedCompany]);
+  }, [selectedCompany, fetchParticipants]);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -120,9 +120,9 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
                 ? [{ label: 'Cargando empresas...', value: '' }]
                 : companiesError
                   ? [{ label: 'Error cargando empresas', value: '' }]
-                  : companies.map((row) => ({ 
+                  : companies.map((row) => ({
                       label: row.name,
-                      value: row.company_id
+                      value: row.company_id,
                     }))
             }
             onSelect={(value) => {
