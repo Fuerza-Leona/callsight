@@ -22,13 +22,18 @@ import Tag from '@/components/Tag';
 import dayjs from 'dayjs';
 
 export default function Home() {
-  const { clients, loadingClients, errorClients, fetchClients } = useFetchClients();
+  const { clients, loadingClients, errorClients, fetchClients } =
+    useFetchClients();
 
-  const {conversations, loadingConversations, errorConversations, fetchConversations} = useFetchConversations();
-  const { categories, loadingCategories, errorCategories ,fetchCategories } = useFetchCategories();
+  const { conversations, loadingConversations, fetchConversations } =
+    useFetchConversations();
+  const { categories, loadingCategories, errorCategories, fetchCategories } =
+    useFetchCategories();
   const [selectedDate, setSelectedDate] = React.useState<dayjs.Dayjs>(dayjs());
-  
-  const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
+
+  const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
+    []
+  );
   const [selectedClients, setSelectedClients] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState<string>('');
 
@@ -44,24 +49,22 @@ export default function Home() {
   const initialFetchDone = useRef(false);
 
   useEffect(() => {
-
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
       return;
     }
 
-      const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
-      const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
+    const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
+    const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
 
-      fetchConversations({
-        clients: selectedClients,
-        categories: selectedCategories,
-        startDate: startDate,
-        endDate: endDate,
-        conversation_id: search,
-      });
+    fetchConversations({
+      clients: selectedClients,
+      categories: selectedCategories,
+      startDate: startDate,
+      endDate: endDate,
+      conversation_id: search,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-
   }, [selectedDate, selectedClients, selectedCategories, search]);
 
   const handleClick = (callId: string) => {
@@ -71,67 +74,66 @@ export default function Home() {
   return (
     <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
       <div className="w-3/10 flex flex-col align-center text-center">
-          <div className="text-white bg-[#1E242B] rounded-md mb-5 ">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateCalendar
-                value={selectedDate}
-                onChange={(newDate) => {
-                  setSelectedDate(newDate);
-                }}
-                views={['month', 'year']}
-                openTo="month"
-                className="bg-[#1E242B] rounded-md w-1/1"
-              />
-            </LocalizationProvider>
-          </div>
-            <MultipleSelectChip
-              title={
-                loadingClients
-                  ? 'Cliente (Cargando...)'
-                  : errorClients
-                    ? 'Cliente (Error)'
-                    : 'Cliente'
-              }
-              names={(() => {
-                if (loadingClients || errorClients || !clients) {
-                  return [];
-                }
-                return clients.map((client: Client) => ({
-                  id: client.user_id,
-                  name: client.username,
-                }));
-              })()}
-              value={selectedClients}
-              onChange={(newClients: string[]) => {
-                setSelectedClients(newClients);
+        <div className="text-white bg-[#1E242B] rounded-md mb-5 ">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              value={selectedDate}
+              onChange={(newDate) => {
+                setSelectedDate(newDate);
               }}
+              views={['month', 'year']}
+              openTo="month"
+              className="bg-[#1E242B] rounded-md w-1/1"
             />
-                    <MultipleSelectChip
-                      title={
-                        loadingCategories
-                          ? 'Categorías (Cargando...)'
-                          : errorCategories
-                            ? 'Categorías (Error)'
-                            : 'Categorías'
-                      }
-                      names={(() => {
-                        if (loadingCategories || errorCategories || !categories) {
-                          return [];
-                        }
-                        return categories.map((category: Category) => ({
-                          id: category.category_id,
-                          name: category.name,
-                        }));
-                      })()}
-                      value={selectedCategories}
-                      onChange={(newCategories: string[]) => {
-                        setSelectedCategories(newCategories);
-                      }}
-                    />
-        
+          </LocalizationProvider>
+        </div>
+        <MultipleSelectChip
+          title={
+            loadingClients
+              ? 'Cliente (Cargando...)'
+              : errorClients
+                ? 'Cliente (Error)'
+                : 'Cliente'
+          }
+          names={(() => {
+            if (loadingClients || errorClients || !clients) {
+              return [];
+            }
+            return clients.map((client: Client) => ({
+              id: client.user_id,
+              name: client.username,
+            }));
+          })()}
+          value={selectedClients}
+          onChange={(newClients: string[]) => {
+            setSelectedClients(newClients);
+          }}
+        />
+        <MultipleSelectChip
+          title={
+            loadingCategories
+              ? 'Categorías (Cargando...)'
+              : errorCategories
+                ? 'Categorías (Error)'
+                : 'Categorías'
+          }
+          names={(() => {
+            if (loadingCategories || errorCategories || !categories) {
+              return [];
+            }
+            return categories.map((category: Category) => ({
+              id: category.category_id,
+              name: category.name,
+            }));
+          })()}
+          value={selectedCategories}
+          onChange={(newCategories: string[]) => {
+            setSelectedCategories(newCategories);
+          }}
+        />
       </div>
       <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
-      <TextField
+        <TextField
           label="Buscar por ID"
           value={search}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,12 +174,12 @@ export default function Home() {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-2">
-                        {
-                          conversation.category && (
-                            <Tag key={conversation.category} text={conversation.category} />
-                          )
-                        }
-                        
+                        {conversation.category && (
+                          <Tag
+                            key={conversation.category}
+                            text={conversation.category}
+                          />
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
