@@ -1,10 +1,12 @@
 'use client';
 import MultilineTextFields from '@/components/MultilineTextFields';
 import SelectableCheckboxList from '@/components/SelectableCheckboxList';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 const Tickets = () => {
   const [textFieldHeight, setTextFieldHeight] = useState(500);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +19,7 @@ const Tickets = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
   const ticketItems = [
     {
       id: 1,
@@ -142,26 +145,42 @@ const Tickets = () => {
 
   return (
     <div className="relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 lg:pt-[150px]">
-      <div className="w-full text-start">
-        <div className="text-white text-4xl text-start">
-          <p className="bg-[#13202A] rounded-2xl mx-20 p-8">Proyecto 1</p>
+      {/* 🔙 Botón de Regresar */}
+      <div className="pl-3">
+        <button
+          className="bg-[#13202A] text-white px-4 py-2 rounded-lg hover:bg-[#1b2c3d]"
+          onClick={() => router.push('/companies')}
+        >
+          ← Regresar
+        </button>
+      </div>
+
+      {/* 🧾 Título centrado */}
+      <div className="w-full text-center">
+        <div className="bg-[#13202A] rounded-2xl mx-20 p-8 inline-block">
+          <p className="text-white text-4xl font-semibold">
+            Portal de Soporte para Cemex
+          </p>
         </div>
       </div>
+
       <div className="w-full flex justify-between">
-        <div className="flex flex-col justify-center items-center">
-          <button className="bg-[#13202A] rounded-lg text-white py-2 px-14 my-10 hover:cursor-pointer">
+        <div className="flex flex-col justify-center items-center px-2">
+          <button className="bg-[#13202A] rounded-lg text-white py-2 px-30 my-10 hover:cursor-pointer">
             Abrir nuevo ticket
           </button>
-          <div className="flex border-gray-400 border w-full justify-between px-5">
-            <button className="">Tickets abiertos (14) ⌄</button>
-            <button className="">Orden ⌄</button>
+          <div className="flex border-gray-400 border w-full justify-between px-5 mx-10">
+            <button>Tickets abiertos (14) ⌄</button>
+            <button>Orden ⌄</button>
           </div>
           <SelectableCheckboxList
             items={[...ticketItems].sort((a, b) => a.id - b.id)}
           />
         </div>
+
+        {/* Área del campo de texto */}
         <div
-          className="flex flex-col justify-end items-center w-[53rem] fixed bottom-5 right-0"
+          className="flex flex-col justify-end items-center w-[103rem] fixed bottom-10 right-0"
           style={{
             height: `${textFieldHeight}px`,
             transition: 'height 0.02s ease-in-out',

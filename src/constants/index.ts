@@ -50,7 +50,7 @@ export const sideNavLinksAgent: NavLink[] = [
   {
     id: 5,
     name: 'Support',
-    href: 'support',
+    href: 'companies',
   },
   {
     id: 6,
@@ -78,6 +78,6 @@ export const sideNavLinksClient: NavLink[] = [
   {
     id: 4,
     name: 'Support',
-    href: 'support',
+    href: 'companies',
   },
 ];
