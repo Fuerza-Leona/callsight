@@ -1,7 +1,7 @@
 'use client';
 
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { apiUrl } from '@/constants';
 
 export interface Client {
@@ -33,7 +33,7 @@ export const useFetchClients = () => {
       setLoading(false);
     }
   };
-  
+
   return {
     clients,
     loadingClients: loading,

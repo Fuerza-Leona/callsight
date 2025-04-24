@@ -43,24 +43,19 @@ export default function Home() {
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
-  
+
   const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
 
   const isLoadingRef = useRef(false);
 
-
   useEffect(() => {
     const loadAllData = async () => {
-      await Promise.all([
-        fetchClients(),
-        fetchCategories(),
-      ]);
-  };
+      await Promise.all([fetchClients(), fetchCategories()]);
+    };
 
-  loadAllData();
+    loadAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   useEffect(() => {
     const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
@@ -74,7 +69,7 @@ export default function Home() {
 
     const loadAllData = async () => {
       if (isLoadingRef.current) return;
-      
+
       isLoadingRef.current = true;
       try {
         await Promise.all([
@@ -82,7 +77,7 @@ export default function Home() {
           fetchConversationsCategories(params),
           fetchEmotions(params),
           fetchConversationsSummary(params),
-          fetchTopics({...params, limit: 10}),
+          fetchTopics({ ...params, limit: 10 }),
         ]);
         setFiltersChanged(false);
       } finally {
@@ -93,7 +88,6 @@ export default function Home() {
     loadAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtersChanged]);
-
 
   const handleDateChange = (newDate: dayjs.Dayjs | null) => {
     if (newDate) {
@@ -111,7 +105,6 @@ export default function Home() {
     setSelectedCategories(newCategories);
     setFiltersChanged(true);
   };
-
 
   return (
     <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] min-h-screen flex flex-col gap-3 m-2 max-w-screen">
