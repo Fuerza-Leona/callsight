@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 
 import { apiUrl } from '@/constants';
@@ -17,7 +17,7 @@ export const useParticipants = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchParticipants = async (companyId: string) => {
+  const fetchParticipants = useCallback(async (companyId: string) => {
     setLoading(true);
     setError('');
     try {
@@ -27,12 +27,12 @@ export const useParticipants = () => {
       setParticipants(response.data?.participants || []);
     } catch (err) {
       console.error('Error:', err);
-      setError("Error");
+      setError('Error');
     } finally {
       setLoading(false);
     }
-  };
-  
+  }, []);
+
   return {
     participants,
     loadingParticipants: loading,

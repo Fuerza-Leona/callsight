@@ -33,7 +33,7 @@ export const useFetchClients = () => {
       setLoading(false);
     }
   };
-  
+
   return {
     clients,
     loadingClients: loading,

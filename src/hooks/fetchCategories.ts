@@ -33,7 +33,7 @@ export const useFetchCategories = () => {
       setLoading(false);
     }
   };
-  
+
   return {
     categories,
     loadingCategories: loading,
