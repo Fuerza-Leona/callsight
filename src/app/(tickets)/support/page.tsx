@@ -180,7 +180,7 @@ const Tickets = () => {
 
         {/* Área del campo de texto */}
         <div
-          className="flex flex-col justify-end items-end w-[37rem] fixed bottom-10 right-0"
+          className="flex flex-col justify-end items-end w-[55rem] fixed bottom-10 right-10"
           style={{
             height: `${textFieldHeight}px`,
             transition: 'height 0.02s ease-in-out',
