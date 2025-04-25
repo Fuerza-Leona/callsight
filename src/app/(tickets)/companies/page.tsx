@@ -67,7 +67,10 @@ const CompaniesPage = () => {
   return (
     <div className="pl-70 pt-32 pr-5">
       {/* Título principal */}
-      <h1 className="text-7xl font-bold text-center text-blue-800">
+      <h1
+        className="text-7xl font-bold text-center"
+        style={{ color: 'var(--neoris-blue)' }}
+      >
         Soporte a Clientes
       </h1>
 
