@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useUser } from '@/context/UserContext'; // Adjust the path if needed
+import { apiUrl } from '@/constants';
 
 export interface Company {
   company_id: string;
@@ -16,18 +17,23 @@ export const useCompanies = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) return;
+    console.log('🧭 You are in useCompanies and hook has been called.');
 
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get(
-          'http://0.0.0.0:8000/api/v1/tickets/companies',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const tokenRes = await fetch('/api/getToken');
+        const tokenData = await tokenRes.json();
+
+        if (!tokenRes.ok || !tokenData.user) {
+          throw new Error('Token missing or invalid');
+        }
+
+        const accessToken = tokenData.user;
+        const response = await axios.get(`${apiUrl}/tickets/companies`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         console.log('Fetched companies:', response.data); // Log the response
         setCompanies(response.data.companies || []);
       } catch (err: unknown) {

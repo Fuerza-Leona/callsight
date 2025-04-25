@@ -180,7 +180,7 @@ const Tickets = () => {
 
         {/* Área del campo de texto */}
         <div
-          className="flex flex-col justify-end items-center w-[103rem] fixed bottom-10 right-0"
+          className="flex flex-col justify-end items-end w-[37rem] fixed bottom-10 right-0"
           style={{
             height: `${textFieldHeight}px`,
             transition: 'height 0.02s ease-in-out',
@@ -188,7 +188,7 @@ const Tickets = () => {
         >
           <MultilineTextFields
             label="Titulo"
-            sx={{ width: 'calc(100% - 5rem)', height: '100%' }}
+            sx={{ width: 'calc(100% - 5rem)', height: '75%' }}
           />
           <button className="ml-auto bg-[#F6CF3C] rounded-xl px-4 py-2 mr-10 mt-2 hover:cursor-pointer">
             Guardar
