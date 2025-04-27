@@ -110,7 +110,7 @@ function CallDetail() {
   return (
     <div className="lg:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px] pt-[140px] lg:pt-28">
       <div className="w-full text-center">
-        <div className="flex lg:flex-row flex-col text-5xl justify-between bg-white rounded-2xl mx-22 items-center">
+        <div className="flex lg:flex-row flex-col text-5xl justify-between bg-white rounded-2xl mx-22 items-center shadow-lg">
           {/* Llamada id */}
           <p className="lg:ml-20 p-4 lg:p-8 font-medium">Llamada</p>
           <p className="lg:mr-20 p-4 lg:p-8 text-gray-500 text-3xl font-light">
@@ -123,7 +123,7 @@ function CallDetail() {
         className={`flex ${isTablet ? 'flex-col' : 'flex-col lg:flex-row lg: gap-5'} w-[calc(100%-11rem)] justify-between mt-5 text-left`}
       >
         {/* Left column */}
-        <div className="flex flex-col gap-5 bg-white p-3 rounded-2xl justify-start">
+        <div className="flex flex-col gap-5 bg-white p-3 rounded-2xl justify-start shadow-lg">
           <p className="text-2xl mt-4">Resumen</p>
           <div className="flex gap-2">
             <p className="rounded-2xl bg-[#abdfed] text-[#248ca8] px-4 py-1">
@@ -165,7 +165,7 @@ function CallDetail() {
         <div
           className={`flex flex-col ${isTablet ? 'w-full mb-5' : 'w-full mb-5'} gap-2 rounded-xl justify-center items-center`}
         >
-          <div className="bg-white w-full h-full rounded-xl p-4 flex flex-col justify-center items-center">
+          <div className="bg-white w-full h-full rounded-xl p-4 flex flex-col justify-center items-center shadow-lg">
             <h3 className="font-bold text-xl">Emociones detectadas</h3>
             {loadingCall ? (
               <p className="text-lg text-gray-700">Cargando...</p>
@@ -188,7 +188,7 @@ function CallDetail() {
             )}
           </div>
           <div
-            className={`flex ${isTablet ? 'flex-row' : 'flex-col'} gap-5 bg-white w-full rounded-2xl p-3`}
+            className={`flex ${isTablet ? 'flex-row' : 'flex-col'} gap-5 bg-white w-full rounded-2xl p-3 shadow-lg`}
           >
             <h3 className="text-xl">Participantes</h3>
             <div className="flex flex-col gap-3">{renderParticipants()}</div>
@@ -197,7 +197,7 @@ function CallDetail() {
       </div>
 
       {/* Transcript */}
-      <div className="flex w-[calc(100%-11rem)] justify-start gap-31 mt-10 bg-white rounded-xl mb-3">
+      <div className="flex w-[calc(100%-11rem)] justify-start gap-31 mt-10 bg-white rounded-xl mb-3 shadow-lg">
         <div className="flex flex-col w-full px-4 py-4 gap-2" id="transcript">
           <p className="text-left text-2xl font-light">Transcripción</p>
           {renderTranscript()}
