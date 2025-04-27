@@ -7,6 +7,8 @@ export function middleware(request: NextRequest) {
   // Define protected routes
   const protectedRoutes = [
     '/perfil',
+    '/calls/search',
+    '/calls/detail',
     '/calls/dashboard',
     '/calls/upload',
     '/calls/detail',

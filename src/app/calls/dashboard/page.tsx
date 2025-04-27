@@ -118,7 +118,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative lg:left-64 top-30 w-[96%] lg:w-[80%] flex flex-col gap-3 m-2 max-w-screen pl-3">
+    <div className="relative lg:left-64 pt-7 w-[96%] lg:w-[80%] flex flex-col gap-3 m-2 max-w-screen pl-3">
       <div className="flex flex-col md:flex-row items-center justify-between ">
         <p className="text-4xl font-bold">Tablero</p>
         <div className="flex gap-2">
@@ -128,14 +128,6 @@ export default function Home() {
               style={{ backgroundColor: 'var(--sky-blue)' }}
             >
               Exportar como PDF <FileDownloadIcon />
-            </button>
-          </div>
-          <div>
-            <button
-              className="text-[#FFFFFF] rounded-md p-2 w-full"
-              style={{ backgroundColor: 'var(--sky-blue)' }}
-            >
-              Exportar como JSON <FileDownloadIcon />
             </button>
           </div>
           <Link
@@ -152,8 +144,8 @@ export default function Home() {
         </div>
       </div>
       <div className="flex flex-col md:flex-row items-center flex-wrap xl:flex-nowrap md:justify-between gap-2">
-        <div className="flex flex-col gap-2 relative bottom-28">
-          <div className="text-white bg-[#1E242B] rounded-md">
+        <div className="flex flex-col gap-2">
+          <div className="text-white bg-[#1E242B] rounded-md mb-5 ">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
               <DateCalendar
                 value={selectedDate}
