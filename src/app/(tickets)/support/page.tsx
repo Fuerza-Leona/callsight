@@ -1,12 +1,70 @@
 'use client';
-import MultilineTextFields from '@/components/MultilineTextFields';
-import SelectableCheckboxList from '@/components/SelectableCheckboxList';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import SelectableCheckboxList, {
+  ItemData,
+} from '@/components/SelectableCheckboxList';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState, useRef } from 'react';
+import { useTickets } from '@/hooks/useTickets';
+import { useTicketMessages } from '@/hooks/useTicketMessages';
+import {
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  TextField,
+  Box,
+  Paper,
+  Typography,
+  IconButton,
+  InputBase,
+  Divider,
+} from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import AddIcon from '@mui/icons-material/Add';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import TicketMessagesList from '@/components/TicketMessagesList';
 
 const Tickets = () => {
   const [textFieldHeight, setTextFieldHeight] = useState(500);
+  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+  const [selectedTicketSubject, setSelectedTicketSubject] =
+    useState<string>('');
+  const [messageText, setMessageText] = useState<string>('');
+  const [isNewTicketModalOpen, setIsNewTicketModalOpen] = useState(false);
+  const [newTicketSubject, setNewTicketSubject] = useState('');
+  const [newTicketDescription, setNewTicketDescription] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const companyId = searchParams.get('company_id');
+  const companyName = searchParams.get('company_name') || 'Cliente';
+
+  // Custom hooks for tickets and messages
+  const {
+    tickets,
+    loading: loadingTickets,
+    error: ticketsError,
+    fetchTicketsByCompany,
+    createTicket,
+  } = useTickets();
+
+  const {
+    messages,
+    loading: loadingMessages,
+    error: messagesError,
+    fetchTicketMessages,
+    addTicketMessage,
+  } = useTicketMessages();
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,135 +78,82 @@ const Tickets = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const ticketItems = [
-    {
-      id: 1,
-      label: 'irure dolore eiusmod',
-      daysOpen: 1,
-      text: 'Incididunt voluptate velit nostrud pariatur. Adipisicing ea non duis velit officia mollit non est cillum nisi mollit aliqua ex. Quis eiusmod tempor duis nisi. Aliqua nulla ullamco mollit id mollit ad fugiat.',
-    },
-    {
-      id: 2,
-      label: 'mollit fugiat',
-      daysOpen: 2,
-      text: 'Culpa aliquip do officia quis consequat excepteur aliqua commodo adipisicing eiusmod dolore non voluptate et.',
-    },
-    {
-      id: 5,
-      label: 'do enim sit dolor',
-      daysOpen: 5,
-      text: 'Cupidatat laborum eu labore quis non nostrud esse esse do fugiat voluptate. Ipsum consectetur nulla aliquip deserunt cillum. Sit ut Lorem sunt do. Qui in est exercitation irure amet. Id sunt et nisi nisi duis occaecat aliquip enim do incididunt consectetur sit duis cillum.',
-    },
-    {
-      id: 3,
-      label: 'adipisicing officia quis',
-      daysOpen: 3,
-      text: 'Dolore ut et dolor ex Lorem cupidatat irure ullamco id irure exercitation. Irure dolor laborum sint non laborum aliquip.',
-    },
-    {
-      id: 7,
-      label: 'excepteur sunt laborum',
-      daysOpen: 8,
-      text: 'Excepteur laborum commodo culpa incididunt esse nisi exercitation. Ullamco cillum ex ut voluptate mollit.',
-    },
-    {
-      id: 6,
-      label: 'veniam esse reprehenderit',
-      daysOpen: 6,
-      text: 'Veniam reprehenderit elit excepteur id pariatur magna veniam esse. Enim veniam nulla deserunt occaecat.',
-    },
-    {
-      id: 9,
-      label: 'laboris nostrud',
-      daysOpen: 4,
-      text: 'Laboris nostrud ad pariatur excepteur dolor. Do veniam id ex elit.',
-    },
-    {
-      id: 10,
-      label: 'nisi amet officia',
-      daysOpen: 9,
-      text: 'Amet occaecat deserunt irure nisi ex. Non amet voluptate enim id nisi sint officia deserunt.',
-    },
-    {
-      id: 4,
-      label: 'reprehenderit in nulla',
-      daysOpen: 7,
-      text: 'Reprehenderit nisi deserunt in nulla. Dolor sint nostrud anim incididunt est ullamco.',
-    },
-    {
-      id: 8,
-      label: 'elit in sint ad',
-      daysOpen: 10,
-      text: 'Sint velit ullamco officia incididunt amet. Elit fugiat irure sunt mollit in.',
-    },
-    {
-      id: 11,
-      label: 'culpa magna nulla',
-      daysOpen: 11,
-      text: 'Culpa magna nulla ex eiusmod pariatur sint fugiat. Aute ullamco consectetur qui enim est.',
-    },
-    {
-      id: 12,
-      label: 'ea in laborum',
-      daysOpen: 12,
-      text: 'Ea in laborum nostrud officia dolore. Laboris cupidatat culpa aute mollit.',
-    },
-    {
-      id: 13,
-      label: 'ullamco deserunt veniam',
-      daysOpen: 13,
-      text: 'Ullamco deserunt veniam laborum duis sit ex. Pariatur qui nisi consequat id sint ad nulla.',
-    },
-    {
-      id: 14,
-      label: 'proident amet do',
-      daysOpen: 14,
-      text: 'Proident amet do laborum aliqua pariatur laborum. Sint ad in ex sint amet veniam.',
-    },
-    {
-      id: 15,
-      label: 'adipisicing veniam',
-      daysOpen: 15,
-      text: 'Adipisicing veniam cillum est exercitation esse. Ad occaecat irure eiusmod do exercitation.',
-    },
-    {
-      id: 16,
-      label: 'incididunt excepteur',
-      daysOpen: 16,
-      text: 'Incididunt excepteur tempor laboris aliqua labore fugiat mollit. Duis veniam cupidatat sint incididunt laborum.',
-    },
-    {
-      id: 17,
-      label: 'occaecat sint cupidatat',
-      daysOpen: 17,
-      text: 'Occaecat sint cupidatat ad esse. Consequat anim minim culpa sint aliqua incididunt.',
-    },
-    {
-      id: 18,
-      label: 'dolore aute nulla',
-      daysOpen: 18,
-      text: 'Dolore aute nulla fugiat deserunt. Laborum sint dolor sint occaecat ex ad voluptate sunt.',
-    },
-    {
-      id: 19,
-      label: 'anim eiusmod ad',
-      daysOpen: 19,
-      text: 'Anim eiusmod ad duis commodo ad fugiat nulla exercitation dolore. Veniam nisi labore mollit.',
-    },
-    {
-      id: 20,
-      label: 'amet minim ullamco',
-      daysOpen: 20,
-      text: 'Amet minim ullamco dolor reprehenderit eiusmod laboris. Magna reprehenderit dolor duis occaecat incididunt velit laborum pariatur.',
-    },
-  ];
+  // Fetch tickets only when companyId changes
+  useEffect(() => {
+    if (companyId) {
+      fetchTicketsByCompany(companyId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId]);
+
+  // Fetch messages only when selectedTicketId changes
+  useEffect(() => {
+    if (selectedTicketId) {
+      fetchTicketMessages(selectedTicketId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTicketId]);
+
+  const handleTicketSelect = (item: ItemData) => {
+    const ticketId = item.id.toString();
+    const ticketSubject = item.label || '';
+
+    setSelectedTicketId(ticketId);
+    setSelectedTicketSubject(ticketSubject);
+  };
+
+  const handleSaveMessage = async () => {
+    if (selectedTicketId && messageText.trim()) {
+      await addTicketMessage(selectedTicketId, messageText);
+      setMessageText('');
+    }
+  };
+
+  const handleKeyPress = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSaveMessage();
+    }
+  };
+
+  const handleOpenNewTicketModal = () => {
+    setIsNewTicketModalOpen(true);
+  };
+
+  const handleCloseNewTicketModal = () => {
+    setIsNewTicketModalOpen(false);
+    setNewTicketSubject('');
+    setNewTicketDescription('');
+  };
+
+  const handleCreateNewTicket = async () => {
+    if (companyId && newTicketSubject && newTicketDescription) {
+      await createTicket(companyId, newTicketSubject, newTicketDescription);
+      handleCloseNewTicketModal();
+    }
+  };
+
+  // Transform tickets for SelectableCheckboxList
+  const ticketItems = tickets.map((ticket) => ({
+    id: ticket.ticket_id,
+    label: ticket.subject,
+    daysOpen: Math.ceil(
+      (new Date().getTime() - new Date(ticket.created_at).getTime()) /
+        (1000 * 3600 * 24)
+    ),
+    text: ticket.description,
+  }));
+
+  const openTicketsCount = tickets.filter((t) => t.status === 'open').length;
 
   return (
     <div className="relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 lg:pt-[150px]">
       {/* 🔙 Botón de Regresar */}
-      <div className="pl-3">
+      <div className="pl-3 mb-4">
         <button
-          className="bg-[#13202A] text-white px-4 py-2 rounded-lg hover:bg-[#1b2c3d]"
+          className="bg-[#13202A] text-white px-4 py-2 rounded-lg hover:bg-[#1b2c3d] transition-colors"
           onClick={() => router.push('/companies')}
         >
           ← Regresar
@@ -156,45 +161,325 @@ const Tickets = () => {
       </div>
 
       {/* 🧾 Título centrado */}
-      <div className="w-full text-center">
-        <div className="bg-[#13202A] rounded-2xl mx-20 p-8 inline-block">
-          <p className="text-white text-4xl font-semibold">
-            Portal de Soporte para Cemex
+      <div className="w-full text-center mb-6">
+        <div className="bg-[#13202A] rounded-2xl mx-20 p-6 inline-block shadow-md">
+          <p className="text-white text-3xl font-semibold">
+            Portal de Soporte para {companyName}
           </p>
         </div>
       </div>
 
-      <div className="w-full flex justify-between">
-        <div className="flex flex-col justify-center items-center px-2">
-          <button className="bg-[#13202A] rounded-lg text-white py-2 px-30 my-10 hover:cursor-pointer">
-            Abrir nuevo ticket
-          </button>
-          <div className="flex border-gray-400 border w-full justify-between px-5 mx-10">
-            <button>Tickets abiertos (14) ⌄</button>
-            <button>Orden ⌄</button>
-          </div>
-          <SelectableCheckboxList
-            items={[...ticketItems].sort((a, b) => a.id - b.id)}
-          />
+      <div className="w-full flex justify-between px-4">
+        {/* Left column - Tickets list */}
+        <div className="flex flex-col w-96 bg-white rounded-lg shadow-md overflow-hidden">
+          {/* Header with action buttons */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              bgcolor: 'var(--neoris-blue)',
+              color: 'white',
+              p: 2,
+            }}
+          >
+            <Typography fontWeight="medium">
+              Tickets ({openTicketsCount})
+            </Typography>
+            <Box>
+              <IconButton
+                size="small"
+                sx={{ color: 'white', mr: 1 }}
+                title="Filtrar tickets"
+              >
+                <FilterListIcon fontSize="small" />
+              </IconButton>
+              <IconButton
+                size="small"
+                sx={{
+                  color: 'white',
+                  bgcolor: 'rgba(255,255,255,0.1)',
+                  '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' },
+                }}
+                onClick={handleOpenNewTicketModal}
+                title="Nuevo ticket"
+              >
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          </Box>
+
+          {/* Tickets list */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              overflowY: 'auto',
+              maxHeight: 'calc(100vh - 350px)',
+            }}
+          >
+            {loadingTickets ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  p: 4,
+                }}
+              >
+                <CircularProgress
+                  size={30}
+                  sx={{ color: 'var(--neoris-blue)' }}
+                />
+                <Typography variant="body2" ml={2} color="text.secondary">
+                  Cargando tickets...
+                </Typography>
+              </Box>
+            ) : ticketsError ? (
+              <Box sx={{ p: 3, color: 'error.main' }}>
+                <Typography>Error: {ticketsError}</Typography>
+              </Box>
+            ) : ticketItems.length === 0 ? (
+              <Box
+                sx={{
+                  p: 4,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'text.secondary',
+                  height: '200px',
+                }}
+              >
+                <Typography align="center">
+                  No hay tickets disponibles
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={handleOpenNewTicketModal}
+                  sx={{
+                    mt: 2,
+                    bgcolor: 'var(--neoris-blue)',
+                    '&:hover': { bgcolor: '#1b2c3d' },
+                  }}
+                >
+                  Crear ticket
+                </Button>
+              </Box>
+            ) : (
+              <SelectableCheckboxList
+                items={ticketItems}
+                onSelect={handleTicketSelect}
+              />
+            )}
+          </Box>
         </div>
 
-        {/* Área del campo de texto */}
-        <div
-          className="flex flex-col justify-end items-end w-[37rem] fixed bottom-10 right-0"
-          style={{
+        {/* Right column - Chat area */}
+        <Box
+          sx={{
+            width: 'calc(100% - 420px)',
             height: `${textFieldHeight}px`,
+            display: 'flex',
+            flexDirection: 'column',
+            bgcolor: 'white',
+            borderRadius: 2,
+            boxShadow: 2,
+            overflow: 'hidden',
             transition: 'height 0.02s ease-in-out',
           }}
         >
-          <MultilineTextFields
-            label="Titulo"
-            sx={{ width: 'calc(100% - 5rem)', height: '75%' }}
-          />
-          <button className="ml-auto bg-[#F6CF3C] rounded-xl px-4 py-2 mr-10 mt-2 hover:cursor-pointer">
-            Guardar
-          </button>
-        </div>
+          {/* Chat header */}
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: selectedTicketId ? 'var(--jonquil)' : '#f5f5f5',
+              borderBottom: '1px solid #e0e0e0',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Typography fontWeight="medium" variant="subtitle1">
+              {selectedTicketId
+                ? `Ticket: ${selectedTicketSubject}`
+                : 'Seleccione un ticket para ver los mensajes'}
+            </Typography>
+          </Box>
+
+          {/* Messages area */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              bgcolor: '#f9f9f9',
+              position: 'relative',
+            }}
+          >
+            {selectedTicketId ? (
+              <Box
+                sx={{
+                  height: '100%',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}
+              >
+                <TicketMessagesList
+                  messages={messages || []}
+                  loading={loadingMessages}
+                  error={messagesError}
+                />
+                <div ref={messagesEndRef} />
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  p: 4,
+                  bgcolor: '#f5f5f5',
+                }}
+              >
+                <Box
+                  component="img"
+                  src="/assets/messages-empty.svg"
+                  alt="No messages"
+                  sx={{ width: 120, height: 120, opacity: 0.7, mb: 3 }}
+                  onError={(e) => {
+                    // Fallback in case image doesn't exist
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+                <Typography variant="h6" color="text.secondary" align="center">
+                  Seleccione un ticket para ver la conversación
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  align="center"
+                  sx={{ mt: 1 }}
+                >
+                  Los mensajes aparecerán aquí
+                </Typography>
+              </Box>
+            )}
+          </Box>
+
+          {/* Message input area */}
+          <Box
+            sx={{
+              p: 2,
+              borderTop: '1px solid #e0e0e0',
+              bgcolor: '#f5f5f5',
+            }}
+          >
+            <Paper
+              component="form"
+              elevation={1}
+              sx={{
+                p: '2px 4px',
+                display: 'flex',
+                alignItems: 'center',
+                borderRadius: 30,
+                border: '1px solid #e0e0e0',
+              }}
+            >
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder={
+                  selectedTicketId
+                    ? 'Escriba su mensaje aquí...'
+                    : 'Seleccione un ticket para enviar mensajes'
+                }
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+                onKeyDown={handleKeyPress}
+                disabled={!selectedTicketId}
+                multiline
+                maxRows={4}
+              />
+              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+              <IconButton
+                color="primary"
+                sx={{
+                  p: '10px',
+                  color:
+                    !selectedTicketId || !messageText.trim()
+                      ? 'grey.400'
+                      : 'var(--neoris-blue)',
+                  '&:hover': {
+                    bgcolor:
+                      !selectedTicketId || !messageText.trim()
+                        ? 'transparent'
+                        : 'rgba(19, 32, 42, 0.04)',
+                  },
+                }}
+                onClick={handleSaveMessage}
+                disabled={!selectedTicketId || !messageText.trim()}
+              >
+                <SendIcon />
+              </IconButton>
+            </Paper>
+          </Box>
+        </Box>
       </div>
+
+      {/* New Ticket Modal */}
+      <Dialog
+        open={isNewTicketModalOpen}
+        onClose={handleCloseNewTicketModal}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ bgcolor: 'var(--neoris-blue)', color: 'white' }}>
+          Crear Nuevo Ticket
+        </DialogTitle>
+        <DialogContent sx={{ mt: 2 }}>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Asunto"
+            fullWidth
+            variant="outlined"
+            value={newTicketSubject}
+            onChange={(e) => setNewTicketSubject(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            label="Descripción"
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            value={newTicketDescription}
+            onChange={(e) => setNewTicketDescription(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button
+            onClick={handleCloseNewTicketModal}
+            sx={{ color: 'text.secondary' }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleCreateNewTicket}
+            variant="contained"
+            disabled={!newTicketSubject || !newTicketDescription}
+            sx={{
+              bgcolor: 'var(--neoris-blue)',
+              '&:hover': { bgcolor: '#1b2c3d' },
+              '&.Mui-disabled': { bgcolor: '#e0e0e0' },
+            }}
+          >
+            Crear
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
