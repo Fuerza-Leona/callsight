@@ -120,7 +120,7 @@ export default function Home() {
   return (
     <div className="relative lg:left-64 top-30 w-[96%] lg:w-[80%] flex flex-col gap-3 m-2 max-w-screen pl-3">
       <div className="flex flex-col md:flex-row items-center justify-between ">
-        <p className="text-4xl font-bold">Dashboard</p>
+        <p className="text-4xl font-bold">Tablero</p>
         <div className="flex gap-2">
           <div>
             <button
@@ -351,50 +351,68 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row justify-between w-full gap-3 pt-1 ">
             <div
-              className="h-full shadow-md rounded-md flex flex-col items-left justify-around bg-white p-5 w-full md:w-[49%]"
+              className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
               style={{ minHeight: '300px' }}
             >
-              <h1 className="text-lg font-bold pt-3">Emociones detectadas</h1>
-              <div className="flex items-center justify-center w-full flex-grow">
+              <h1 className="text-lg font-bold pt-3 pb-3">
+                Emociones del cliente
+              </h1>
+
+              <Box
+                sx={{
+                  width: '100%',
+                  maxWidth: 600,
+                  flexGrow: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
                 {loadingEmotions ? (
-                  <CircularProgress size={60} />
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    width="100%"
+                    height="200px"
+                  >
+                    <CircularProgress size={60} />
+                  </Box>
                 ) : errorEmotions ? (
-                  <p>Error al cargar emociones</p>
-                ) : emotions ? (
-                  <div className="mt-2 ">
-                    <PieChart
-                      series={[
-                        {
-                          arcLabel: (item) => `${item.value}`,
-                          data: [
-                            {
-                              id: 0,
-                              value: emotions.positive ?? 0,
-                              label: 'Positivo',
-                            },
-                            {
-                              id: 1,
-                              value: emotions.neutral ?? 0,
-                              label: 'Neutro',
-                            },
-                            {
-                              id: 2,
-                              value: emotions.negative ?? 0,
-                              label: 'Negativo',
-                            },
-                          ],
-                        },
-                      ]}
-                      width={350}
-                      height={200}
-                      className="font-bold text-xl pt-5"
-                      colors={['#6564DB', '#F6CF3C', '#F294CD']}
-                    />
-                  </div>
+                  <p>Error al cargar las emociones</p>
+                ) : !emotions || emotions.negative == null ? (
+                  <p>No hay información disponible</p>
                 ) : (
-                  <p>No hay datos</p>
+                  <PieChart
+                    series={[
+                      {
+                        arcLabel: (item) => `${item.value}`,
+                        data: [
+                          {
+                            id: 0,
+                            value: emotions.positive ?? 0,
+                            label: 'Positivo',
+                          },
+                          {
+                            id: 1,
+                            value: emotions.neutral ?? 0,
+                            label: 'Neutro',
+                          },
+                          {
+                            id: 2,
+                            value: emotions.negative ?? 0,
+                            label: 'Negativo',
+                          },
+                        ],
+                      },
+                    ]}
+                    width={350}
+                    height={200}
+                    className="font-bold text-xl pt-5"
+                    colors={['#6564DB', '#F6CF3C', '#F294CD']}
+                  />
                 )}
-              </div>
+              </Box>
             </div>
             <div
               className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
