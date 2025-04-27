@@ -328,6 +328,11 @@ const Tickets = () => {
                   messages={messages || []}
                   loading={loadingMessages}
                   error={messagesError}
+                  ticketDescription={
+                    tickets.find(
+                      (ticket) => ticket.ticket_id === selectedTicketId
+                    )?.description
+                  }
                 />
                 <div ref={messagesEndRef} />
               </Box>

@@ -17,12 +17,14 @@ export interface TicketMessagesListProps {
   messages: TicketMessage[];
   loading: boolean;
   error: string | null;
+  ticketDescription?: string;
 }
 
 const TicketMessagesList: React.FC<TicketMessagesListProps> = ({
   messages,
   loading,
   error,
+  ticketDescription,
 }) => {
   const { user } = useUser();
 
@@ -154,6 +156,33 @@ const TicketMessagesList: React.FC<TicketMessagesListProps> = ({
               </Box>
               <Divider sx={{ flexGrow: 1, ml: 2 }} />
             </Box>
+
+            {groupIndex === 0 && (
+              <Box
+                sx={{
+                  mb: 4,
+                  mt: 1,
+                  mx: 'auto',
+                  maxWidth: '90%',
+                  bgcolor: '#f0f0f0',
+                  borderRadius: 2,
+                  p: 2,
+                  border: '1px dashed #ccc',
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  mb={0.5}
+                >
+                  Descripción del ticket:
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {ticketDescription || 'Sin descripción disponible'}
+                </Typography>
+              </Box>
+            )}
 
             {dateMessages.map((message, index) => {
               const isAgent =
