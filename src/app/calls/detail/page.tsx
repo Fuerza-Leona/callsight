@@ -88,7 +88,7 @@ function CallDetail() {
       return (
         <div
           key={index}
-          className="flex bg-gray-200 w-full lg:w-50 h-13 rounded-lg justify-start items-center gap-5 px-4 py-2"
+          className="flex w-full lg:w-50 h-13 rounded-lg justify-start items-center gap-5 px-4 py-2"
         >
           <div
             className={`w-8 h-8 ${color} rounded-3xl flex items-center justify-center font-bold`}
@@ -110,38 +110,41 @@ function CallDetail() {
   return (
     <div className="lg:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px] pt-[140px] lg:pt-28">
       <div className="w-full text-center">
-        <div className="flex lg:flex-row flex-col text-white text-4xl justify-between bg-[#13202A] rounded-2xl mx-22">
+        <div className="flex lg:flex-row flex-col text-5xl justify-between bg-white rounded-2xl mx-22 items-center">
           {/* Llamada id */}
-          <p className="lg:ml-20 p-4 lg:p-8">Llamada</p>
-          <p className="lg:mr-20 p-4 lg:p-8">{callDate}</p>
+          <p className="lg:ml-20 p-4 lg:p-8 font-medium">Llamada</p>
+          <p className="lg:mr-20 p-4 lg:p-8 text-gray-500 text-3xl font-light">
+            {callDate}
+          </p>
         </div>
       </div>
 
       <div
-        className={`flex ${isTablet ? 'flex-col' : 'flex-col lg:flex-row'} w-[calc(100%-11rem)] justify-between mt-10`}
+        className={`flex ${isTablet ? 'flex-col' : 'flex-col lg:flex-row lg: gap-5'} w-[calc(100%-11rem)] justify-between mt-5 text-left`}
       >
         {/* Left column */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 bg-white p-3 rounded-2xl justify-start">
+          <p className="text-2xl mt-4">Resumen</p>
           <div className="flex gap-2">
-            <h3 className="text-xl">Categorías:</h3>
-            <p className="rounded-lg bg-[#8AD2E6] px-4 py-1">Tecnología</p>
+            <p className="rounded-2xl bg-[#abdfed] text-[#248ca8] px-4 py-1">
+              Tecnología
+            </p>
           </div>
 
           <div
-            className={`flex flex-col bg-gray-200 ${isTablet ? 'w-full mb-5' : 'w-full lg:w-120 mb-5 lg:mb-0'} h-47 rounded-2xl justify-start items-center overflow-scroll`}
+            className={`flex flex-col ${isTablet ? 'w-full mb-5' : 'w-full lg:w-120 mb-5 lg:mb-0'} justify-start items-center`}
           >
-            <p className="text-2xl mt-4">Resumen</p>
             {loadingCall ? (
               <p className="text-lg text-gray-700">Cargando...</p>
             ) : call?.summary ? (
               <>
-                <p className="text-lg">
-                  <span className="font-bold">Problema:</span>{' '}
+                <p className="text-lg text-gray-600">
+                  <span className="font-bold text-black">Problema:</span> <br />{' '}
                   {call.summary.problem}
                 </p>
-                <p className="text-lg">
-                  <span className="font-bold">Resolución:</span>{' '}
-                  {call.summary.solution}
+                <p className="text-lg text-gray-600">
+                  <span className="font-bold text-black">Resolución:</span>{' '}
+                  <br /> {call.summary.solution}
                 </p>
               </>
             ) : (
@@ -150,50 +153,53 @@ function CallDetail() {
               </p>
             )}
           </div>
+          <div className="flex flex-col bg-gray-200 w-full lg:w-50 rounded-lg justify-center items-center p-4">
+            <p className="text-2xl text-bold">
+              {call?.summary ? `${call.summary.duration}` : '...'}
+            </p>
+            <p>Duración (minutos)</p>
+          </div>
         </div>
 
         {/* Emotions */}
         <div
-          className={`flex flex-col bg-gray-200 ${isTablet ? 'w-full mb-5' : 'w-full lg:w-60 mb-5 lg:mb-0'} h-60 rounded-xl justify-center items-center`}
+          className={`flex flex-col ${isTablet ? 'w-full mb-5' : 'w-full mb-5'} gap-2 rounded-xl justify-center items-center`}
         >
-          <h3 className="font-black">Emociones detectadas</h3>
-          {loadingCall ? (
-            <p className="text-lg text-gray-700">Cargando...</p>
-          ) : call?.summary ? (
-            <div className="text-center">
-              <p>
-                Sentimiento general:{' '}
-                {call.summary.positive > call.summary.negative
-                  ? 'Positivo'
-                  : call.summary.negative > call.summary.positive
-                    ? 'Negativo'
-                    : 'Neutral'}
-              </p>
-              <p>Positivo: {(call.summary.positive * 100).toFixed(2)}%</p>
-              <p>Negativo: {(call.summary.negative * 100).toFixed(2)}%</p>
-              <p>Neutral: {(call.summary.neutral * 100).toFixed(2)}%</p>
-            </div>
-          ) : (
-            <p>No hay datos de emociones.</p>
-          )}
-        </div>
-
-        {/* Participants + duration */}
-        <div className={`flex ${isTablet ? 'flex-row' : 'flex-col'} gap-5`}>
-          <div className="flex bg-gray-200 w-full lg:w-50 h-13 rounded-lg justify-center items-center">
-            <p>
-              Duración:{' '}
-              {call?.summary ? `${call.summary.duration} minutos` : '...'}
-            </p>
+          <div className="bg-white w-full h-full rounded-xl p-4 flex flex-col justify-center items-center">
+            <h3 className="font-bold text-xl">Emociones detectadas</h3>
+            {loadingCall ? (
+              <p className="text-lg text-gray-700">Cargando...</p>
+            ) : call?.summary ? (
+              <div className="text-center">
+                <p>
+                  Sentimiento general:{' '}
+                  {call.summary.positive > call.summary.negative
+                    ? 'Positivo'
+                    : call.summary.negative > call.summary.positive
+                      ? 'Negativo'
+                      : 'Neutral'}
+                </p>
+                <p>Positivo: {(call.summary.positive * 100).toFixed(2)}%</p>
+                <p>Negativo: {(call.summary.negative * 100).toFixed(2)}%</p>
+                <p>Neutral: {(call.summary.neutral * 100).toFixed(2)}%</p>
+              </div>
+            ) : (
+              <p>No hay datos de emociones.</p>
+            )}
           </div>
-          <h3 className="text-xl">Participantes</h3>
-          <div className="flex flex-col gap-3">{renderParticipants()}</div>
+          <div
+            className={`flex ${isTablet ? 'flex-row' : 'flex-col'} gap-5 bg-white w-full rounded-2xl p-3`}
+          >
+            <h3 className="text-xl">Participantes</h3>
+            <div className="flex flex-col gap-3">{renderParticipants()}</div>
+          </div>
         </div>
       </div>
 
       {/* Transcript */}
-      <div className="flex w-[calc(100%-11rem)] justify-start gap-31 mt-10 bg-gray-200 h-40 overflow-y-scroll">
+      <div className="flex w-[calc(100%-11rem)] justify-start gap-31 mt-10 bg-white rounded-xl mb-3">
         <div className="flex flex-col w-full px-4 py-4 gap-2" id="transcript">
+          <p className="text-left text-2xl font-light">Transcripción</p>
           {renderTranscript()}
         </div>
       </div>
