@@ -215,7 +215,6 @@ const ChatbotInner = () => {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={(e) => {
-                console.log('Key pressed:', e.key);
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
                   handleButtonSubmit();
