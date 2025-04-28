@@ -8,12 +8,15 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import { Typography } from '@mui/material';
+import { UUID } from 'crypto';
 
 export type ItemData = {
   id: number | string;
   label: string;
   daysOpen: number;
   text: string;
+  status: 'open' | 'in_progress' | 'closed';
+  assigned_to: UUID;
 };
 
 type Props = {
