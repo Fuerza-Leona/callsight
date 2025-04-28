@@ -12,15 +12,16 @@ type Props = {
   sx?: SxProps<Theme>;
   divider?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   value?: string;
 };
-
-export default function MultilineMessageArea({
+export default function MultilineTextFields({
   label,
   defaultValue,
   sx,
   divider = true,
   onChange,
+  onKeyDown,
   value,
 }: Props) {
   return (
@@ -39,6 +40,7 @@ export default function MultilineMessageArea({
           autoCapitalize="on"
           autoCorrect="on"
           onChange={onChange}
+          onKeyDown={onKeyDown}
           style={{
             width: '100%',
             height: '100%',
