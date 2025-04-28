@@ -29,6 +29,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import TicketMessagesList from '@/components/TicketMessagesList';
 import { UUID } from 'crypto';
+import { useEmployees } from '@/hooks/useEmployees';
 
 const Tickets = () => {
   const [textFieldHeight, setTextFieldHeight] = useState(500);
@@ -53,7 +54,7 @@ const Tickets = () => {
     error: ticketsError,
     fetchTicketsByCompany,
     createTicket,
-    updateTicketStatus
+    updateTicketStatus,
   } = useTickets();
 
   const {
@@ -63,6 +64,8 @@ const Tickets = () => {
     fetchTicketMessages,
     addTicketMessage,
   } = useTicketMessages();
+
+  const { employees = [] } = useEmployees();
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -102,7 +105,10 @@ const Tickets = () => {
   const [status, setStatus] = React.useState('');
 
   const handleChangeStatus = (event: SelectChangeEvent) => {
-    updateTicketStatus(selectedTicketId!, event.target.value as 'open' | 'in_progress' | 'closed');
+    updateTicketStatus(
+      selectedTicketId!,
+      event.target.value as 'open' | 'in_progress' | 'closed'
+    );
     setStatus(event.target.value as string);
   };
 
@@ -351,8 +357,16 @@ const Tickets = () => {
                   value={assignee}
                   label="Asignado"
                   onChange={handleChangeAsignee}
+                  className="w-40"
                 >
-                  <MenuItem value={'-----'}>Activo</MenuItem>
+                  <MenuItem value={'----'}>Not assigned</MenuItem>
+                  {employees.length != 0 &&
+                    Array.isArray(employees) &&
+                    employees.map((employee) => (
+                      <MenuItem key={employee.user_id} value={employee.user_id}>
+                        {employee.username}
+                      </MenuItem>
+                    ))}
                 </Select>
               </div>
             </Box>
