@@ -4,30 +4,31 @@ import axios from 'axios';
 import { useState } from 'react';
 import { apiUrl } from '@/constants';
 
-export interface Rating {
-  rating: number;
-  count: number;
+export interface Conversation {
+  conversation_id: string;
+  start_time: string;
+  end_time: string;
+  category: string;
 }
 
-interface ConversationsRatingsResponse {
-  ratings?: Rating[];
+interface ConversationsResponse {
+  conversations?: Conversation[];
 }
 
-interface FetchConversationsRatingsParams {
+interface FetchConversationsParams {
   clients: string[] | null;
   categories: string[] | null;
   startDate: string | null;
   endDate: string | null;
+  conversation_id: string | null;
 }
 
-export const useFetchConversationsRatings = () => {
+export const useFetchConversations = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | unknown>('');
-  const [ratings, setRatings] = useState<Rating[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
 
-  const fetchConversationsRatings = async (
-    params?: FetchConversationsRatingsParams
-  ) => {
+  const fetchConversations = async (params?: FetchConversationsParams) => {
     setLoading(true);
     setError('');
     try {
@@ -42,6 +43,9 @@ export const useFetchConversationsRatings = () => {
           params.clients.length > 0 && { clients: params.clients }),
         ...(params?.categories &&
           params.categories.length > 0 && { categories: params.categories }),
+        ...(params?.conversation_id && {
+          conversation_id: params.conversation_id,
+        }),
       };
 
       const config = {
@@ -52,13 +56,13 @@ export const useFetchConversationsRatings = () => {
         },
       };
 
-      const ratingsResponse = await axios.post<ConversationsRatingsResponse>(
-        `${apiUrl}/conversations/ratings`,
+      const conversationsResponse = await axios.post<ConversationsResponse>(
+        `${apiUrl}/conversations/mine`,
         requestBody,
         config
       );
 
-      setRatings(ratingsResponse.data?.ratings || []);
+      setConversations(conversationsResponse.data?.conversations || []);
     } catch (err) {
       console.error('Error:', err);
       setError(err);
@@ -68,9 +72,9 @@ export const useFetchConversationsRatings = () => {
   };
 
   return {
-    ratings,
-    loadingRatings: loading,
-    errorRatings: error,
-    fetchConversationsRatings,
+    conversations,
+    loadingConversations: loading,
+    errorConversations: error,
+    fetchConversations,
   };
 };

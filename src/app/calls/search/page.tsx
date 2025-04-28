@@ -2,9 +2,10 @@
 
 import * as React from 'react';
 import MultipleSelectChip from '@/components/MultipleSelectChip';
-import { useEffect } from 'react';
-import { useFetchClients } from '@/hooks/fetchClients';
-import { useFetchLlamadas } from '@/hooks/fetchLlamadas';
+import { useEffect, useRef, useState } from 'react';
+import { useFetchClients, Client } from '@/hooks/fetchClients';
+import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import {
   CircularProgress,
   Table,
@@ -15,97 +16,192 @@ import {
   TextField,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useFetchCategories } from '@/hooks/fetchCategories';
+import { useFetchCategories, Category } from '@/hooks/fetchCategories';
+import { useFetchConversations } from '@/hooks/fetchConversations';
 import Tag from '@/components/Tag';
+import dayjs from 'dayjs';
 
 export default function Home() {
-  const { clients, fetchClients } = useFetchClients();
-  const { dataLlamadas, refetchLlamadas } = useFetchLlamadas();
-  const { categories, fetchCategories } = useFetchCategories();
+  const { clients, loadingClients, errorClients, fetchClients } =
+    useFetchClients();
+  const { conversations, loadingConversations, fetchConversations } =
+    useFetchConversations();
+  const { categories, loadingCategories, errorCategories, fetchCategories } =
+    useFetchCategories();
+
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedClients, setSelectedClients] = useState<string[]>([]);
+  const [search, setSearch] = useState<string>('');
+
+  // Track if filters have been changed by user
+  const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
+  const initialFetchDone = useRef<boolean>(false);
+  const initialLoadCompleted = useRef<boolean>(false);
+
   const router = useRouter();
 
   useEffect(() => {
     fetchClients();
-    refetchLlamadas();
+
     fetchCategories();
+    initialLoadCompleted.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
-    []
-  );
-  const [selectedClients, setSelectedClients] = React.useState<string[]>([]);
-  const [search, setSearch] = React.useState<string>('');
+  // Separate effect for initial conversations fetch - runs only once
+  useEffect(() => {
+    if (!initialFetchDone.current) {
+      fetchConversations();
+      initialFetchDone.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Handle filter changes after initial load
+  useEffect(() => {
+    if (!initialLoadCompleted.current) return;
+    if (!filtersChanged) return;
+
+    const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
+    const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
+
+    fetchConversations({
+      clients: selectedClients,
+      categories: selectedCategories,
+      startDate: startDate,
+      endDate: endDate,
+      conversation_id: search,
+    });
+
+    setFiltersChanged(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtersChanged]);
 
   const handleClick = (callId: string) => {
     router.push(`/calls/detail?call_id=${callId}`);
   };
 
+  const handleDateChange = (newDate: dayjs.Dayjs) => {
+    setSelectedDate(newDate);
+    setFiltersChanged(true);
+  };
+
+  const handleClientsChange = (newClients: string[]) => {
+    setSelectedClients(newClients);
+    setFiltersChanged(true);
+  };
+
+  const handleCategoriesChange = (newCategories: string[]) => {
+    setSelectedCategories(newCategories);
+    setFiltersChanged(true);
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+    setFiltersChanged(true);
+  };
+
   return (
     <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
       <div className="w-3/10 flex flex-col align-center text-center">
-        <p className="text-3xl">Filtros</p>
+        <div className="text-white bg-[#1E242B] rounded-md mb-5 ">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              value={selectedDate}
+              onChange={handleDateChange}
+              views={['month', 'year']}
+              openTo="month"
+              className="bg-[#1E242B] rounded-md w-1/1"
+            />
+          </LocalizationProvider>
+        </div>
         <MultipleSelectChip
-          title="Cliente"
-          names={clients ? clients.map((client) => client.username) : []}
+          title={
+            loadingClients
+              ? 'Cliente (Cargando...)'
+              : errorClients
+                ? 'Cliente (Error)'
+                : 'Cliente'
+          }
+          names={(() => {
+            if (loadingClients || errorClients || !clients) {
+              return [];
+            }
+            return clients.map((client: Client) => ({
+              id: client.user_id,
+              name: client.username,
+            }));
+          })()}
           value={selectedClients}
-          onChange={setSelectedClients}
+          onChange={handleClientsChange}
         />
         <MultipleSelectChip
-          title="Categorías"
-          names={categories ? categories.map((category) => category.name) : []}
+          title={
+            loadingCategories
+              ? 'Categorías (Cargando...)'
+              : errorCategories
+                ? 'Categorías (Error)'
+                : 'Categorías'
+          }
+          names={(() => {
+            if (loadingCategories || errorCategories || !categories) {
+              return [];
+            }
+            return categories.map((category: Category) => ({
+              id: category.category_id,
+              name: category.name,
+            }));
+          })()}
           value={selectedCategories}
-          onChange={setSelectedCategories}
+          onChange={handleCategoriesChange}
         />
       </div>
       <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
         <TextField
-          className="w-[80%]"
-          label="Buscar"
-          variant="outlined"
+          label="Buscar por ID"
           value={search}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setSearch(event.target.value);
-          }}
-          id="BuscarInput"
+          onChange={handleSearchChange}
         />
-        {!dataLlamadas.llamadas ? (
+        {loadingConversations ? (
           <CircularProgress />
         ) : (
           <div>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell className="w-1/3">Nombre</TableCell>
+                  <TableCell className="w-1/3">ID</TableCell>
                   <TableCell className="w-1/3">Fecha</TableCell>
-                  <TableCell className="w-1/3">Categorías</TableCell>
+                  <TableCell className="w-1/3">Categoría</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataLlamadas.llamadas.map((llamada) => (
+                {conversations.map((conversation) => (
                   <TableRow
-                    key={llamada.audio_id}
-                    onClick={() => handleClick(llamada.conversation_id)}
+                    key={conversation.conversation_id}
+                    onClick={() => handleClick(conversation.conversation_id)}
                     className="cursor-pointer hover:bg-gray-100"
                   >
                     <TableCell>
-                      <p>{llamada.conversation_id}</p>
+                      <p>{conversation.conversation_id}</p>
                     </TableCell>
                     <TableCell>
                       <p>
-                        {llamada.start_time
+                        {conversation.start_time
                           ? new Date(
-                              llamada.start_time.toString()
+                              conversation.start_time.toString()
                             ).toLocaleDateString()
                           : 'N/A'}
                       </p>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-2">
-                        {Array.isArray(llamada.categories) &&
-                          llamada.categories.map((category: string) => (
-                            <Tag key={category} text={category} />
-                          ))}
+                        {conversation.category && (
+                          <Tag
+                            key={conversation.category}
+                            text={conversation.category}
+                          />
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

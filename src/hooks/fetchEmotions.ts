@@ -1,7 +1,7 @@
 'use client';
 
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { apiUrl } from '@/constants';
 
 interface EmotionsResponse {
@@ -66,10 +66,6 @@ export const useFetchEmotions = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchEmotions();
-  }, []);
 
   return {
     emotions,
