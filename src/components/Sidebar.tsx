@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { sideNavLinksClient, sideNavLinksAgent } from '@/constants';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext';
@@ -21,6 +21,9 @@ const ChatbotSideNavItems = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const searchParams = useSearchParams();
+  const activeConversationId = searchParams.get('conversation_id');
+
   return (
     <div className="overflow-y-auto max-h-[calc(30vh)] bg-gray-950/60 rounded-3xl">
       {' '}
@@ -37,19 +40,34 @@ const ChatbotSideNavItems = () => {
           {getChatsError && (
             <p className="text-neutral-400">Error cargando chats</p>
           )}
-          {getChatsData?.map(({ chatbot_conversation_id, title }) => (
-            <li
-              key={chatbot_conversation_id}
-              className="max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5 text-neutral-400 hover:text-white"
-            >
-              <Link
-                href={`/chatbot?conversation_id=${chatbot_conversation_id}`}
-                className="text-lg lg:text-base transition-colors w-full block hover:text-white"
+          {getChatsData?.map(({ chatbot_conversation_id, title }) => {
+            const isActive = activeConversationId === chatbot_conversation_id;
+
+            return (
+              <li
+                key={chatbot_conversation_id}
+                className={`
+                ${
+                  isActive
+                    ? 'text-blue-100'
+                    : 'text-neutral-400 hover:text-blue-100'
+                }
+                max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
+            `}
               >
-                {title.replace(/^"|"$/g, '')}
-              </Link>
-            </li>
-          ))}
+                <Link
+                  href={`/chatbot?conversation_id=${chatbot_conversation_id}`}
+                  className={`
+                  text-lg lg:text-base 
+                  transition-colors w-full block
+                  ${isActive ? 'text-blue-100' : 'hover:text-blue-100'}
+              `}
+                >
+                  {title.replace(/^"|"$/g, '')}
+                </Link>
+              </li>
+            );
+          })}
         </>
       </ul>
     </div>
