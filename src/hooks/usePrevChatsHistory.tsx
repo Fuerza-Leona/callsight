@@ -5,17 +5,16 @@ import axios from 'axios';
 import { apiUrl } from '@/constants';
 
 interface ApiResponse {
-  response: string;
-  conversation_id: string;
+  chatbot_conversation_id: string;
+  title: string;
 }
 
-export const useChatbot = () => {
-  const [data, setData] = useState<ApiResponse | null>(null);
+export const usePrevChatsHistory = () => {
+  const [data, setData] = useState<ApiResponse[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const postChatbot = async (prompt: string): Promise<ApiResponse | null> => {
-    console.log('Sending prompt to OpenAI API:', prompt);
+  const getChats = async () => {
     setLoading(true);
     setError(null);
 
@@ -31,9 +30,8 @@ export const useChatbot = () => {
       const accessToken = tokenData.user;
 
       //Request with Auth header
-      const response = await axios.post<ApiResponse>(
-        `${apiUrl}/chatbot/chat`,
-        { prompt },
+      const response = await axios.get<ApiResponse[]>(
+        `${apiUrl}/chatbot/all_chats`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -41,25 +39,23 @@ export const useChatbot = () => {
         }
       );
 
-      console.log('Chatbot response:', response.data);
+      console.log('previous chats history response:', response.data);
       setData(response.data);
-      return response.data;
     } catch (err: unknown) {
       console.error('Chatbot fetch error:', err);
       if (axios.isAxiosError(err)) {
         const message =
           err.response?.data?.detail ||
-          'Could not get a chatbot response. Please try again.';
+          'Could not get a chat history. Please try again.';
         setError(message);
       } else {
         setError('An unexpected error occurred.');
       }
       setData(null);
-      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  return { postChatbot, data, loading, error };
+  return { getChats, data, loading, error };
 };

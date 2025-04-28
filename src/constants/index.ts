@@ -81,26 +81,3 @@ export const sideNavLinksClient: NavLink[] = [
     href: 'support',
   },
 ];
-
-export const chatTemp: NavLink[] = [
-  { id: 1, name: 'Llamada con BBVA', href: '' },
-  { id: 2, name: 'Sugerencias para mis clientes', href: '' },
-  { id: 3, name: 'Cómo tratar con clientes difíciles', href: '' },
-  { id: 4, name: 'Política de reembolsos explicada', href: '' },
-  { id: 5, name: 'Manejo de quejas recurrentes', href: '' },
-  { id: 6, name: 'Script para ventas efectivas', href: '' },
-  { id: 7, name: 'Protocolos de emergencia', href: '' },
-  { id: 8, name: 'Seguimiento de cliente satisfecho', href: '' },
-  { id: 9, name: 'Atención postventa BBVA', href: '' },
-  { id: 10, name: 'Resolución de problemas técnicos', href: '' },
-  { id: 11, name: 'Tips para llamadas rápidas', href: '' },
-  { id: 12, name: 'Guía de empatía en atención', href: '' },
-  { id: 13, name: 'Cómo cerrar una venta', href: '' },
-  { id: 14, name: 'Primer contacto con nuevos leads', href: '' },
-  { id: 15, name: 'Manejo de objeciones comunes', href: '' },
-  { id: 16, name: 'Resumen reunión con cliente VIP', href: '' },
-  { id: 17, name: 'Instrucciones para producto X', href: '' },
-  { id: 18, name: 'Actualización de datos de contacto', href: '' },
-  { id: 19, name: 'Proceso de devolución explicado', href: '' },
-  { id: 20, name: 'Mensajes para clientes inactivos', href: '' },
-];
