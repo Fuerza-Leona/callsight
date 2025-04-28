@@ -20,11 +20,15 @@ import {
   IconButton,
   InputBase,
   Divider,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AddIcon from '@mui/icons-material/Add';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import TicketMessagesList from '@/components/TicketMessagesList';
+import { UUID } from 'crypto';
 
 const Tickets = () => {
   const [textFieldHeight, setTextFieldHeight] = useState(500);
@@ -49,6 +53,7 @@ const Tickets = () => {
     error: ticketsError,
     fetchTicketsByCompany,
     createTicket,
+    updateTicketStatus
   } = useTickets();
 
   const {
@@ -94,12 +99,27 @@ const Tickets = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTicketId]);
 
+  const [status, setStatus] = React.useState('');
+
+  const handleChangeStatus = (event: SelectChangeEvent) => {
+    updateTicketStatus(selectedTicketId!, event.target.value as 'open' | 'in_progress' | 'closed');
+    setStatus(event.target.value as string);
+  };
+
+  const [assignee, setAsignee] = React.useState<UUID>('----');
+
+  const handleChangeAsignee = (event: SelectChangeEvent) => {
+    setAsignee(event.target.value as UUID);
+  };
+
   const handleTicketSelect = (item: ItemData) => {
     const ticketId = item.id.toString();
     const ticketSubject = item.label || '';
 
     setSelectedTicketId(ticketId);
     setSelectedTicketSubject(ticketSubject);
+    setStatus(item.status || '');
+    setAsignee(item.assigned_to || '----');
   };
 
   const handleSaveMessage = async () => {
@@ -144,6 +164,8 @@ const Tickets = () => {
         (1000 * 3600 * 24)
     ),
     text: ticket.description,
+    status: ticket.status,
+    assigned_to: ticket.assigned_to,
   }));
 
   const openTicketsCount = tickets.filter((t) => t.status === 'open').length;
@@ -302,7 +324,8 @@ const Tickets = () => {
                 bgcolor: selectedTicketId ? 'var(--jonquil)' : '#f5f5f5',
                 borderBottom: '1px solid #e0e0e0',
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'justify-content',
+                justifyContent: 'space-between',
               }}
             >
               <Typography fontWeight="medium" variant="subtitle1">
@@ -310,6 +333,28 @@ const Tickets = () => {
                   ? `Ticket: ${selectedTicketSubject}`
                   : 'Seleccione un ticket para ver los mensajes'}
               </Typography>
+              <div>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={status}
+                  label="Status"
+                  onChange={handleChangeStatus}
+                >
+                  <MenuItem value={'open'}>Activo</MenuItem>
+                  <MenuItem value={'in_progress'}>En progreso</MenuItem>
+                  <MenuItem value={'closed'}>Cerrado</MenuItem>
+                </Select>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select-asignee"
+                  value={assignee}
+                  label="Asignado"
+                  onChange={handleChangeAsignee}
+                >
+                  <MenuItem value={'-----'}>Activo</MenuItem>
+                </Select>
+              </div>
             </Box>
 
             {/* Messages area */}
