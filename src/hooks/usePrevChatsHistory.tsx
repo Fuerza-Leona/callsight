@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import api from '@/utils/api';
 
-interface ApiResponse {
+export interface HistoryChat {
   chatbot_conversation_id: string;
   title: string;
 }
 
 export const usePrevChatsHistory = () => {
-  const [data, setData] = useState<ApiResponse[] | null>(null);
+  const [data, setData] = useState<HistoryChat[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -19,7 +19,7 @@ export const usePrevChatsHistory = () => {
 
     try {
       //Request with Auth header
-      const response = await api.get<ApiResponse[]>('/chatbot/all_chats');
+      const response = await api.get<HistoryChat[]>('/chatbot/all_chats');
 
       console.log('previous chats history response:', response.data);
       setData(response.data);

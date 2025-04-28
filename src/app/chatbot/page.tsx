@@ -160,7 +160,8 @@ const ChatbotInner = () => {
         >
           {!hasSent && (
             <div className="text-5xl font-bold px-10">
-              Bienvenido {name}. Que te gustaría hacer?
+              <p>Bienvenido {name}.</p>
+              <p>Que te gustaría hacer?</p>
             </div>
           )}
           {!hasSent && !loadingPrompts && !suggestionsError && (
