@@ -12,6 +12,7 @@ import {
   useChatbotConversationHistoryHistory,
 } from '@/hooks/useChatbotConversationHistory';
 import { useChatbotConversation } from '@/hooks/useChatbotConversation';
+import { useUser } from '@/context/UserContext';
 
 const formatSteps = (text: string): string[] => {
   //Enumarate steps if response has them
@@ -23,6 +24,9 @@ const formatSteps = (text: string): string[] => {
 };
 
 const ChatbotInner = () => {
+  const { user } = useUser();
+  const name = user?.username;
+
   const searchParams = useSearchParams();
   const conversationIdFromParams = searchParams.get('conversation_id');
 
@@ -155,7 +159,7 @@ const ChatbotInner = () => {
         >
           {!hasSent && (
             <div className="text-5xl font-bold px-10">
-              Bienvenido Luis. Que te gustaría hacer?
+              Bienvenido {name}. Que te gustaría hacer?
             </div>
           )}
           {!hasSent && !loadingPrompts && !suggestionsError && (
