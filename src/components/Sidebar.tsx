@@ -2,10 +2,59 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { sideNavLinksClient, sideNavLinksAgent } from '@/constants';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext';
 
 import Image from 'next/image';
+import { usePrevChatsHistory } from '@/hooks/usePrevChatsHistory';
+
+const ChatbotSideNavItems = () => {
+  const {
+    getChats,
+    data: getChatsData,
+    loading: getChatsLoading,
+    error: getChatsError,
+  } = usePrevChatsHistory();
+
+  useEffect(() => {
+    getChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="overflow-y-auto max-h-[calc(30vh)] bg-gray-950/60 rounded-3xl">
+      {' '}
+      {/* TO DO: Adjust spacing for other sizes, like mobile*/}
+      <ul className="flex flex-col items-center text-center gap-4 lg:gap-6 relative z-20 pt-15 md:pt-10">
+        <>
+          <p className="text-neutral-400 italic">Historial de chats</p>
+          {getChatsLoading && (
+            <div className="relative w-full flex flex-col py-[50px] items-center text-center">
+              <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
+              <p className="text-lg text-gray-600">Cargando chats...</p>
+            </div>
+          )}
+          {getChatsError && (
+            <p className="text-neutral-400">Error cargando chats</p>
+          )}
+          {getChatsData?.map(({ chatbot_conversation_id, title }) => (
+            <li
+              key={chatbot_conversation_id}
+              className="max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5 text-neutral-400 hover:text-white"
+            >
+              <Link
+                href={`/chatbot?conversation_id=${chatbot_conversation_id}`}
+                className="text-lg lg:text-base transition-colors w-full block hover:text-white"
+              >
+                {title.replace(/^"|"$/g, '')}
+              </Link>
+            </li>
+          ))}
+        </>
+      </ul>
+    </div>
+  );
+};
 
 const SideNavItems = () => {
   const pathname = usePathname();
@@ -84,6 +133,7 @@ const SideNavItems = () => {
 };
 
 const Sidebar = () => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
   const { user } = useUser();
@@ -110,8 +160,17 @@ const Sidebar = () => {
             className={`h-screen w-full md:w-64 pt-20 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:fixed lg:translate-x-0`}
           >
             <div className="flex flex-col justify-between h-full py-5">
-              <nav className="lg:flex w-full justify-center">
+              <nav className="lg:flex flex-col w-full justify-center">
                 <SideNavItems />
+                {pathname.includes('chatbot') && (
+                  <button
+                    onClick={() => (window.location.href = '/chatbot')}
+                    className="text-neutral-200 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all mx-[1rem] my-[1rem] hover:cursor-pointer hover:text-white"
+                  >
+                    Crear chat
+                  </button>
+                )}
+                {pathname.includes('chatbot') && <ChatbotSideNavItems />}
               </nav>
             </div>
           </aside>

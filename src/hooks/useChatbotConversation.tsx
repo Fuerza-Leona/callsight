@@ -45,6 +45,7 @@ export const useChatbotConversation = () => {
 
       console.log('Chatbot response:', response.data);
       setData(response.data.response);
+      return response.data.response;
     } catch (err: unknown) {
       console.error('Chatbot fetch error:', err);
       if (axios.isAxiosError(err)) {
@@ -56,6 +57,7 @@ export const useChatbotConversation = () => {
         setError('An unexpected error occurred.');
       }
       setData(null);
+      return null;
     } finally {
       setLoading(false);
     }
