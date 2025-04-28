@@ -214,6 +214,13 @@ const ChatbotInner = () => {
               label=""
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => {
+                console.log('Key pressed:', e.key);
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleButtonSubmit();
+                }
+              }}
               sx={{ width: '800px', height: '125px' }}
               divider={false}
             />
