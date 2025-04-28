@@ -31,7 +31,7 @@ const ChatbotSideNavItems = () => {
           {getChatsLoading && (
             <div className="relative w-full flex flex-col py-[50px] items-center text-center">
               <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
-              <p className="text-lg text-gray-600">Cargando sugerencias...</p>
+              <p className="text-lg text-gray-600">Cargando chats...</p>
             </div>
           )}
           {getChatsError && (
