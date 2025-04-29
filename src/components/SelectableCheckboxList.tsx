@@ -8,27 +8,35 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import { Typography } from '@mui/material';
+import { UUID } from 'crypto';
 
-type ItemData = {
-  id: number;
+export type ItemData = {
+  id: number | string;
   label: string;
   daysOpen: number;
   text: string;
+  status: 'open' | 'in_progress' | 'closed';
+  assigned_to: UUID;
 };
 
 type Props = {
   items: ItemData[];
+  onSelect?: (item: ItemData) => void;
 };
 
-export default function SelectableCheckboxList({ items }: Props) {
+export default function SelectableCheckboxList({ items, onSelect }: Props) {
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
-  const [checked, setChecked] = React.useState<number[]>([]);
+  const [checked, setChecked] = React.useState<(number | string)[]>([]);
 
   const handleSelect = (index: number) => {
     setSelectedIndex(index);
+    console.log('Selected item in list:', items[index]); // Debug selected item
+    if (onSelect && items[index]) {
+      onSelect(items[index]);
+    }
   };
 
-  const handleToggle = (id: number) => {
+  const handleToggle = (id: number | string) => {
     const currentIndex = checked.indexOf(id);
     const newChecked = [...checked];
 
@@ -40,6 +48,12 @@ export default function SelectableCheckboxList({ items }: Props) {
 
     setChecked(newChecked);
   };
+
+  // Debug props
+  React.useEffect(() => {
+    console.log('SelectableCheckboxList items:', items);
+    console.log('onSelect function provided:', !!onSelect);
+  }, [items, onSelect]);
 
   return (
     <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
