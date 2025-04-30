@@ -27,6 +27,6 @@ jobs:
           NEXT_PUBLIC_BASE_API_URL=${{ vars.NEXT_PUBLIC_BASE_API_URL }}
           NEXT_PUBLIC_API_VERSION=${{ vars.NEXT_PUBLIC_API_VERSION }}
           EOL
-
+          
       - name: Run tests
         run: npm run test
