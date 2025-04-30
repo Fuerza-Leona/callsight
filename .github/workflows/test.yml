@@ -28,5 +28,16 @@ jobs:
           NEXT_PUBLIC_API_VERSION=${{ vars.NEXT_PUBLIC_API_VERSION }}
           EOL
 
+      - name: Use python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          rfbrowser init
+          pip install -r tests/requirements.txt
+
       - name: Run tests
         run: npm run test
