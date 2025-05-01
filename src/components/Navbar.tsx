@@ -37,11 +37,6 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
 
-  const handleLogout = async () => {
-    await fetch('/api/logout');
-    window.location.href = '/';
-  };
-
   return (
     <header className="lg:pl-0 fixed top-0 left-0 right-0 z-50 bg-[#13202A]">
       <div className="mx-5">
@@ -74,11 +69,6 @@ const Navbar = () => {
                 height={24}
               />
             </button>
-            {user && (
-              <button className="hover:cursor-pointer" onClick={handleLogout}>
-                <p className="rounded-2xl px-3 py-1 bg-white">Logout</p>
-              </button>
-            )}
             {!user && (
               <Link href={'/login'}>
                 <p className="rounded-2xl px-3 py-1 bg-white">Login</p>
