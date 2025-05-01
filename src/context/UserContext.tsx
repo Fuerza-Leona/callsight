@@ -2,57 +2,47 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { User } from '@/interfaces/user';
+import api from '../utils/api';
 
 interface UserContextType {
   user: User | null;
-  setUser: (user: User | null) => void;
-  token: string | null;
-  setToken: (token: string | null) => void;
-  logout: () => void;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  loading: boolean;
 }
 
+// Create context with a default value and proper typing
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-
-  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const cookie = document.cookie
-      .split('; ')
-      .find((c) => c.startsWith('user_info='));
-
-    if (cookie) {
+    const fetchUser = async () => {
       try {
-        const json = decodeURIComponent(cookie.split('=')[1]);
-        const parsedUser = JSON.parse(json);
-        setUser(parsedUser);
-      } catch (err) {
-        console.error('Error parsing user_info cookie:', err);
+        const response = await api.get('users/me');
+        setUser(response.data.user);
+        window.location.href = '/perfil';
+      } catch {
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchUser();
   }, []);
 
-  const logout = () => {
-    setUser(null);
-
-    // Clear both cookies
-    document.cookie = 'user_info=; Max-Age=0; path=/';
-    document.cookie = 'session=; Max-Age=0; path=/'; // optional if you handle it on server too
-  };
-
   return (
-    <UserContext.Provider value={{ user, setUser, token, setToken, logout }}>
-      {children}
+    <UserContext.Provider value={{ user, setUser, loading }}>
+      {loading ? <div className="text-white">Loading...</div> : children}
     </UserContext.Provider>
   );
 };
 
-export const useUser = () => {
+export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useUser must be used within a UserProvider');
   }
   return context;
