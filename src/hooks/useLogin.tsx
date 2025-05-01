@@ -25,7 +25,7 @@ export const useLogin = () => {
 
       setUser(response.data.user);
 
-      router.push('/home');
+      router.push('/perfil');
     } catch (error) {
       setError(
         `Error al Iniciar sesión: ${error instanceof Error ? error.message : String(error)}`
