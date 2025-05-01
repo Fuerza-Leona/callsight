@@ -31,10 +31,6 @@ const Navbar = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  if (user) {
-    return null;
-  }
-
   const toggleMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
 
   return (
