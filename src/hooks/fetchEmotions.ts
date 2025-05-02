@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 interface EmotionsResponse {
   emotions?: Emotions;
@@ -31,10 +30,6 @@ export const useFetchEmotions = () => {
     setError('');
 
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
@@ -44,18 +39,9 @@ export const useFetchEmotions = () => {
           params.categories.length > 0 && { categories: params.categories }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const emotionsResponse = await axios.post<EmotionsResponse>(
-        `${apiUrl}/conversations/myClientEmotions`,
-        requestBody,
-        config
+      const emotionsResponse = await api.post<EmotionsResponse>(
+        '/conversations/myClientEmotions',
+        requestBody
       );
 
       setEmotions(emotionsResponse.data?.emotions);

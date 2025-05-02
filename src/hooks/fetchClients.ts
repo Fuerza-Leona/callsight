@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Client {
   user_id: string;
@@ -22,9 +21,7 @@ export const useFetchClients = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get<ClientsResponse>(
-        `${apiUrl}/users/client`
-      );
+      const response = await api.get<ClientsResponse>('/users/client');
       setClients(response.data?.clients || []);
     } catch (err) {
       console.error('Error:', err);

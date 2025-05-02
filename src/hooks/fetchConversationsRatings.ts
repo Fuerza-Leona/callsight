@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Rating {
   rating: number;
@@ -31,10 +30,6 @@ export const useFetchConversationsRatings = () => {
     setLoading(true);
     setError('');
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
@@ -44,18 +39,9 @@ export const useFetchConversationsRatings = () => {
           params.categories.length > 0 && { categories: params.categories }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const ratingsResponse = await axios.post<ConversationsRatingsResponse>(
-        `${apiUrl}/conversations/ratings`,
-        requestBody,
-        config
+      const ratingsResponse = await api.post<ConversationsRatingsResponse>(
+        '/conversations/ratings',
+        requestBody
       );
 
       setRatings(ratingsResponse.data?.ratings || []);

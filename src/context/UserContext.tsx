@@ -1,10 +1,9 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import type { User } from '@/interfaces/user';
-import api from '../utils/api';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { User } from '../interfaces/user';
 import { useRouter } from 'next/navigation';
-
+import api from '../utils/api';
 interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -17,8 +16,8 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
   const router = useRouter();
+
   useEffect(() => {
     const fetchUser = async () => {
       try {

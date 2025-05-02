@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Topic {
   topic: string;
@@ -27,10 +26,6 @@ export const useFetchTopics = () => {
     setError('');
 
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.limit && { limit: params.limit }),
         ...(params?.startDate && { startDate: params.startDate }),
@@ -41,19 +36,7 @@ export const useFetchTopics = () => {
           params.categories.length > 0 && { categories: params.categories }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const topicsResponse = await axios.post(
-        `${apiUrl}/topics`,
-        requestBody,
-        config
-      );
+      const topicsResponse = await api.post('/topics', requestBody);
 
       setTopics(topicsResponse.data.topics);
     } catch (err) {
