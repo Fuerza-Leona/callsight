@@ -23,7 +23,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const response = await api.get('users/me');
         setUser(response.data.user);
-        router.push('/perfil');
+        if (window.location.pathname === '/') {
+          router.push('/perfil');
+        } else {
+          router.push(window.location.pathname);
+        }
       } catch {
         setUser(null);
       } finally {
