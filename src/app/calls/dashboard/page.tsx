@@ -118,7 +118,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative lg:left-64 pt-7 w-[96%] lg:w-[80%] flex flex-col gap-3 m-2 max-w-screen pl-3">
+    <div className="relative lg:left-64 pt-7 w-[96%] lg:w-[80%] flex flex-col gap-3 max-w-screen pl-3">
       <div className="flex flex-col md:flex-row items-center justify-between ">
         <p className="text-4xl font-bold">Tablero</p>
         <div className="flex gap-2">
@@ -206,7 +206,7 @@ export default function Home() {
           <div className="flex w-full h-[30%] gap-4 text-center pb-1 ">
             <div
               className="w-[32%] rounded-md flex flex-col items-left justify-left gap-3 p-3 shadow-md"
-              style={{ backgroundColor: 'white', height: '120px' }}
+              style={{ backgroundColor: 'white', height: '110px' }}
             >
               <div className="flex gap-2 text-md items-left font-bold ">
                 <h1>Tiempo promedio por llamada</h1>
@@ -228,7 +228,7 @@ export default function Home() {
             </div>
             <div
               className="w-[32%] shadow-md rounded-md flex flex-col items-left justify-left items-left gap-3 p-3"
-              style={{ backgroundColor: 'white', height: '120px' }}
+              style={{ backgroundColor: 'white', height: '110px' }}
             >
               <div className="flex gap-2 text-md items-left font-bold ">
                 <h1>Total de llamadas</h1>
@@ -253,7 +253,7 @@ export default function Home() {
             </div>
             <div
               className="w-[32%] shadow-md rounded-md flex flex-col items-left justify-left items-left gap-3 p-3"
-              style={{ backgroundColor: 'white', height: '120px' }}
+              style={{ backgroundColor: 'white', height: '110px' }}
             >
               <div className="flex gap-2 text-md items-left font-bold">
                 <h1>Promedio de evaluación</h1>
@@ -298,9 +298,9 @@ export default function Home() {
 
           <div
             className="w-full shadow-md rounded-md  bg-white p-5 w-full"
-            style={{ minHeight: '280px' }}
+            style={{ minHeight: '260px' }}
           >
-            <h1 className="text-lg font-bold mt-5 pl-5">
+            <h1 className="text-lg font-bold pl-5">
               Temas principales detectados
             </h1>
 

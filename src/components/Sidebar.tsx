@@ -144,50 +144,43 @@ const Sidebar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
-  const { user } = useUser();
-
-  if (!user) {
-    return null;
-  }
 
   return (
     <>
-      {user && (
-        <div>
-          <button
-            className="fixed top-4 left-4 z-[100] text-neutral-400 hover:text-white focus:outline-none lg:hidden flex p-3 rounded-md"
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            <Image
-              src={isOpen ? '/assets/close.svg' : '/assets/menu.svg'}
-              alt="toggle"
-              width={24}
-              height={24}
-              className="w-6 h-6 mt-4"
-            />
-          </button>
+      <div>
+        <button
+          className="fixed top-4 left-4 z-[100] text-neutral-400 hover:text-white focus:outline-none lg:hidden flex p-3 rounded-md"
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+        >
+          <Image
+            src={isOpen ? '/assets/close.svg' : '/assets/menu.svg'}
+            alt="toggle"
+            width={24}
+            height={24}
+            className="w-6 h-6 mt-4"
+          />
+        </button>
 
-          <aside
-            className={`h-screen w-full md:w-64 pt-1 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:fixed lg:translate-x-0`}
-          >
-            <div className="flex flex-col justify-between h-full py-5">
-              <nav className="lg:flex flex-col w-full justify-center">
-                <SideNavItems />
-                {pathname.includes('chatbot') && (
-                  <button
-                    onClick={() => (window.location.href = '/chatbot')}
-                    className="text-neutral-200 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all mx-[1rem] my-[1rem] hover:cursor-pointer hover:text-white"
-                  >
-                    Crear chat
-                  </button>
-                )}
-                {pathname.includes('chatbot') && <ChatbotSideNavItems />}
-              </nav>
-            </div>
-          </aside>
-        </div>
-      )}
+        <aside
+          className={`h-screen w-full md:w-64 pt-1 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:fixed lg:translate-x-0`}
+        >
+          <div className="flex flex-col justify-between h-full py-5">
+            <nav className="lg:flex flex-col w-full justify-center">
+              <SideNavItems />
+              {pathname.includes('chatbot') && (
+                <button
+                  onClick={() => (window.location.href = '/chatbot')}
+                  className="text-neutral-200 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all mx-[1rem] my-[1rem] hover:cursor-pointer hover:text-white"
+                >
+                  Crear chat
+                </button>
+              )}
+              {pathname.includes('chatbot') && <ChatbotSideNavItems />}
+            </nav>
+          </div>
+        </aside>
+      </div>
     </>
   );
 };

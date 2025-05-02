@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Summary {
   average_minutes: number;
@@ -32,10 +31,6 @@ export const useFetchConversationsSummary = () => {
     setError('');
     setSummary(undefined);
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
@@ -45,18 +40,9 @@ export const useFetchConversationsSummary = () => {
           params.categories.length > 0 && { categories: params.categories }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const summaryResponse = await axios.post<SummaryResponse>(
-        `${apiUrl}/conversations/summary`,
-        requestBody,
-        config
+      const summaryResponse = await api.post<SummaryResponse>(
+        '/conversations/summary',
+        requestBody
       );
 
       setSummary(summaryResponse.data?.summary);

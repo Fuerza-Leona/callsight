@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import FileUploader from './FileUploader';
 import { useFetchCompanies } from '@/hooks/fetchCompanies';
 import { useParticipants } from '@/hooks/fetchParticipants';
 import SearchBar from './SearchBar';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 interface FormInputsProps {
   onFormSubmit: (data: {
@@ -22,31 +21,17 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
   );
   const [date, setDate] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const getToken = async () => {
-      try {
-        const response = await axios.get('/api/token');
-        setToken(response.data.access_token);
-      } catch (error) {
-        console.error('Error fetching token:', error);
-      }
-    };
-
-    getToken();
-  }, []);
 
   const {
     companies,
     loading: companiesLoading,
     error: companiesError,
-  } = useFetchCompanies(token);
+  } = useFetchCompanies();
   const {
     participants,
     loading: participantsLoading,
     error: participantsError,
-  } = useParticipants(selectedCompany, token);
+  } = useParticipants(selectedCompany);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -77,16 +62,7 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
     formData.append('participants', selectedParticipants.join(','));
 
     try {
-      const response = await axios.post(
-        `${apiUrl}/ai/alternative-analysis`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.post('/ai/alternative-analysis', formData);
 
       console.log('Response:', response.data);
       alert('Análisis completado con éxito.');

@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 interface Company {
   company_id: string;
@@ -10,28 +8,18 @@ interface Company {
   category_id?: string;
 }
 
-export function useFetchCompanies(token: string | null) {
+export function useFetchCompanies() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Don't fetch if no token is available
-    if (!token) {
-      setLoading(true);
-      return;
-    }
-
     const getCompanies = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get(`${apiUrl}/companies/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await api.get('/companies/');
 
         console.log('Companies API response:', response.data);
 
@@ -54,7 +42,7 @@ export function useFetchCompanies(token: string | null) {
     };
 
     getCompanies();
-  }, [token]);
+  }, []);
 
   return { companies, loading, error };
 }

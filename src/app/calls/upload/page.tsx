@@ -30,7 +30,7 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="relative left-64 top-32 w-82/100 min-h-screen grid grid-cols-3 gap-2 auto-rows-min m-2">
+    <div className="relative left-64 top-32 w-82/100 min-h-screen grid grid-cols-3 gap-2 auto-rows-min">
       <div>
         <h1 className="text-black text-2xl font-bold flex items-center justify-center w-full text-center">
           Analizar una llamada

@@ -13,6 +13,7 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       VERCEL_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+      NEXT_PUBLIC_BASE_API_URL: https://api.staging.callsight.tech
 
     steps:
       - name: Checkout Repository

@@ -1,9 +1,8 @@
 'use client';
 
-import axios from 'axios';
 import { UUID } from 'crypto';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Category {
   category_id: UUID;
@@ -22,9 +21,7 @@ export const useFetchCategories = () => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const response = await axios.get<CategoriesResponse>(
-        `${apiUrl}/categories`
-      );
+      const response = await api.get<CategoriesResponse>('/categories');
       setCategories(response.data?.categories || []);
     } catch (err) {
       console.error('Error:', err);

@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Conversation {
   conversation_id: string;
@@ -32,10 +31,6 @@ export const useFetchConversations = () => {
     setLoading(true);
     setError('');
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
@@ -48,18 +43,9 @@ export const useFetchConversations = () => {
         }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const conversationsResponse = await axios.post<ConversationsResponse>(
-        `${apiUrl}/conversations/mine`,
-        requestBody,
-        config
+      const conversationsResponse = await api.post<ConversationsResponse>(
+        '/conversations/mine',
+        requestBody
       );
 
       setConversations(conversationsResponse.data?.conversations || []);

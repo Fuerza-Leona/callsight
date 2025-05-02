@@ -104,7 +104,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative lg:left-64 top-32 w-full xl:w-75/100 flex flex-col md:justify-around md:flex-row gap-2 m-2">
+    <div className="relative lg:left-64 top-32 w-full xl:w-75/100 flex flex-col md:justify-around md:flex-row gap-2">
       <div className="w-3/10 flex flex-col align-center text-center">
         <div className="text-white bg-[#1E242B] rounded-md mb-5 ">
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
