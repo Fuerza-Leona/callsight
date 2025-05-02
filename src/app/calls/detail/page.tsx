@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import TranscriptBubble from '@/components/TranscriptBubble';
 import { useUser } from '@/context/UserContext';
 import { useSpecificCall } from '@/hooks/useSpecificCall';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Client component that uses useSearchParams
 function CallDetail() {
@@ -211,8 +212,10 @@ function CallDetail() {
 // example comment
 export default function LlamadaPage() {
   return (
-    <Suspense fallback={<div className="p-4 text-center">Cargando...</div>}>
-      <CallDetail />
-    </Suspense>
+    <ProtectedRoute>
+      <Suspense fallback={<div className="p-4 text-center">Cargando...</div>}>
+        <CallDetail />
+      </Suspense>
+    </ProtectedRoute>
   );
 }
