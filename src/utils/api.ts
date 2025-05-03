@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 import { apiUrl } from '@/constants';
 
 const api = axios.create({
@@ -25,8 +24,13 @@ api.interceptors.response.use(
         );
         return api(originalRequest);
       } catch (refreshError) {
-        const router = useRouter();
-        router.push('/');
+        if (
+          typeof window !== 'undefined' &&
+          !window.location.pathname.includes('/login') &&
+          window.location.pathname !== '/'
+        ) {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       }
     }
