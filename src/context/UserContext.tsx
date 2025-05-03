@@ -26,7 +26,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         if (window.location.pathname === '/') {
           router.push('/perfil');
         } else {
-          router.push(window.location.pathname);
+          router.push(window.location.pathname + window.location.search);
         }
       } catch {
         setUser(null);
