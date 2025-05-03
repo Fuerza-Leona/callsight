@@ -134,10 +134,12 @@ export default function Home() {
             </div>
             <Link
               href={'/calls/search'}
-              className="text-[#FFFFFF] rounded-md"
-              style={{ backgroundColor: 'var(--neoris-blue)' }}
+              className="text-[#FFFFFF] rounded-md block"
             >
-              <div className="p-2 items-center justify-center text-center flex">
+              <div
+                className="p-2 items-center justify-center text-center flex rounded-md"
+                style={{ backgroundColor: 'var(--neoris-blue)' }}
+              >
                 <p className="">
                   Buscar Llamadas <SearchIcon />
                 </p>
