@@ -274,6 +274,8 @@ function CallDetail() {
           {call?.company?.logo && (
             <Image
               src={call.company.logo}
+              width={200}
+              height={200}
               alt="Logo de la empresa"
               className="rounded-full mt-2 mb-4 object-cover"
             />
