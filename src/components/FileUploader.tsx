@@ -18,17 +18,26 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
   return (
     <div className="flex flex-col">
       <label className="font-semibold mb-1">Subir Archivo</label>
-      <input
-        type="file"
-        className="p-3 border rounded-lg bg-gray-200 border-black"
-        onChange={handleFileChange}
-        id="fileInput"
-      />
-      {selectedFile && (
-        <p className="mt-2 text-sm text-gray-600">
-          Archivo seleccionado: {selectedFile.name}
-        </p>
-      )}
+      <div className="relative w-full">
+        <label
+          htmlFor="fileInput"
+          className="w-full p-3 bg-gray-200 rounded-lg flex justify-between items-center cursor-pointer text-gray-700"
+        >
+          <span>
+            {selectedFile ? selectedFile.name : 'Ningún archivo seleccionado'}
+          </span>
+          <span className="bg-white px-3 py-1 rounded-lg text-[#13202a] font-medium">
+            Elegir Archivo
+          </span>
+        </label>
+        <input
+          type="file"
+          className="hidden"
+          onChange={handleFileChange}
+          id="fileInput"
+          accept="audio/*"
+        />
+      </div>
     </div>
   );
 };

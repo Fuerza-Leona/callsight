@@ -3,8 +3,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { SxProps } from '@mui/material/styles';
 
 interface SearchBarProps {
-  options: { label: string }[];
-  label: string;
+  options: { label: string | null }[];
+  label?: string;
+  placeholder?: string;
   onSelect: (value: string | null) => void;
   sx?: SxProps;
 }
@@ -13,6 +14,7 @@ interface SearchBarProps {
 export default function SearchBar({
   options,
   label,
+  placeholder,
   onSelect,
 }: SearchBarProps) {
   return (
@@ -20,13 +22,13 @@ export default function SearchBar({
       disablePortal
       options={options}
       onChange={(_, value) => onSelect(value ? value.label : null)}
-      className="border-black"
       sx={{
         width: '100%',
         backgroundColor: '#E5E7Eb',
         border: 'none',
         boxShadow: 'none',
         color: 'black',
+        borderRadius: '0.5rem',
         '& .MuiInputLabel-root': {
           border: 'none',
         },
@@ -40,17 +42,39 @@ export default function SearchBar({
         },
         '& .MuiInputBase-input': {
           backgroundColor: '#E5E7Eb',
-          color: 'black',
+          color: '#374151',
           border: 'none',
           boxShadow: 'none',
+          '&::placeholder': {
+            color: '#374151',
+            opacity: 1,
+          },
         },
-        '&:focus': {
-          borderRadius: 4,
-          border: 'none',
-          boxShadow: 'none',
+        '& .MuiOutlinedInput-root': {
+          borderRadius: '0.5rem',
+          '& fieldset': {
+            border: 'none',
+          },
+          '&:hover fieldset': {
+            border: 'none',
+          },
+          '&.Mui-focused fieldset': {
+            border: 'none',
+          },
         },
       }}
-      renderInput={(params) => <TextField {...params} label={label} />}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={label}
+          placeholder={placeholder}
+          InputProps={{
+            ...params.InputProps,
+            style: { color: '#374151' },
+            placeholder: placeholder,
+          }}
+        />
+      )}
     />
   );
 }

@@ -32,9 +32,9 @@ const Page: React.FC = () => {
 
   return (
     <ProtectedRoute>
-      <div className="relative left-64 top-32 w-82/100 min-h-screen grid grid-cols-3 gap-2 auto-rows-min">
-        <div>
-          <h1 className="text-black text-2xl font-bold flex items-center justify-center w-full text-center">
+      <div className="relative left-64 top-20 w-82/100 flex justify-center">
+        <div className="w-full max-w-md pb-10">
+          <h1 className="text-black text-2xl font-bold text-center mb-6">
             Analizar una llamada
           </h1>
           <FormInputs onFormSubmit={handleFormSubmit} />
