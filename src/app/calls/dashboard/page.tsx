@@ -15,7 +15,6 @@ import { useFetchCategories, Category } from '@/hooks/fetchCategories';
 import { useFetchTopics } from '@/hooks/fetchTopics';
 import SimpleWordCloud from '@/components/SimpleWordCloud';
 import { useFetchConversationsSummary } from '@/hooks/fetchConversationsSummary';
-import { useFetchConversationsCategories } from '@/hooks/fetchConversationsCategories';
 import { useFetchConversationsRatings } from '@/hooks/fetchConversationsRatings';
 import {
   Box,
@@ -49,12 +48,6 @@ export default function Home() {
   const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
   const { summary, loadingSummary, errorSummary, fetchConversationsSummary } =
     useFetchConversationsSummary();
-  const {
-    conversationsCategories,
-    loadingConversationsCategories,
-    errorConversationsCategories,
-    fetchConversationsCategories,
-  } = useFetchConversationsCategories();
   const { ratings, loadingRatings, errorRatings, fetchConversationsRatings } =
     useFetchConversationsRatings();
 
@@ -90,7 +83,6 @@ export default function Home() {
       try {
         await Promise.all([
           fetchConversationsRatings(params),
-          fetchConversationsCategories(params),
           fetchEmotions(params),
           fetchConversationsSummary(params),
           fetchTopics({ ...params, limit: 10 }),
@@ -419,7 +411,7 @@ export default function Home() {
                 style={{ minHeight: '300px' }}
               >
                 <h1 className="text-lg font-bold pt-3 pb-3">
-                  Llamadas por categoría
+                  Evaluaciones del cliente
                 </h1>
 
                 <Box
@@ -432,7 +424,7 @@ export default function Home() {
                     justifyContent: 'center',
                   }}
                 >
-                  {loadingConversationsCategories ? (
+                  {loadingRatings ? (
                     <Box
                       display="flex"
                       justifyContent="center"
@@ -442,39 +434,43 @@ export default function Home() {
                     >
                       <CircularProgress size={60} />
                     </Box>
-                  ) : errorConversationsCategories ? (
-                    <p>Error al cargar categorías</p>
-                  ) : !conversationsCategories ||
-                    conversationsCategories.length == 0 ? (
-                    <p>No hay categorías disponibles</p>
+                  ) : errorRatings ? (
+                    <p>Error al cargar las evaluaciones</p>
                   ) : (
                     (() => {
-                      const totalCount = conversationsCategories.reduce(
-                        (sum, cat) => sum + cat.count,
+                      const allRatings = [1, 2, 3, 4, 5].map((ratingValue) => {
+                        const existingRating = ratings.find(
+                          (r) => r.rating === ratingValue
+                        );
+                        return {
+                          rating: ratingValue,
+                          count: existingRating ? existingRating.count : 0,
+                        };
+                      });
+
+                      const totalCount = allRatings.reduce(
+                        (sum, rating) => sum + rating.count,
                         0
                       );
 
-                      const topCategories = conversationsCategories
-                        .sort((a, b) => b.count - a.count)
-                        .slice(0, 5);
-
-                      return topCategories.map((category) => (
+                      return allRatings.map((rating) => (
                         <Box
-                          key={category.name}
-                          sx={{ my: 2, display: 'flex', alignItems: 'left' }}
+                          key={rating.rating}
+                          sx={{ my: 1, display: 'flex', alignItems: 'left' }}
                         >
                           <Typography
-                            sx={{ width: 250, mr: 2 }}
+                            sx={{ width: 140, mr: 2 }}
                             variant="body1"
+                            className="text-left"
                           >
-                            {category.name}
+                            {Array(rating.rating).fill('★').join('')}
                           </Typography>
                           <Box sx={{ width: '100%', mt: 1, mr: 2 }}>
                             <StyledLinearProgress
                               variant="determinate"
                               value={
                                 totalCount > 0
-                                  ? (category.count / totalCount) * 100
+                                  ? (rating.count / totalCount) * 100
                                   : 0
                               }
                             />
@@ -483,7 +479,7 @@ export default function Home() {
                             variant="body1"
                             sx={{ fontWeight: 'bold', minWidth: 30 }}
                           >
-                            {category.count}
+                            {rating.count}
                           </Typography>
                         </Box>
                       ));
