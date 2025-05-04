@@ -1,17 +1,39 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useLogin } from '@/hooks/useLogin';
+import { useUser } from '@/context/UserContext';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const formRef = useRef(null);
+  const { user, loading: userLoading } = useUser();
+  const router = useRouter();
 
   const [form, setForm] = useState({
     email: '',
     password: '',
   });
 
-  const { login, error, loading } = useLogin(); // Using the custom hook
+  useEffect(() => {
+    if (user && !userLoading) {
+      router.push('/perfil');
+    }
+  }, [user, userLoading, router]);
+
+  const { login, error, loading } = useLogin();
+
+  if (userLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Cargando...
+      </div>
+    );
+  }
+
+  if (user) {
+    return null;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
