@@ -15,24 +15,32 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
-import { useFetchCategories, Category } from '@/hooks/fetchCategories';
 import { useFetchConversations } from '@/hooks/fetchConversations';
 import Tag from '@/components/Tag';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { Agent, useFetchAgents } from '@/hooks/fetchAgents';
+import {
+  Company,
+  useFetchDashboardCompanies,
+} from '@/hooks/fetchDashboardCompanies';
 
 export default function Home() {
   const { clients, loadingClients, errorClients, fetchClients } =
     useFetchClients();
+  const { agents, loadingAgents, errorAgents, fetchAgents } = useFetchAgents();
+
+  const { companies, loadingCompanies, errorCompanies, fetchCompanies } =
+    useFetchDashboardCompanies();
+
   const { conversations, loadingConversations, fetchConversations } =
     useFetchConversations();
-  const { categories, loadingCategories, errorCategories, fetchCategories } =
-    useFetchCategories();
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
+  const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [search, setSearch] = useState<string>('');
 
   // Track if filters have been changed by user
@@ -41,9 +49,12 @@ export default function Home() {
   const initialLoadCompleted = useRef<boolean>(false);
 
   useEffect(() => {
-    fetchClients();
+    const loadAllData = async () => {
+      await Promise.all([fetchClients(), fetchAgents(), fetchCompanies()]);
+    };
 
-    fetchCategories();
+    loadAllData();
+
     initialLoadCompleted.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -67,7 +78,8 @@ export default function Home() {
 
     fetchConversations({
       clients: selectedClients,
-      categories: selectedCategories,
+      agents: selectedAgents,
+      companies: selectedCompanies,
       startDate: startDate,
       endDate: endDate,
       conversation_id: search,
@@ -91,8 +103,13 @@ export default function Home() {
     setFiltersChanged(true);
   };
 
-  const handleCategoriesChange = (newCategories: string[]) => {
-    setSelectedCategories(newCategories);
+  const handleAgentsChange = (newAgents: string[]) => {
+    setSelectedAgents(newAgents);
+    setFiltersChanged(true);
+  };
+
+  const handleCompaniesChange = (newCompanies: string[]) => {
+    setSelectedCompanies(newCompanies);
     setFiltersChanged(true);
   };
 
@@ -136,26 +153,50 @@ export default function Home() {
             value={selectedClients}
             onChange={handleClientsChange}
           />
-          <MultipleSelectChip
-            title={
-              loadingCategories
-                ? 'Categorías (Cargando...)'
-                : errorCategories
-                  ? 'Categorías (Error)'
-                  : 'Categorías'
-            }
-            names={(() => {
-              if (loadingCategories || errorCategories || !categories) {
-                return [];
+          <div className="">
+            <MultipleSelectChip
+              title={
+                loadingAgents
+                  ? 'Empleados (Cargando...)'
+                  : errorAgents
+                    ? 'Empleados (Error)'
+                    : 'Empleados'
               }
-              return categories.map((category: Category) => ({
-                id: category.category_id,
-                name: category.name,
-              }));
-            })()}
-            value={selectedCategories}
-            onChange={handleCategoriesChange}
-          />
+              names={(() => {
+                if (loadingAgents || errorAgents || !agents) {
+                  return [];
+                }
+                return agents.map((agent: Agent) => ({
+                  id: agent.user_id,
+                  name: agent.username,
+                }));
+              })()}
+              value={selectedAgents}
+              onChange={handleAgentsChange}
+            />
+          </div>
+          <div className="">
+            <MultipleSelectChip
+              title={
+                loadingCompanies
+                  ? 'Empresas (Cargando...)'
+                  : errorCompanies
+                    ? 'Empresas (Error)'
+                    : 'Empresas'
+              }
+              names={(() => {
+                if (loadingCompanies || errorCompanies || !companies) {
+                  return [];
+                }
+                return companies.map((company: Company) => ({
+                  id: company.company_id,
+                  name: company.name,
+                }));
+              })()}
+              value={selectedCompanies}
+              onChange={handleCompaniesChange}
+            />
+          </div>
         </div>
         <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
           <TextField

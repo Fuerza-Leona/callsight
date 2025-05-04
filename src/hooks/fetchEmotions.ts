@@ -15,7 +15,8 @@ interface Emotions {
 
 interface FetchConversationsEmotionsParams {
   clients: string[] | null;
-  categories: string[] | null;
+  agents: string[] | null;
+  companies: string[] | null;
   startDate: string | null;
   endDate: string | null;
 }
@@ -35,8 +36,10 @@ export const useFetchEmotions = () => {
         ...(params?.endDate && { endDate: params.endDate }),
         ...(params?.clients &&
           params.clients.length > 0 && { clients: params.clients }),
-        ...(params?.categories &&
-          params.categories.length > 0 && { categories: params.categories }),
+        ...(params?.agents &&
+          params.agents.length > 0 && { agents: params.agents }),
+        ...(params?.companies &&
+          params.companies.length > 0 && { companies: params.companies }),
       };
 
       const emotionsResponse = await api.post<EmotionsResponse>(

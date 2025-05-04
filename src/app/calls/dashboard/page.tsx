@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useFetchClients, Client } from '@/hooks/fetchClients';
 import { useEffect, useRef, useState } from 'react';
 import { useFetchEmotions } from '@/hooks/fetchEmotions';
-import { useFetchCategories, Category } from '@/hooks/fetchCategories';
+import { useFetchAgents, Agent } from '@/hooks/fetchAgents';
 import { useFetchTopics } from '@/hooks/fetchTopics';
 import SimpleWordCloud from '@/components/SimpleWordCloud';
 import { useFetchConversationsSummary } from '@/hooks/fetchConversationsSummary';
@@ -24,6 +24,10 @@ import {
   CircularProgress,
 } from '@mui/material';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import {
+  useFetchDashboardCompanies,
+  Company,
+} from '@/hooks/fetchDashboardCompanies';
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -40,8 +44,6 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
 export default function Home() {
   const { clients, loadingClients, errorClients, fetchClients } =
     useFetchClients();
-  const { categories, loadingCategories, errorCategories, fetchCategories } =
-    useFetchCategories();
 
   const { emotions, loadingEmotions, errorEmotions, fetchEmotions } =
     useFetchEmotions();
@@ -51,15 +53,22 @@ export default function Home() {
   const { ratings, loadingRatings, errorRatings, fetchConversationsRatings } =
     useFetchConversationsRatings();
 
+  const { agents, loadingAgents, errorAgents, fetchAgents } = useFetchAgents();
+
+  const { companies, loadingCompanies, errorCompanies, fetchCompanies } =
+    useFetchDashboardCompanies();
+
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
+
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
 
   const isLoadingRef = useRef(false);
 
   useEffect(() => {
     const loadAllData = async () => {
-      await Promise.all([fetchClients(), fetchCategories()]);
+      await Promise.all([fetchClients(), fetchAgents(), fetchCompanies()]);
     };
 
     loadAllData();
@@ -73,7 +82,8 @@ export default function Home() {
       startDate,
       endDate,
       clients: selectedClients,
-      categories: selectedCategories,
+      agents: selectedAgents,
+      companies: selectedCompanies,
     };
 
     const loadAllData = async () => {
@@ -94,7 +104,7 @@ export default function Home() {
 
     loadAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, selectedClients, selectedCategories]);
+  }, [selectedDate, selectedClients, selectedAgents, selectedCompanies]);
 
   const handleDateChange = (newDate: dayjs.Dayjs | null) => {
     if (newDate) {
@@ -106,8 +116,12 @@ export default function Home() {
     setSelectedClients(newClients);
   };
 
-  const handleCategoriesChange = (newCategories: string[]) => {
-    setSelectedCategories(newCategories);
+  const handleAgentsChange = (newAgents: string[]) => {
+    setSelectedAgents(newAgents);
+  };
+
+  const handleCompaniesChange = (newCompanies: string[]) => {
+    setSelectedCompanies(newCompanies);
   };
 
   return (
@@ -159,10 +173,10 @@ export default function Home() {
               <MultipleSelectChip
                 title={
                   loadingClients
-                    ? 'Cliente (Cargando...)'
+                    ? 'Clientes (Cargando...)'
                     : errorClients
-                      ? 'Cliente (Error)'
-                      : 'Cliente'
+                      ? 'Clientes (Error)'
+                      : 'Clientes'
                 }
                 names={(() => {
                   if (loadingClients || errorClients || !clients) {
@@ -180,23 +194,45 @@ export default function Home() {
             <div className="">
               <MultipleSelectChip
                 title={
-                  loadingCategories
-                    ? 'Categorías (Cargando...)'
-                    : errorCategories
-                      ? 'Categorías (Error)'
-                      : 'Categorías'
+                  loadingAgents
+                    ? 'Empleados (Cargando...)'
+                    : errorAgents
+                      ? 'Empleados (Error)'
+                      : 'Empleados'
                 }
                 names={(() => {
-                  if (loadingCategories || errorCategories || !categories) {
+                  if (loadingAgents || errorAgents || !agents) {
                     return [];
                   }
-                  return categories.map((category: Category) => ({
-                    id: category.category_id,
-                    name: category.name,
+                  return agents.map((agent: Agent) => ({
+                    id: agent.user_id,
+                    name: agent.username,
                   }));
                 })()}
-                value={selectedCategories}
-                onChange={handleCategoriesChange}
+                value={selectedAgents}
+                onChange={handleAgentsChange}
+              />
+            </div>
+            <div className="">
+              <MultipleSelectChip
+                title={
+                  loadingCompanies
+                    ? 'Empresas (Cargando...)'
+                    : errorCompanies
+                      ? 'Empresas (Error)'
+                      : 'Empresas'
+                }
+                names={(() => {
+                  if (loadingCompanies || errorCompanies || !companies) {
+                    return [];
+                  }
+                  return companies.map((company: Company) => ({
+                    id: company.company_id,
+                    name: company.name,
+                  }));
+                })()}
+                value={selectedCompanies}
+                onChange={handleCompaniesChange}
               />
             </div>
           </div>
