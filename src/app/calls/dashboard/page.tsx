@@ -28,6 +28,7 @@ import {
   useFetchDashboardCompanies,
   Company,
 } from '@/hooks/fetchDashboardCompanies';
+import { useUser } from '@/context/UserContext';
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -42,6 +43,8 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 export default function Home() {
+  const { user } = useUser();
+
   const { clients, loadingClients, errorClients, fetchClients } =
     useFetchClients();
 
@@ -68,7 +71,13 @@ export default function Home() {
 
   useEffect(() => {
     const loadAllData = async () => {
-      await Promise.all([fetchClients(), fetchAgents(), fetchCompanies()]);
+      const promises = [fetchClients(), fetchCompanies];
+
+      if (user?.role === 'admin') {
+        promises.push(fetchAgents());
+      }
+
+      await Promise.all(promises);
     };
 
     loadAllData();
@@ -191,28 +200,30 @@ export default function Home() {
                 onChange={handleClientsChange}
               />
             </div>
-            <div className="">
-              <MultipleSelectChip
-                title={
-                  loadingAgents
-                    ? 'Empleados (Cargando...)'
-                    : errorAgents
-                      ? 'Empleados (Error)'
-                      : 'Empleados'
-                }
-                names={(() => {
-                  if (loadingAgents || errorAgents || !agents) {
-                    return [];
+            {user?.role === 'admin' && (
+              <div className="">
+                <MultipleSelectChip
+                  title={
+                    loadingAgents
+                      ? 'Empleados (Cargando...)'
+                      : errorAgents
+                        ? 'Empleados (Error)'
+                        : 'Empleados'
                   }
-                  return agents.map((agent: Agent) => ({
-                    id: agent.user_id,
-                    name: agent.username,
-                  }));
-                })()}
-                value={selectedAgents}
-                onChange={handleAgentsChange}
-              />
-            </div>
+                  names={(() => {
+                    if (loadingAgents || errorAgents || !agents) {
+                      return [];
+                    }
+                    return agents.map((agent: Agent) => ({
+                      id: agent.user_id,
+                      name: agent.username,
+                    }));
+                  })()}
+                  value={selectedAgents}
+                  onChange={handleAgentsChange}
+                />
+              </div>
+            )}
             <div className="">
               <MultipleSelectChip
                 title={

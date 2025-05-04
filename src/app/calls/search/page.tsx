@@ -25,8 +25,11 @@ import {
   Company,
   useFetchDashboardCompanies,
 } from '@/hooks/fetchDashboardCompanies';
+import { useUser } from '@/context/UserContext';
 
 export default function Home() {
+  const { user } = useUser();
+
   const { clients, loadingClients, errorClients, fetchClients } =
     useFetchClients();
   const { agents, loadingAgents, errorAgents, fetchAgents } = useFetchAgents();
@@ -43,14 +46,27 @@ export default function Home() {
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [search, setSearch] = useState<string>('');
 
-  // Track if filters have been changed by user
   const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
   const initialFetchDone = useRef<boolean>(false);
   const initialLoadCompleted = useRef<boolean>(false);
 
   useEffect(() => {
     const loadAllData = async () => {
-      await Promise.all([fetchClients(), fetchAgents(), fetchCompanies()]);
+      const promises = [];
+
+      if (user?.role !== 'client') {
+        promises.push(fetchClients());
+      }
+
+      if (user?.role === 'admin') {
+        promises.push(fetchAgents());
+      }
+
+      if (user?.role !== 'client') {
+        promises.push(fetchCompanies());
+      }
+
+      await Promise.all(promises);
     };
 
     loadAllData();
@@ -59,7 +75,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Separate effect for initial conversations fetch - runs only once
   useEffect(() => {
     if (!initialFetchDone.current) {
       fetchConversations();
@@ -68,7 +83,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Handle filter changes after initial load
   useEffect(() => {
     if (!initialLoadCompleted.current) return;
     if (!filtersChanged) return;
@@ -133,70 +147,78 @@ export default function Home() {
               />
             </LocalizationProvider>
           </div>
-          <MultipleSelectChip
-            title={
-              loadingClients
-                ? 'Cliente (Cargando...)'
-                : errorClients
-                  ? 'Cliente (Error)'
-                  : 'Cliente'
-            }
-            names={(() => {
-              if (loadingClients || errorClients || !clients) {
-                return [];
-              }
-              return clients.map((client: Client) => ({
-                id: client.user_id,
-                name: client.username,
-              }));
-            })()}
-            value={selectedClients}
-            onChange={handleClientsChange}
-          />
-          <div className="">
+          {user?.role !== 'client' && (
             <MultipleSelectChip
               title={
-                loadingAgents
-                  ? 'Empleados (Cargando...)'
-                  : errorAgents
-                    ? 'Empleados (Error)'
-                    : 'Empleados'
+                loadingClients
+                  ? 'Cliente (Cargando...)'
+                  : errorClients
+                    ? 'Cliente (Error)'
+                    : 'Cliente'
               }
               names={(() => {
-                if (loadingAgents || errorAgents || !agents) {
+                if (loadingClients || errorClients || !clients) {
                   return [];
                 }
-                return agents.map((agent: Agent) => ({
-                  id: agent.user_id,
-                  name: agent.username,
+                return clients.map((client: Client) => ({
+                  id: client.user_id,
+                  name: client.username,
                 }));
               })()}
-              value={selectedAgents}
-              onChange={handleAgentsChange}
+              value={selectedClients}
+              onChange={handleClientsChange}
             />
-          </div>
-          <div className="">
-            <MultipleSelectChip
-              title={
-                loadingCompanies
-                  ? 'Empresas (Cargando...)'
-                  : errorCompanies
-                    ? 'Empresas (Error)'
-                    : 'Empresas'
-              }
-              names={(() => {
-                if (loadingCompanies || errorCompanies || !companies) {
-                  return [];
+          )}
+
+          {user?.role === 'admin' && (
+            <div className="">
+              <MultipleSelectChip
+                title={
+                  loadingAgents
+                    ? 'Empleados (Cargando...)'
+                    : errorAgents
+                      ? 'Empleados (Error)'
+                      : 'Empleados'
                 }
-                return companies.map((company: Company) => ({
-                  id: company.company_id,
-                  name: company.name,
-                }));
-              })()}
-              value={selectedCompanies}
-              onChange={handleCompaniesChange}
-            />
-          </div>
+                names={(() => {
+                  if (loadingAgents || errorAgents || !agents) {
+                    return [];
+                  }
+                  return agents.map((agent: Agent) => ({
+                    id: agent.user_id,
+                    name: agent.username,
+                  }));
+                })()}
+                value={selectedAgents}
+                onChange={handleAgentsChange}
+              />
+            </div>
+          )}
+
+          {user?.role !== 'client' && (
+            <div className="">
+              <MultipleSelectChip
+                title={
+                  loadingCompanies
+                    ? 'Empresas (Cargando...)'
+                    : errorCompanies
+                      ? 'Empresas (Error)'
+                      : 'Empresas'
+                }
+                names={(() => {
+                  if (loadingCompanies || errorCompanies || !companies) {
+                    return [];
+                  }
+                  return companies.map((company: Company) => ({
+                    id: company.company_id,
+                    name: company.name,
+                  }));
+                })()}
+                value={selectedCompanies}
+                onChange={handleCompaniesChange}
+              />
+            </div>
+          )}
         </div>
         <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
           <TextField
