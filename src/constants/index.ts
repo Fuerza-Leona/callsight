@@ -63,7 +63,7 @@ export const sideNavLinksClient: NavLink[] = [
   {
     id: 1,
     name: 'Análisis de llamada',
-    href: 'calls/dashboard',
+    href: 'calls/search',
   },
   {
     id: 2,

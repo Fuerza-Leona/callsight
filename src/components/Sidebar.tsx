@@ -73,28 +73,30 @@ const SideNavItems = () => {
       {user?.role === 'client' && (
         <>
           {sideNavLinksClient.map(({ id, href, name }) => {
-            // Check if the current pathname includes the href
-            const isActive = pathname.includes(href);
+            const isActive =
+              (name === 'Análisis de llamada' &&
+                pathname.includes('/calls/search')) ||
+              pathname.includes(`/${href}`);
 
             return (
               <li
                 key={id}
                 className={`
-                            ${
-                              isActive
-                                ? 'text-white font-bold'
-                                : 'text-neutral-400 hover:text-white'
-                            }
-                            max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-                        `}
+                    ${
+                      isActive
+                        ? 'text-white font-bold'
+                        : 'text-neutral-400 hover:text-white'
+                    }
+                    max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
+                `}
               >
                 <Link
                   href={`/${href}`}
                   className={`
-                                text-lg lg:text-base 
-                                transition-colors w-full block
-                                ${isActive ? 'text-white' : 'hover:text-white'}
-                            `}
+                      text-lg lg:text-base 
+                      transition-colors w-full block
+                      ${isActive ? 'text-white' : 'hover:text-white'}
+                  `}
                 >
                   {name}
                 </Link>
@@ -106,28 +108,30 @@ const SideNavItems = () => {
       {user?.role != 'client' && (
         <>
           {sideNavLinksAgent.map(({ id, href, name }) => {
-            // Check if the current pathname includes the href
-            const isActive = pathname.includes(href);
+            const isActive =
+              (name === 'Análisis de llamada' &&
+                pathname.includes('/calls/search')) ||
+              pathname.includes(`/${href}`);
 
             return (
               <li
                 key={id}
                 className={`
-                            ${
-                              isActive
-                                ? 'text-white font-bold'
-                                : 'text-neutral-400 hover:text-white'
-                            }
-                            max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-                        `}
+                    ${
+                      isActive
+                        ? 'text-white font-bold'
+                        : 'text-neutral-400 hover:text-white'
+                    }
+                    max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
+                `}
               >
                 <Link
                   href={`/${href}`}
                   className={`
-                                text-lg lg:text-base 
-                                transition-colors w-full block
-                                ${isActive ? 'text-white' : 'hover:text-white'}
-                            `}
+                      text-lg lg:text-base 
+                      transition-colors w-full block
+                      ${isActive ? 'text-white' : 'hover:text-white'}
+                  `}
                 >
                   {name}
                 </Link>
