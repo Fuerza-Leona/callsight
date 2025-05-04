@@ -8,6 +8,7 @@ import { useSpecificCall } from '@/hooks/useSpecificCall';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Box, CircularProgress } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
+import Image from 'next/image';
 
 // Client component that uses useSearchParams
 function CallDetail() {
@@ -270,7 +271,14 @@ function CallDetail() {
         </div>
 
         <div className="bg-white rounded-md p-3 shadow-md lg:w-1/3">
-          <div className="flex gap-2 text-md items-left font-bold mb-2">
+          {call?.company?.logo && (
+            <Image
+              src={call.company.logo}
+              alt="Logo de la empresa"
+              className="rounded-full mt-2 mb-4 object-cover"
+            />
+          )}
+          <div className="flex gap-2 text-md items-left font-bold pt-3 mb-2">
             <h1>Participantes</h1>
           </div>
           <div className="flex flex-col gap-3">

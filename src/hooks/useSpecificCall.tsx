@@ -11,6 +11,7 @@ interface ApiResponse {
   summary: SpecificCall['summary'];
   messages: SpecificCall['messages'];
   participants: SpecificCall['participants'];
+  company: SpecificCall['company'];
 }
 
 export const useSpecificCall = () => {
