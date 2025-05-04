@@ -2,11 +2,12 @@
 
 import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useMediaQuery } from 'react-responsive';
 import TranscriptBubble from '@/components/TranscriptBubble';
 import { useUser } from '@/context/UserContext';
 import { useSpecificCall } from '@/hooks/useSpecificCall';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { Box, CircularProgress } from '@mui/material';
+import { PieChart } from '@mui/x-charts/PieChart';
 
 // Client component that uses useSearchParams
 function CallDetail() {
@@ -15,7 +16,6 @@ function CallDetail() {
 
   const { user } = useUser();
   const isClient = user?.role === 'client';
-  const isTablet = useMediaQuery({ minWidth: 1000, maxWidth: 1310 });
 
   const {
     getSpecificCall,
@@ -31,17 +31,9 @@ function CallDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [call_id]);
 
-  useEffect(() => {
-    if (callData) {
-      console.log('Updated call data: ', callData); //Ver respuesta
-    }
-  }, [callData]);
-
   const call = callData;
 
   const renderTranscript = () => {
-    if (loadingCall)
-      return <p className="text-gray-700">Cargando mensajes...</p>;
     if (!call || !Array.isArray(call.messages)) return <p>No hay mensajes</p>;
 
     const sortedMessages = [...call.messages].sort(
@@ -65,15 +57,10 @@ function CallDetail() {
       );
     });
   };
+
   const renderParticipants = () => {
-    if (loadingCall)
-      return <p className="text-gray-700">Cargando participantes...</p>;
-    if (
-      call === null ||
-      !call.participants ||
-      !Array.isArray(call.participants)
-    )
-      return <p>No hay participantes.</p>;
+    if (!call || !call.participants || !Array.isArray(call.participants))
+      return <div>No hay participantes.</div>;
 
     return call.participants.map((participant, index) => {
       const role = participant.users.role?.toLowerCase() || '';
@@ -89,14 +76,14 @@ function CallDetail() {
       return (
         <div
           key={index}
-          className="flex w-full lg:w-50 h-13 rounded-lg justify-start items-center gap-5 px-4 py-2"
+          className="flex w-full lg:w-50 h-13 rounded-lg justify-start items-center py-2"
         >
           <div
             className={`w-8 h-8 ${color} rounded-3xl flex items-center justify-center font-bold`}
           >
             {username[0]}
           </div>
-          <p>{username}</p>
+          <div className="pl-2">{username}</div>
         </div>
       );
     });
@@ -109,107 +96,223 @@ function CallDetail() {
       : 's.f.';
 
   return (
-    <div className="lg:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px] pt-[140px] lg:pt-28">
-      <div className="w-full text-center">
-        <div className="flex lg:flex-row flex-col text-5xl justify-between bg-white rounded-2xl mx-22 items-center shadow-lg">
-          {/* Llamada id */}
-          <p className="lg:ml-20 p-4 lg:p-8 font-medium">Llamada</p>
-          <p className="lg:mr-20 p-4 lg:p-8 text-gray-500 text-3xl font-light">
-            {callDate}
-          </p>
+    <div className="relative lg:left-64 pt-7 w-[98%] lg:w-[81%] flex flex-col gap-3 max-w-screen pl-3">
+      <div className="flex flex-col md:flex-row items-center justify-between ">
+        <div className="text-4xl font-bold">
+          {loadingCall ? (
+            <Box display="flex" alignItems="center" height="42px">
+              <CircularProgress size={40} />
+            </Box>
+          ) : (
+            call?.conversation.conversation_id
+          )}
+        </div>
+        <div className="flex gap-2">
+          <div className="text-[#FFFFFF] rounded-md block"></div>
+        </div>
+      </div>
+
+      <div className="flex w-full gap-4 text-center pb-1">
+        <div
+          className="w-[33%] rounded-md flex flex-col items-left justify-left gap-3 p-3 shadow-md"
+          style={{ backgroundColor: 'white', height: '110px' }}
+        >
+          <div className="flex gap-2 text-md items-left font-bold">
+            <h1>Fecha de la llamada</h1>
+          </div>
+          <div className="text-5xl font-bold flex justify-left items-left h-16 flex-grow">
+            {loadingCall ? (
+              <Box display="flex" alignItems="center">
+                <CircularProgress size={30} />
+              </Box>
+            ) : (
+              callDate
+            )}
+          </div>
+        </div>
+        <div
+          className="w-[33%] shadow-md rounded-md flex flex-col items-left justify-left items-left gap-3 p-3"
+          style={{ backgroundColor: 'white', height: '110px' }}
+        >
+          <div className="flex gap-2 text-md items-left font-bold">
+            <h1>Duración de la llamada</h1>
+          </div>
+          <div className="text-5xl font-bold flex justify-left items-left h-16 flex-grow">
+            {loadingCall ? (
+              <Box display="flex" alignItems="center">
+                <CircularProgress size={30} />
+              </Box>
+            ) : (
+              <>
+                {call?.summary.duration}
+                <span className="text-sm pl-3 pt-6 font-light"> minutos</span>
+              </>
+            )}
+          </div>
+        </div>
+        <div
+          className="w-[33%] shadow-md rounded-md flex flex-col items-left justify-left items-left gap-3 p-3"
+          style={{ backgroundColor: 'white', height: '110px' }}
+        >
+          <div className="flex gap-2 text-md items-left font-bold">
+            <h1>Promedio de evaluación</h1>
+          </div>
+          <div className="text-5xl font-bold flex justify-left items-left h-16 flex-grow">
+            {loadingCall ? (
+              <Box display="flex" alignItems="center">
+                <CircularProgress size={30} />
+              </Box>
+            ) : (
+              <>
+                0.0
+                <span className="text-sm pl-3 pt-6 font-light">
+                  {' '}
+                  de 0 reseñas
+                </span>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
       <div
-        className={`flex ${isTablet ? 'flex-col' : 'flex-col lg:flex-row lg: gap-5'} w-[calc(100%-11rem)] justify-between mt-5 text-left`}
+        className={`flex flex-col lg:flex-row w-[calc(100%)] justify-between mt-2 text-left gap-5`}
       >
-        {/* Left column */}
-        <div className="flex flex-col gap-5 bg-white p-3 rounded-2xl justify-start shadow-lg">
-          <p className="text-2xl mt-4">Resumen</p>
-          <div className="flex gap-2">
-            <p className="rounded-2xl bg-[#abdfed] text-[#248ca8] px-4 py-1">
-              Tecnología
-            </p>
-          </div>
-
-          <div
-            className={`flex flex-col ${isTablet ? 'w-full mb-5' : 'w-full lg:w-120 mb-5 lg:mb-0'} justify-start items-center`}
-          >
+        <div className="flex flex-col bg-white p-3 rounded-md justify-start shadow-md lg:w-1/3">
+          <div className="flex flex-col justify-start py-1">
             {loadingCall ? (
-              <p className="text-lg text-gray-700">Cargando...</p>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="200px"
+              >
+                <CircularProgress size={40} />
+              </Box>
             ) : call?.summary ? (
               <>
-                <p className="text-lg text-gray-600">
-                  <span className="font-bold text-black">Problema:</span> <br />{' '}
-                  {call.summary.problem}
-                </p>
-                <p className="text-lg text-gray-600">
-                  <span className="font-bold text-black">Resolución:</span>{' '}
-                  <br /> {call.summary.solution}
-                </p>
+                <div className="text-black">
+                  <div className="flex text-md items-left font-bold">
+                    <h1 className="mb-2">Problema</h1>
+                  </div>
+                  <div className="text-md">{call.summary.problem}</div>
+                </div>
+                <div className="text-black mt-8 mb-1">
+                  <div className="flex text-md items-left font-bold">
+                    <h1 className="mb-2">Solución</h1>
+                  </div>
+                  <div className="text-md">{call.summary.solution}</div>
+                </div>
               </>
             ) : (
-              <p className="text-lg text-gray-700">
-                No hay resumen disponible.
-              </p>
+              <div className="text-lg text-gray-700">
+                No hay problema/solución disponible.
+              </div>
             )}
-          </div>
-          <div className="flex flex-col bg-gray-200 w-full lg:w-50 rounded-lg justify-center items-center p-4">
-            <p className="text-2xl text-bold">
-              {call?.summary ? `${call.summary.duration}` : '...'}
-            </p>
-            <p>Duración (minutos)</p>
           </div>
         </div>
 
-        {/* Emotions */}
-        <div
-          className={`flex flex-col ${isTablet ? 'w-full mb-5' : 'w-full mb-5'} gap-2 rounded-xl justify-center items-center`}
-        >
-          <div className="bg-white w-full h-full rounded-xl p-4 flex flex-col justify-center items-center shadow-lg">
-            <h3 className="font-bold text-xl">Emociones detectadas</h3>
-            {loadingCall ? (
-              <p className="text-lg text-gray-700">Cargando...</p>
-            ) : call?.summary ? (
-              <div className="text-center">
-                <p>
-                  Sentimiento general:{' '}
-                  {call.summary.positive > call.summary.negative
-                    ? 'Positivo'
-                    : call.summary.negative > call.summary.positive
-                      ? 'Negativo'
-                      : 'Neutral'}
-                </p>
-                <p>Positivo: {(call.summary.positive * 100).toFixed(2)}%</p>
-                <p>Negativo: {(call.summary.negative * 100).toFixed(2)}%</p>
-                <p>Neutral: {(call.summary.neutral * 100).toFixed(2)}%</p>
-              </div>
-            ) : (
-              <p>No hay datos de emociones.</p>
-            )}
+        <div className="bg-white rounded-md p-3 flex flex-col justify-left shadow-md lg:w-1/3">
+          <div className="flex text-md items-left font-bold">
+            <h1 className="mt-1">Emociones detectadas del cliente</h1>
           </div>
-          <div
-            className={`flex ${isTablet ? 'flex-row' : 'flex-col'} gap-5 bg-white w-full rounded-2xl p-3 shadow-lg`}
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: 600,
+              flexGrow: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}
           >
-            <h3 className="text-xl">Participantes</h3>
-            <div className="flex flex-col gap-3">{renderParticipants()}</div>
+            {loadingCall ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="100%"
+                height="200px"
+              >
+                <CircularProgress size={60} />
+              </Box>
+            ) : (
+              <PieChart
+                series={[
+                  {
+                    arcLabel: (item) => `${item.value.toFixed(3)}`,
+                    data: [
+                      {
+                        id: 0,
+                        value: call?.summary.positive ?? 0,
+                        label: 'Positivo',
+                      },
+                      {
+                        id: 1,
+                        value: call?.summary.neutral ?? 0,
+                        label: 'Neutro',
+                      },
+                      {
+                        id: 2,
+                        value: call?.summary.negative ?? 0,
+                        label: 'Negativo',
+                      },
+                    ],
+                  },
+                ]}
+                width={350}
+                height={200}
+                className="font-bold text-xl pt-5"
+                colors={['#6564DB', '#F6CF3C', '#F294CD']}
+              />
+            )}
+          </Box>
+        </div>
+
+        <div className="bg-white rounded-md p-3 shadow-md lg:w-1/3">
+          <div className="flex gap-2 text-md items-left font-bold mb-2">
+            <h1>Participantes</h1>
+          </div>
+          <div className="flex flex-col gap-3">
+            {loadingCall ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="100px"
+              >
+                <CircularProgress size={40} />
+              </Box>
+            ) : (
+              renderParticipants()
+            )}
           </div>
         </div>
       </div>
 
-      {/* Transcript */}
-      <div className="flex w-[calc(100%-11rem)] justify-start gap-31 mt-10 bg-white rounded-xl mb-3 shadow-lg">
+      <div className="flex w-[calc(100%)] justify-start gap-31 mt-4 bg-white rounded-xl mb-3 shadow-lg">
         <div className="flex flex-col w-full px-4 py-4 gap-2" id="transcript">
-          <p className="text-left text-2xl font-light">Transcripción</p>
-          {renderTranscript()}
+          <div className="flex text-md items-left font-bold">
+            <h1 className="mt-1 mb-4">Transcripción</h1>
+          </div>
+          {loadingCall ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="150px"
+            >
+              <CircularProgress size={50} />
+            </Box>
+          ) : (
+            renderTranscript()
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// Main page component with Suspense
-// example comment
 export default function LlamadaPage() {
   return (
     <ProtectedRoute>
