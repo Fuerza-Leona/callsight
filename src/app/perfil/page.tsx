@@ -4,6 +4,7 @@ import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTa
 import SearchBar from '@/components/SearchBar';
 import { useUser } from '@/context/UserContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import LogoutButton from '@/components/LogoutButton';
 
 const rows = [
   { name: 'BBVA', usuarios: 30, proyectos: 3 },
@@ -62,10 +63,11 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-      <div className="md:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px] pt-[140px] md:pt-28 lg:pt-[65px]">
-        <div className="w-full text-start mt-10">
-          <div className="text-white text-4xl text-start">
-            <p className="bg-[#13202A] rounded-2xl mx-20 p-8">{name}</p>
+      <div className="md:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px]">
+        <div className="w-full text-start">
+          <div className="bg-[#13202A] rounded-2xl mx-20 p-8 flex items-center justify-between">
+            <p className="text-white text-4xl">{name}</p>
+            <LogoutButton />
           </div>
         </div>
 

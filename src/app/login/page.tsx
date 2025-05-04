@@ -75,7 +75,7 @@ export default function Home() {
                 disabled={loading}
                 className="inline-block px-5 py-3 rounded-[2.4rem] text-base bg-[#13202A] text-white border-2 tracking-[0.06rem] font-semibold transition duration-300 ease-in-out cursor-pointer"
               >
-                {loading ? 'Cargando...' : 'Log In'}
+                {loading ? 'Cargando...' : 'Iniciar sesión'}
               </button>
             </div>
             {error && <p className="text-red-500 mt-2 absolute">{error}</p>}

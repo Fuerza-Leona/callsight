@@ -67,7 +67,9 @@ const Navbar = () => {
             </button>
             {!user && (
               <Link href={'/login'}>
-                <p className="rounded-2xl px-3 py-1 bg-white">Login</p>
+                <p className="w-30 rounded-2xl text-center py-2 bg-white block">
+                  Iniciar sesión
+                </p>
               </Link>
             )}
             {/* <a href={user? "/" : "/login"}>
