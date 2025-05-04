@@ -134,9 +134,9 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-      <div className="relative lg:left-64 top-32 w-full xl:w-75/100 flex flex-col md:justify-around md:flex-row gap-2">
-        <div className="w-3/10 flex flex-col align-center text-center">
-          <div className="text-white bg-[#1E242B] rounded-md mb-5 ">
+      <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3  pl-3">
+        <div className="w-3/10 flex flex-col align-center text-center gap-2">
+          <div className="text-white bg-[#1E242B] rounded-md mb-5 mt-3">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
               <DateCalendar
                 value={selectedDate}
@@ -220,7 +220,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="w-full md:w-[50%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
+        <div className="w-full md:w-[80%] flex flex-col divide-y-1 divide-solid divide-[#D0D0D0]">
           <TextField
             label="Buscar por ID"
             value={search}
@@ -261,9 +261,10 @@ export default function Home() {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="w-1/3">ID</TableCell>
-                    <TableCell className="w-1/3">Fecha</TableCell>
-                    <TableCell className="w-1/3">Categoría</TableCell>
+                    <TableCell className="w-2/6">ID</TableCell>
+                    <TableCell className="w-1/12">Fecha</TableCell>
+                    <TableCell className="w-1/6">Empresa</TableCell>
+                    <TableCell className="w-1/6">Categoría</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -284,6 +285,11 @@ export default function Home() {
                               ).toLocaleDateString()
                             : 'N/A'}
                         </p>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-2">
+                          {conversation.company}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-2">

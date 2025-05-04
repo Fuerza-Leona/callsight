@@ -5,6 +5,8 @@ import api from '@/utils/api';
 
 export interface Conversation {
   conversation_id: string;
+  company: string;
+  participants: number;
   start_time: string;
   end_time: string;
   category: string;
