@@ -15,7 +15,6 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { useFetchCategories, Category } from '@/hooks/fetchCategories';
 import { useFetchConversations } from '@/hooks/fetchConversations';
 import Tag from '@/components/Tag';
@@ -40,8 +39,6 @@ export default function Home() {
   const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
   const initialFetchDone = useRef<boolean>(false);
   const initialLoadCompleted = useRef<boolean>(false);
-
-  const router = useRouter();
 
   useEffect(() => {
     fetchClients();
@@ -81,7 +78,7 @@ export default function Home() {
   }, [filtersChanged]);
 
   const handleClick = (callId: string) => {
-    router.push(`/calls/detail?call_id=${callId}`);
+    window.open(`/calls/detail?call_id=${callId}`, '_blank');
   };
 
   const handleDateChange = (newDate: dayjs.Dayjs) => {
