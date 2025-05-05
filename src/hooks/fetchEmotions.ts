@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 interface EmotionsResponse {
   emotions?: Emotions;
@@ -16,7 +15,8 @@ interface Emotions {
 
 interface FetchConversationsEmotionsParams {
   clients: string[] | null;
-  categories: string[] | null;
+  agents: string[] | null;
+  companies: string[] | null;
   startDate: string | null;
   endDate: string | null;
 }
@@ -31,31 +31,20 @@ export const useFetchEmotions = () => {
     setError('');
 
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
         ...(params?.clients &&
           params.clients.length > 0 && { clients: params.clients }),
-        ...(params?.categories &&
-          params.categories.length > 0 && { categories: params.categories }),
+        ...(params?.agents &&
+          params.agents.length > 0 && { agents: params.agents }),
+        ...(params?.companies &&
+          params.companies.length > 0 && { companies: params.companies }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const emotionsResponse = await axios.post<EmotionsResponse>(
-        `${apiUrl}/conversations/myClientEmotions`,
-        requestBody,
-        config
+      const emotionsResponse = await api.post<EmotionsResponse>(
+        '/conversations/myClientEmotions',
+        requestBody
       );
 
       setEmotions(emotionsResponse.data?.emotions);

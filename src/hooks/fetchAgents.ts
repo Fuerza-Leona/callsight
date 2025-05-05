@@ -3,26 +3,22 @@
 import { useState } from 'react';
 import api from '@/utils/api';
 
-export interface Client {
+export interface Agent {
   user_id: string;
   username: string;
 }
 
-interface ClientsResponse {
-  clients?: Client[];
-}
-
-export const useFetchClients = () => {
+export const useFetchAgents = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | unknown>('');
-  const [clients, setClients] = useState<Client[]>([]);
+  const [agents, setAgents] = useState<Agent[]>([]);
 
-  const fetchClients = async () => {
+  const fetchAgents = async () => {
     setLoading(true);
     setError('');
     try {
-      const response = await api.get<ClientsResponse>('/users/client');
-      setClients(response.data?.clients || []);
+      const response = await api.get('/users/employees');
+      setAgents(response.data?.data || []);
     } catch (err) {
       console.error('Error:', err);
       setError(err);
@@ -32,9 +28,9 @@ export const useFetchClients = () => {
   };
 
   return {
-    clients,
-    loadingClients: loading,
-    errorClients: error,
-    fetchClients,
+    agents,
+    loadingAgents: loading,
+    errorAgents: error,
+    fetchAgents,
   };
 };

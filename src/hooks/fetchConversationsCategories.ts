@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Category {
   name: string;
@@ -31,10 +30,6 @@ export const useFetchConversationsCategories = () => {
     setLoading(true);
     setError('');
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
@@ -44,20 +39,10 @@ export const useFetchConversationsCategories = () => {
           params.categories.length > 0 && { categories: params.categories }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const categoriesResponse =
-        await axios.post<ConversationsCategoryResponse>(
-          `${apiUrl}/conversations/categories`,
-          requestBody,
-          config
-        );
+      const categoriesResponse = await api.post<ConversationsCategoryResponse>(
+        '/conversations/categories',
+        requestBody
+      );
 
       setCategories(categoriesResponse.data?.categories || []);
     } catch (err) {

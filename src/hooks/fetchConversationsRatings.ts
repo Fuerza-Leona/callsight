@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Rating {
   rating: number;
@@ -15,7 +14,8 @@ interface ConversationsRatingsResponse {
 
 interface FetchConversationsRatingsParams {
   clients: string[] | null;
-  categories: string[] | null;
+  agents: string[] | null;
+  companies: string[] | null;
   startDate: string | null;
   endDate: string | null;
 }
@@ -31,31 +31,20 @@ export const useFetchConversationsRatings = () => {
     setLoading(true);
     setError('');
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
         ...(params?.clients &&
           params.clients.length > 0 && { clients: params.clients }),
-        ...(params?.categories &&
-          params.categories.length > 0 && { categories: params.categories }),
+        ...(params?.agents &&
+          params.agents.length > 0 && { agents: params.agents }),
+        ...(params?.companies &&
+          params.companies.length > 0 && { agents: params.companies }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const ratingsResponse = await axios.post<ConversationsRatingsResponse>(
-        `${apiUrl}/conversations/ratings`,
-        requestBody,
-        config
+      const ratingsResponse = await api.post<ConversationsRatingsResponse>(
+        '/conversations/ratings',
+        requestBody
       );
 
       setRatings(ratingsResponse.data?.ratings || []);

@@ -11,8 +11,8 @@ jobs:
 
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      VERCEL_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+      VERCEL_PROJECT_ID: ${{ github.ref == 'refs/heads/main' && secrets.VERCEL_PROJECT_ID || secrets.VERCEL_PREVIEW_PROJECT_ID }}
+      VERCEL_ENV: production
 
     steps:
       - name: Checkout Repository

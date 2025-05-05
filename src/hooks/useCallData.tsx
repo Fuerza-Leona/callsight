@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import axios from 'axios';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 import { Call } from '@/interfaces/call';
 
 export const useCallData = () => {
@@ -15,20 +14,10 @@ export const useCallData = () => {
     setError(null);
 
     try {
-      const response = await axios.post<Call>(
-        `${apiUrl}/conversations/call/${call_id}`
-      );
-
+      const response = await api.post<Call>(`/conversations/call/${call_id}`);
       setData(response.data);
-    } catch (err: unknown) {
-      if (axios.isAxiosError(err)) {
-        const message =
-          err.response?.data?.detail ||
-          'Could not find info for selected call. Please try again.';
-        setError(message);
-      } else {
-        setError('An unexpected error occurred.');
-      }
+    } catch {
+      setError('An unexpected error occurred.');
       setData(null);
     } finally {
       setLoading(false);

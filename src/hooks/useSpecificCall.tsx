@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import axios from 'axios';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 import { SpecificCall } from '@/interfaces/specificCall';
 import { Conversation } from '@/interfaces/conversation';
 
@@ -12,6 +11,7 @@ interface ApiResponse {
   summary: SpecificCall['summary'];
   messages: SpecificCall['messages'];
   participants: SpecificCall['participants'];
+  company: SpecificCall['company'];
 }
 
 export const useSpecificCall = () => {
@@ -25,8 +25,8 @@ export const useSpecificCall = () => {
     setError(null);
 
     try {
-      const response = await axios.get<ApiResponse>(
-        `${apiUrl}/conversations/call/${call_id}`
+      const response = await api.get<ApiResponse>(
+        `/conversations/call/${call_id}`
       );
       console.log('Response summary:', response.data);
 
@@ -38,16 +38,8 @@ export const useSpecificCall = () => {
       };
 
       setData(cleaned);
-    } catch (err: unknown) {
-      console.error('Message fetch error:', err);
-      if (axios.isAxiosError(err)) {
-        const message =
-          err.response?.data?.detail ||
-          'Could not find info related to this call id. Please try again.';
-        setError(message);
-      } else {
-        setError('An unexpected error occurred.');
-      }
+    } catch {
+      setError('An unexpected error occurred.');
       setData(null);
     } finally {
       setLoading(false);

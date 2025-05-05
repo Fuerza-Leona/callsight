@@ -8,4 +8,8 @@ export interface SpecificCall {
   summary: Summary;
   messages: Messages[];
   participants: Participant[];
+  company: {
+    logo: string;
+    name: string;
+  };
 }

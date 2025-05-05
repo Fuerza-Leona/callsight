@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import axios from 'axios';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 import { Participant } from '@/interfaces/participants';
 
 export const useParticipants = () => {
@@ -16,21 +15,13 @@ export const useParticipants = () => {
     setError(null);
 
     try {
-      const response = await axios.get<{ participants: Participant[] }>(
-        `${apiUrl}/conversations/call/${call_id}/participants`
+      const response = await api.get<{ participants: Participant[] }>(
+        `/conversations/call/${call_id}/participants`
       );
       console.log('Response participants:', response.data); // DEBUG
       setData(response.data.participants);
-    } catch (err: unknown) {
-      console.error('Message fetch error:', err); // DEBUG
-      if (axios.isAxiosError(err)) {
-        const message =
-          err.response?.data?.detail ||
-          'Could not find info related to this call id. Please try again.';
-        setError(message);
-      } else {
-        setError('An unexpected error occurred.');
-      }
+    } catch {
+      setError('An unexpected error occurred.');
       setData(null);
     } finally {
       setLoading(false);

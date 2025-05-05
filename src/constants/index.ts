@@ -49,7 +49,7 @@ export const sideNavLinksAgent: NavLink[] = [
   },
   {
     id: 5,
-    name: 'Support',
+    name: 'Soporte',
     href: 'companies',
   },
   {
@@ -63,7 +63,7 @@ export const sideNavLinksClient: NavLink[] = [
   {
     id: 1,
     name: 'Análisis de llamada',
-    href: 'calls/dashboard',
+    href: 'calls/search',
   },
   {
     id: 2,
@@ -77,7 +77,7 @@ export const sideNavLinksClient: NavLink[] = [
   },
   {
     id: 4,
-    name: 'Support',
+    name: 'Soporte',
     href: 'companies',
   },
 ];

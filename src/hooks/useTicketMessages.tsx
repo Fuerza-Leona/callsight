@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface TicketMessage {
   message_id: string;
@@ -28,24 +27,9 @@ export const useTicketMessages = () => {
     setLoading(true);
     setError(null);
     try {
-      // Get auth token
-      const tokenRes = await fetch('/api/getToken');
-      const tokenData = await tokenRes.json();
-
-      if (!tokenRes.ok || !tokenData.user) {
-        throw new Error('Token missing or invalid');
-      }
-
-      const accessToken = tokenData.user;
-
       // Fetch messages for the ticket
-      const response = await axios.get<TicketMessagesResponse>(
-        `${apiUrl}/tickets/${ticketId}/messages`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      const response = await api.get<TicketMessagesResponse>(
+        `/tickets/${ticketId}/messages`
       );
 
       console.log('API Response for ticket messages:', response);
@@ -64,23 +48,10 @@ export const useTicketMessages = () => {
         setError('Unexpected API response format');
       }
     } catch (err) {
-      console.error('Error fetching ticket messages:', err);
-      if (axios.isAxiosError(err)) {
-        // Log detailed error information
-        console.error('Axios error details:', {
-          status: err.response?.status,
-          statusText: err.response?.statusText,
-          data: err.response?.data,
-          headers: err.response?.headers,
-        });
-        setError(
-          `Error ${err.response?.status || ''}: ${err.response?.data?.detail || err.message}`
-        );
-      } else {
-        setError(
-          err instanceof Error ? err.message : 'Error fetching ticket messages'
-        );
-      }
+      setError(
+        err instanceof Error ? err.message : 'Error fetching ticket messages'
+      );
+
       setMessages([]);
     } finally {
       setLoading(false);
@@ -92,27 +63,10 @@ export const useTicketMessages = () => {
     setLoading(true);
     setError(null);
     try {
-      // Get auth token
-      const tokenRes = await fetch('/api/getToken');
-      const tokenData = await tokenRes.json();
-
-      if (!tokenRes.ok || !tokenData.user) {
-        throw new Error('Token missing or invalid');
-      }
-
-      const accessToken = tokenData.user;
-
       // Add new message to ticket
-      const response = await axios.post(
-        `${apiUrl}/tickets/${ticketId}/messages`,
-        { message },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await api.post(`/tickets/${ticketId}/messages`, {
+        message,
+      });
 
       console.log('Added ticket message response:', response.data);
 
@@ -122,20 +76,7 @@ export const useTicketMessages = () => {
       return response.data;
     } catch (err) {
       console.error('Error adding ticket message:', err);
-      if (axios.isAxiosError(err)) {
-        console.error('Axios error details:', {
-          status: err.response?.status,
-          statusText: err.response?.statusText,
-          data: err.response?.data,
-        });
-        setError(
-          `Error ${err.response?.status || ''}: ${err.response?.data?.detail || err.message}`
-        );
-      } else {
-        setError(
-          err instanceof Error ? err.message : 'Error adding ticket message'
-        );
-      }
+      setError('Error adding ticket message');
       return null;
     } finally {
       setLoading(false);

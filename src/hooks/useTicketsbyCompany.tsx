@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '@/utils/api';
 
 interface Ticket {
   ticket_id: string;
@@ -26,16 +26,16 @@ export const useTicketsByCompany = (companyId: string | undefined) => {
       }
 
       try {
-        const response = await axios.get<TicketsResponse>(
-          `http://0.0.0.0:8000/api/v1/tickets/?company_id=${companyId}`
+        const response = await api.get<TicketsResponse>(
+          `tickets/?company_id=${companyId}`
         );
 
         // Actualizado para acceder a response.data.tickets
         setTickets(response.data.tickets || []);
         setError(null);
       } catch (err) {
-        console.error('❌ Error al obtener tickets:', err);
-        setError('❌ No se pudieron obtener los tickets.');
+        console.error('Error al obtener tickets:', err);
+        setError('No se pudieron obtener los tickets.');
       } finally {
         setLoading(false);
       }

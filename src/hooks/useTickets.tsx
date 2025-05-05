@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 import { UUID } from 'crypto';
 
 export interface Ticket {
@@ -26,22 +25,9 @@ export const useTickets = () => {
     setLoading(true);
     setError(null);
     try {
-      // Get auth token
-      const tokenRes = await fetch('/api/getToken');
-      const tokenData = await tokenRes.json();
-
-      if (!tokenRes.ok || !tokenData.user) {
-        throw new Error('Token missing or invalid');
-      }
-
-      const accessToken = tokenData.user;
-
-      const response = await axios.get<TicketsResponse>(`${apiUrl}/tickets/`, {
-        params: { company_id: companyId },
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await api.get<TicketsResponse>(
+        `/tickets?company_id=${companyId}`
+      );
 
       console.log('Fetched tickets:', response.data);
       setTickets(response.data.tickets || []);
@@ -61,29 +47,12 @@ export const useTickets = () => {
     setLoading(true);
     setError(null);
     try {
-      // Get auth token
-      const tokenRes = await fetch('/api/getToken');
-      const tokenData = await tokenRes.json();
-
-      if (!tokenRes.ok || !tokenData.user) {
-        throw new Error('Token missing or invalid');
-      }
-
-      const accessToken = tokenData.user;
-
-      // New ticket
-      const response = await axios.post(
-        `${apiUrl}/tickets/companies/${companyId}/tickets`,
+      const response = await api.post(
+        `/tickets/companies/${companyId}/tickets`,
         {
           subject,
           description,
           status: 'open',
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
         }
       );
 
@@ -109,27 +78,8 @@ export const useTickets = () => {
     setLoading(true);
     setError(null);
     try {
-      // Get auth token
-      const tokenRes = await fetch('/api/getToken');
-      const tokenData = await tokenRes.json();
-
-      if (!tokenRes.ok || !tokenData.user) {
-        throw new Error('Token missing or invalid');
-      }
-
-      const accessToken = tokenData.user;
-
       // Update ticket status
-      const response = await axios.put(
-        `${apiUrl}/tickets/${ticketId}/status`,
-        null,
-        {
-          params: { status },
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await api.put(`/tickets/${ticketId}/status`);
 
       console.log('Updated ticket status:', response.data);
 
