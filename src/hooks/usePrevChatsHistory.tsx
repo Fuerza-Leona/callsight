@@ -4,13 +4,13 @@ import { useState } from 'react';
 import axios from 'axios';
 import { apiUrl } from '@/constants';
 
-interface ApiResponse {
+export interface HistoryChat {
   chatbot_conversation_id: string;
   title: string;
 }
 
 export const usePrevChatsHistory = () => {
-  const [data, setData] = useState<ApiResponse[] | null>(null);
+  const [data, setData] = useState<HistoryChat[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -30,7 +30,7 @@ export const usePrevChatsHistory = () => {
       const accessToken = tokenData.user;
 
       //Request with Auth header
-      const response = await axios.get<ApiResponse[]>(
+      const response = await axios.get<HistoryChat[]>(
         `${apiUrl}/chatbot/all_chats`,
         {
           headers: {
