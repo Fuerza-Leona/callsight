@@ -79,7 +79,15 @@ const SideNavItems = () => {
   const { user } = useUser();
 
   return (
-    <ul className="flex flex-col items-center text-center gap-4 lg:gap-6 relative z-20 pt-15 md:pt-10">
+    <ul className="flex flex-col items-center text-center gap-4 lg:gap-6 relative z-20 ">
+      <Image
+        src="/neoris.png"
+        className="mb-10"
+        alt="Logo"
+        width={150}
+        height={50}
+        priority
+      />
       {user?.role === 'client' && (
         <>
           {sideNavLinksClient.map(({ id, href, name }) => {
@@ -156,6 +164,10 @@ const Sidebar = () => {
   const toggleMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
   const { user } = useUser();
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <>
       {user && (
@@ -175,7 +187,7 @@ const Sidebar = () => {
           </button>
 
           <aside
-            className={`h-screen w-full md:w-64 pt-20 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:fixed lg:translate-x-0`}
+            className={`h-screen w-full md:w-64 pt-1 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:fixed lg:translate-x-0`}
           >
             <div className="flex flex-col justify-between h-full py-5">
               <nav className="lg:flex flex-col w-full justify-center">

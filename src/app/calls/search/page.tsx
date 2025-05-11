@@ -20,6 +20,7 @@ import { useFetchCategories, Category } from '@/hooks/fetchCategories';
 import { useFetchConversations } from '@/hooks/fetchConversations';
 import Tag from '@/components/Tag';
 import dayjs from 'dayjs';
+import 'dayjs/locale/es';
 
 export default function Home() {
   const { clients, loadingClients, errorClients, fetchClients } =
@@ -103,10 +104,10 @@ export default function Home() {
   };
 
   return (
-    <div className="relative lg:left-64 top-32 w-full xl:w-75/100 min-h-screen flex flex-col md:justify-around md:flex-row gap-2 m-2">
+    <div className="relative lg:left-64 top-32 w-full xl:w-75/100 flex flex-col md:justify-around md:flex-row gap-2 m-2">
       <div className="w-3/10 flex flex-col align-center text-center">
         <div className="text-white bg-[#1E242B] rounded-md mb-5 ">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
             <DateCalendar
               value={selectedDate}
               onChange={handleDateChange}
@@ -164,10 +165,38 @@ export default function Home() {
           onChange={handleSearchChange}
         />
         {loadingConversations ? (
-          <CircularProgress />
+          <div className="flex justify-center items-center w-full h-[400px]">
+            <CircularProgress size={100} thickness={4} />
+          </div>
         ) : (
-          <div>
-            <Table>
+          <div
+            className="overflow-auto mt-8"
+            style={{
+              maxHeight: '500px',
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#1E242B',
+            }}
+          >
+            <style jsx global>{`
+              /* Webkit browsers (Chrome, Safari) */
+              .overflow-auto::-webkit-scrollbar {
+                width: 10px;
+              }
+              .overflow-auto::-webkit-scrollbar-track {
+                background: #f3f4f6;
+                border-radius: 10px;
+              }
+              .overflow-auto::-webkit-scrollbar-thumb {
+                background: #1e242b;
+                border-radius: 10px;
+                border: 2px solid #f3f4f6;
+              }
+              .overflow-auto::-webkit-scrollbar-thumb:hover {
+                background: #1e242b;
+              }
+            `}</style>
+
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
                   <TableCell className="w-1/3">ID</TableCell>

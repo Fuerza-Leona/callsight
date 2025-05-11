@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { apiUrl } from '@/constants';
+import { UUID } from 'crypto';
 
 export interface Ticket {
   ticket_id: string;
@@ -9,6 +10,7 @@ export interface Ticket {
   status: 'open' | 'in_progress' | 'closed';
   created_at: string;
   company_id: string;
+  assigned_to: UUID;
 }
 
 interface TicketsResponse {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 
 interface WordCloudProps {
   words: {
@@ -26,51 +26,61 @@ const SimpleWordCloud: React.FC<WordCloudProps> = ({
   // Find the max value for scaling
   const maxValue = Math.max(...displayWords.map((word) => word.value));
 
-  // Set of colors to make the cloud more visually interesting
-  const colors = ['#1976d2', '#2196f3', '#64b5f6', '#0d47a1', '#42a5f5'];
-
   return (
     <Box
       sx={{
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 1,
+        gap: 1.5,
+        justifyContent: 'left',
         padding: 2,
-        height: '100%',
         width: '100%',
-        overflow: 'hidden',
       }}
     >
       {displayWords.map((word, index) => {
-        // Calculate font size based on frequency (between 1 and 5 rem)
-        const fontSize = 1 + (word.value / maxValue) * 3;
-        // Randomly select rotation angle for some words
-        // Get a color from our palette based on index
-        const color = colors[index % colors.length];
+        // Calculate the relative importance (0-1 range)
+        const importance = word.value / maxValue;
+
+        // Updated colors to match the image exactly
+        const backgroundColor = '#f0f5fe'; // Lighter blue-gray background
+
+        // Text color based on importance - matching the image
+        const textColor =
+          importance > 0.7
+            ? '#0e47a1' // Dark blue for important items
+            : importance > 0.4
+              ? '#4169e1' // Medium blue for average items
+              : '#333333'; // Dark gray/near black for less important items
+
+        // Font size differences based on importance but with smaller variations
+        const fontSize = 0.9 + importance * 0.1;
+
+        // Font weight
+        const fontWeight =
+          importance > 0.7 ? 600 : importance > 0.4 ? 500 : 400;
 
         return (
-          <Typography
+          <Chip
             key={index}
+            label={word.text}
             sx={{
               fontSize: `${fontSize}rem`,
-              padding: '0.3rem',
-              fontWeight: word.value > maxValue / 2 ? 'bold' : 'normal',
-              color: color,
-              margin: '0.2rem',
-              lineHeight: 1,
-              transition: 'all 0.3s ease',
-              cursor: 'pointer',
-              '&:hover': {
-                transform: 'scale(1.05)',
-                color: 'black',
+              fontWeight: fontWeight,
+              backgroundColor: backgroundColor,
+              color: textColor,
+              borderRadius: '20px', // More rounded to match the image
+              padding: '4px 0',
+              height: 'auto',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.08)', // Adding subtle shadow to match image
+              '& .MuiChip-label': {
+                padding: '6px 14px', // Slight adjustment to padding
+                whiteSpace: 'normal',
+                lineHeight: 1.5,
               },
             }}
             title={`${word.text}: ${word.value}`}
-          >
-            {word.text}
-          </Typography>
+            onClick={() => {}}
+          />
         );
       })}
     </Box>
