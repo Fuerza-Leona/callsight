@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import axios from 'axios';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export const useFetchCompanyInformation = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -12,25 +11,8 @@ export const useFetchCompanyInformation = () => {
     setLoading(true);
     setError('');
     try {
-      const tokenRes = await fetch('/api/getToken');
-      const tokenData = await tokenRes.json();
-
-      if (!tokenRes.ok || !tokenData.user) {
-        throw new Error('Token missing or invalid');
-      }
-
-      const accessToken = tokenData.user;
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
       const [sizeResponse] = await Promise.all([
-        axios.get(`${apiUrl}/companies/companySize`, config),
+        api.get(`/companies/companySize`),
       ]);
       console.log('Company Sizes:', rows);
       setSizes(sizeResponse.data.info || [{ name: 'No data', sizes: 0 }]);

@@ -40,7 +40,7 @@ export default function Home() {
     duration,
     fetchProfile,
   } = useFetchProfile();
-  const { rows, fetchCompanyInformation } = useFetchCompanyInformation();
+  const { rows, loading, fetchCompanyInformation } = useFetchCompanyInformation();
   const name = user?.username;
 
   const company = user?.department;
@@ -48,7 +48,7 @@ export default function Home() {
 
   const [filteredRows, setFilteredRows] = useState(rows);
   const handleSearch = (searchValue: string | null) => {
-    if (!searchValue) {
+    if (!searchValue || searchValue.length === 0) {
       setFilteredRows(rows);
     } else {
       const filtered = rows.filter((row) =>
@@ -147,7 +147,7 @@ export default function Home() {
           )}
           {(userRole == 'admin' || userRole == 'agent') && (
             <div className="flex flex-col w-full gap-5 md:ml-10">
-              <div className="flex justify-between gap-5">
+              {!loading && <div className="flex justify-between gap-5">
                 <SearchBar
                   label="Buscar Cliente"
                   options={rows.map((row) => ({ label: row.name }))}
@@ -157,7 +157,7 @@ export default function Home() {
                 <button className="rounded-2xl bg-[#13202A] text-white md:w-50 hover:cursor-pointer hover:bg-[#364550]">
                   Añadir cliente
                 </button>
-              </div>
+              </div>}
               <div className="h-[200px] w-full">
                 {rows.length > 1 && (
                   <CustomPaginationActionsTable
