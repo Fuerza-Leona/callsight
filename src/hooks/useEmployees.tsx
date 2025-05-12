@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useUser } from '@/context/UserContext'; // Adjust the path if needed
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 import { UUID } from 'crypto';
 
 export interface Employee {
@@ -10,7 +8,6 @@ export interface Employee {
 }
 
 export const useEmployees = () => {
-  const { token } = useUser(); // 🎯 Get token from context
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,24 +15,11 @@ export const useEmployees = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const tokenRes = await fetch('/api/getToken');
-        const tokenData = await tokenRes.json();
-
-        if (!tokenRes.ok || !tokenData.user) {
-          throw new Error('Token missing or invalid');
-        }
-
-        const accessToken = tokenData.user;
-        const response = await axios.get(`${apiUrl}/users/employees`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await api.get('/users/employees');
         console.log('Fetched employees:', response.data); // Log the response
         setEmployees(response.data || []);
         console.log(employees);
-      } catch (err: unknown) {
-        console.error('Error fetching employees:', err); // Log the error
+      } catch {
         setError('Error fetching employees');
       } finally {
         setLoading(false);
@@ -44,7 +28,7 @@ export const useEmployees = () => {
 
     fetchEmployees();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
 
   return { employees, loading, error };
 };

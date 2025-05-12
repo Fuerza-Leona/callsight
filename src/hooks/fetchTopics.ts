@@ -1,8 +1,7 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Topic {
   topic: string;
@@ -12,7 +11,8 @@ export interface Topic {
 interface FetchTopicsParams {
   limit: number | null;
   clients: string[] | null;
-  categories: string[] | null;
+  agents: string[] | null;
+  companies: string[] | null;
   startDate: string | null;
   endDate: string | null;
 }
@@ -27,33 +27,19 @@ export const useFetchTopics = () => {
     setError('');
 
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.limit && { limit: params.limit }),
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
         ...(params?.clients &&
           params.clients.length > 0 && { clients: params.clients }),
-        ...(params?.categories &&
-          params.categories.length > 0 && { categories: params.categories }),
+        ...(params?.agents &&
+          params.agents.length > 0 && { agents: params.agents }),
+        ...(params?.companies &&
+          params.companies.length > 0 && { companies: params.companies }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const topicsResponse = await axios.post(
-        `${apiUrl}/topics`,
-        requestBody,
-        config
-      );
+      const topicsResponse = await api.post('/topics', requestBody);
 
       setTopics(topicsResponse.data.topics);
     } catch (err) {

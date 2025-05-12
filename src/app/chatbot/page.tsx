@@ -13,6 +13,7 @@ import {
 } from '@/hooks/useChatbotConversationHistory';
 import { useChatbotConversation } from '@/hooks/useChatbotConversation';
 import { useUser } from '@/context/UserContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 const formatSteps = (text: string): string[] => {
   //Enumarate steps if response has them
@@ -252,10 +253,12 @@ const ChatbotInner = () => {
 
 export default function Page() {
   return (
-    <Suspense
-      fallback={<div className="text-white p-10">Cargando chatbot...</div>}
-    >
-      <ChatbotInner />
-    </Suspense>
+    <ProtectedRoute>
+      <Suspense
+        fallback={<div className="text-white p-10">Cargando chatbot...</div>}
+      >
+        <ChatbotInner />
+      </Suspense>
+    </ProtectedRoute>
   );
 }
