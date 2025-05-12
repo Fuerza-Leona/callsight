@@ -74,58 +74,58 @@ export default function Home() {
           </div>
         </div>
 
-      <div className="flex flex-col gap-5 md:gap-5 md:flex-row md:w-[calc(100%-10rem)] justify-between mt-10 mb-10 w-[calc(100%-10rem)] ">
-        <div
-          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
-          style={{ backgroundColor: 'var(--persian-pink)' }}
-        >
-          <p>Rol</p>
-          <h2 className="font-thin text-3xl">
-            {userRole == 'admin'
-              ? 'Admin'
-              : userRole == 'agent'
-                ? 'Agente'
-                : 'Usuario'}
-          </h2>
-        </div>
-
-        <div
-          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
-          style={{ backgroundColor: 'var(--jonquil)' }}
-        >
-          <p>{userRole == 'client' ? 'Tickets abiertos' : 'Departamento'}</p>
-          <h2 className="font-thin text-3xl">
-            {userRole == 'client' ? tickets : company}
-          </h2>
-        </div>
-
-        <div
-          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center text-white"
-          style={{ backgroundColor: 'var(--neoris-blue)' }}
-        >
-          <p>Duración promedio por llamada</p>
-          <div className="flex">
-            <h2 className="font-thin text-3xl">{duration}</h2>
-            <p>min</p>
+        <div className="flex flex-col gap-5 md:gap-5 md:flex-row md:w-[calc(100%-10rem)] justify-between mt-10 mb-10 w-[calc(100%-10rem)] ">
+          <div
+            className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
+            style={{ backgroundColor: 'var(--persian-pink)' }}
+          >
+            <p>Rol</p>
+            <h2 className="font-thin text-3xl">
+              {userRole == 'admin'
+                ? 'Admin'
+                : userRole == 'agent'
+                  ? 'Agente'
+                  : 'Usuario'}
+            </h2>
           </div>
-        </div>
-        <div
-          className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center text-white"
-          style={{ backgroundColor: 'var(--slate-blue)' }}
-        >
-          <p>
-            {userRole == 'admin' || userRole == 'agent'
-              ? 'Satisfaccion promedio'
-              : 'Proyectos realizados'}
-          </p>
-          <h2 className="font-thin text-3xl">
-            {userRole == 'client'
-              ? nProyects
-              : satisfaction != 0
-                ? satisfaction
-                : '--'}
-          </h2>
-        </div>
+
+          <div
+            className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
+            style={{ backgroundColor: 'var(--jonquil)' }}
+          >
+            <p>{userRole == 'client' ? 'Tickets abiertos' : 'Departamento'}</p>
+            <h2 className="font-thin text-3xl">
+              {userRole == 'client' ? tickets : company}
+            </h2>
+          </div>
+
+          <div
+            className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center text-white"
+            style={{ backgroundColor: 'var(--neoris-blue)' }}
+          >
+            <p>Duración promedio por llamada</p>
+            <div className="flex">
+              <h2 className="font-thin text-3xl">{duration}</h2>
+              <p>min</p>
+            </div>
+          </div>
+          <div
+            className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center text-white"
+            style={{ backgroundColor: 'var(--slate-blue)' }}
+          >
+            <p>
+              {userRole == 'admin' || userRole == 'agent'
+                ? 'Satisfaccion promedio'
+                : 'Proyectos realizados'}
+            </p>
+            <h2 className="font-thin text-3xl">
+              {userRole == 'client'
+                ? nProyects
+                : satisfaction != 0
+                  ? satisfaction
+                  : '--'}
+            </h2>
+          </div>
 
           <div
             className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center"
@@ -136,39 +136,40 @@ export default function Home() {
           </div>
         </div>
 
-      <div className="flex flex-col md:flex-row w-[calc(100%-8rem)] md:w-[calc(100%-10rem)] gap-5 md:items-center justify-between">
-        {userRole == 'client' && (
-          <div className="flex flex-col bg-gray-200 w-full h-80 md:mt-10 rounded-2xl justify-center items-center">
-            <p>Clientes</p>
-            <h2 className="font-thin text-3xl">
-              aliqua irure officia culpa labore
-            </h2>
-          </div>
-        )}
-        {(userRole == 'admin' || userRole == 'agent') && (
-          <div className="flex flex-col w-full gap-5 md:ml-10">
-            <div className="flex justify-between gap-5">
-              <SearchBar
-                label="Buscar Cliente"
-                options={rows.map((row) => ({ label: row.name }))}
-                onSelect={handleSearch}
-                sx={{ width: '100%' }}
-              />
-              <button className="rounded-2xl bg-[#13202A] text-white md:w-50 hover:cursor-pointer hover:bg-[#364550]">
-                Añadir cliente
-              </button>
+        <div className="flex flex-col md:flex-row w-[calc(100%-8rem)] md:w-[calc(100%-10rem)] gap-5 md:items-center justify-between">
+          {userRole == 'client' && (
+            <div className="flex flex-col bg-gray-200 w-full h-80 md:mt-10 rounded-2xl justify-center items-center">
+              <p>Clientes</p>
+              <h2 className="font-thin text-3xl">
+                aliqua irure officia culpa labore
+              </h2>
             </div>
-            <div className="h-[200px] w-full">
-              {rows.length > 1 && (
-                <CustomPaginationActionsTable
-                  rows={filteredRows}
-                  columns={columns}
+          )}
+          {(userRole == 'admin' || userRole == 'agent') && (
+            <div className="flex flex-col w-full gap-5 md:ml-10">
+              <div className="flex justify-between gap-5">
+                <SearchBar
+                  label="Buscar Cliente"
+                  options={rows.map((row) => ({ label: row.name }))}
+                  onSelect={handleSearch}
+                  sx={{ width: '100%' }}
                 />
-              )}
+                <button className="rounded-2xl bg-[#13202A] text-white md:w-50 hover:cursor-pointer hover:bg-[#364550]">
+                  Añadir cliente
+                </button>
+              </div>
+              <div className="h-[200px] w-full">
+                {rows.length > 1 && (
+                  <CustomPaginationActionsTable
+                    rows={filteredRows}
+                    columns={columns}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }
