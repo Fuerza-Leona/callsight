@@ -1,12 +1,14 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTable';
 import SearchBar from '@/components/SearchBar';
 import { useUser } from '@/context/UserContext';
+import { useFetchProfile } from '@/hooks/fetchPerfil';
+import { useFetchCompanyInformation } from '@/hooks/fetchCompanyInformation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import LogoutButton from '@/components/LogoutButton';
 
-const rows = [
+/*const rows = [
   { name: 'BBVA', usuarios: 30, proyectos: 3 },
   { name: 'Santander', usuarios: 12, proyectos: 21 },
   { name: 'CaixaBank', usuarios: 18, proyectos: 5 },
@@ -18,36 +20,31 @@ const rows = [
   { name: 'Openbank', usuarios: 13, proyectos: 7 },
   { name: 'EVO Banco', usuarios: 6, proyectos: 3 },
   { name: 'Cajamar', usuarios: 22, proyectos: 9 },
-];
+];*/
 
 const columns = [
   { label: 'Cliente', key: 'name' },
-  { label: 'Usuarios', key: 'usuarios' },
-  { label: 'Proyectos', key: 'proyectos' },
+  { label: 'Usuarios', key: 'size' },
+  //{ label: 'Proyectos', key: 'proyectos' },
 ];
-
-//Harcodead values (whatever is commented is already functional)
-//const isUser = false;
-//const isAgent = !isUser;
-const isAdmin = false;
-
-//const name = "Juan"
-const nCalls = 192;
-const duration = 23;
 
 //Client
 const nProyects = 1;
 const tickets = 21;
 
-//Agente - Admin
-const satisfaction = 4.3;
-const company = 'Neoris';
-
 export default function Home() {
   const { user } = useUser();
+  const {
+    number: nCalls,
+    rating: satisfaction,
+    duration,
+    fetchProfile,
+  } = useFetchProfile();
+  const { rows, fetchCompanyInformation } = useFetchCompanyInformation();
   const name = user?.username;
-  const isUser = user?.role == 'client';
-  const isAgent = !isUser; //This is hardcoded. It needs to also get the user role
+
+  const company = user?.department;
+  const userRole = user?.role;
 
   const [filteredRows, setFilteredRows] = useState(rows);
   const handleSearch = (searchValue: string | null) => {
@@ -55,11 +52,17 @@ export default function Home() {
       setFilteredRows(rows);
     } else {
       const filtered = rows.filter((row) =>
-        row.name.toLowerCase().includes(searchValue.toLowerCase())
+        row['name'].toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredRows(filtered);
     }
   };
+
+  useEffect(() => {
+    fetchProfile();
+    fetchCompanyInformation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ProtectedRoute>
@@ -78,7 +81,11 @@ export default function Home() {
           >
             <p>Rol</p>
             <h2 className="font-thin text-3xl">
-              {isAdmin ? 'Admin' : isAgent ? 'Agente' : 'Usuario'}
+              {userRole == 'admin'
+                ? 'Admin'
+                : userRole == 'agent'
+                  ? 'Agente'
+                  : 'Usuario'}
             </h2>
           </div>
 
@@ -86,8 +93,10 @@ export default function Home() {
             className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
             style={{ backgroundColor: 'var(--jonquil)' }}
           >
-            <p>{isUser ? 'Tickets abiertos' : 'Empresa'}</p>
-            <h2 className="font-thin text-3xl">{isUser ? tickets : company}</h2>
+            <p>{userRole == 'client' ? 'Tickets abiertos' : 'Departamento'}</p>
+            <h2 className="font-thin text-3xl">
+              {userRole == 'client' ? tickets : company}
+            </h2>
           </div>
 
           <div
@@ -105,12 +114,16 @@ export default function Home() {
             style={{ backgroundColor: 'var(--slate-blue)' }}
           >
             <p>
-              {isAdmin || isAgent
+              {userRole == 'admin' || userRole == 'agent'
                 ? 'Satisfaccion promedio'
                 : 'Proyectos realizados'}
             </p>
             <h2 className="font-thin text-3xl">
-              {isUser ? nProyects : satisfaction}
+              {userRole == 'client'
+                ? nProyects
+                : satisfaction != 0
+                  ? satisfaction
+                  : '--'}
             </h2>
           </div>
 
@@ -124,7 +137,7 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col md:flex-row w-[calc(100%-8rem)] md:w-[calc(100%-10rem)] gap-5 md:items-center justify-between">
-          {isUser && (
+          {userRole == 'client' && (
             <div className="flex flex-col bg-gray-200 w-full h-80 md:mt-10 rounded-2xl justify-center items-center">
               <p>Clientes</p>
               <h2 className="font-thin text-3xl">
@@ -132,7 +145,7 @@ export default function Home() {
               </h2>
             </div>
           )}
-          {(isAdmin || isAgent) && (
+          {(userRole == 'admin' || userRole == 'agent') && (
             <div className="flex flex-col w-full gap-5 md:ml-10">
               <div className="flex justify-between gap-5">
                 <SearchBar
@@ -146,10 +159,12 @@ export default function Home() {
                 </button>
               </div>
               <div className="h-[200px] w-full">
-                <CustomPaginationActionsTable
-                  rows={filteredRows}
-                  columns={columns}
-                />
+                {rows.length > 1 && (
+                  <CustomPaginationActionsTable
+                    rows={filteredRows}
+                    columns={columns}
+                  />
+                )}
               </div>
             </div>
           )}
