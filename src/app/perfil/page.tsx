@@ -1,10 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
-import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTable';
-import SearchBar from '@/components/SearchBar';
+import { useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
 import { useFetchProfile } from '@/hooks/fetchPerfil';
-import { useFetchCompanyInformation } from '@/hooks/fetchCompanyInformation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import LogoutButton from '@/components/LogoutButton';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -22,12 +19,6 @@ import CircularProgress from '@mui/material/CircularProgress';
   { name: 'EVO Banco', usuarios: 6, proyectos: 3 },
   { name: 'Cajamar', usuarios: 22, proyectos: 9 },
 ];*/
-
-const columns = [
-  { label: 'Cliente', key: 'name' },
-  { label: 'Usuarios', key: 'size' },
-  //{ label: 'Proyectos', key: 'proyectos' },
-];
 
 //Client
 const nProyects = 1;
@@ -49,21 +40,8 @@ export default function Home() {
   const company = user?.department;
   const userRole = user?.role;
 
-  const [filteredRows, setFilteredRows] = useState(rows);
-  const handleSearch = (searchValue: string | null) => {
-    if (!searchValue || searchValue.length === 0) {
-      setFilteredRows(rows);
-    } else {
-      const filtered = rows.filter((row) =>
-        row['name'].toLowerCase().includes(searchValue.toLowerCase())
-      );
-      setFilteredRows(filtered);
-    }
-  };
-
   useEffect(() => {
     fetchProfile();
-    fetchCompanyInformation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
