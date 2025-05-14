@@ -53,6 +53,11 @@ export const sideNavLinksAgent: NavLink[] = [
     href: 'clients',
   },
   {
+    id: 8,
+    name: 'Usuarios',
+    href: 'users',
+  },
+  {
     id: 6,
     name: 'Chatbot',
     href: 'chatbot',
