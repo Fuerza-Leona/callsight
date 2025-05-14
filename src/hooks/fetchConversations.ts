@@ -40,7 +40,7 @@ export const useFetchConversations = () => {
         ...(params?.clients &&
           params.clients.length > 0 && { clients: params.clients }),
         ...(params?.agents &&
-          params.agents.length > 0 && { categories: params.agents }),
+          params.agents.length > 0 && { agents: params.agents }),
         ...(params?.companies &&
           params.companies.length > 0 && { companies: params.companies }),
         ...(params?.conversation_id && {
