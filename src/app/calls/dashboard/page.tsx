@@ -71,7 +71,7 @@ export default function Home() {
 
   useEffect(() => {
     const loadAllData = async () => {
-      const promises = [fetchClients(), fetchCompanies];
+      const promises = [fetchClients(), fetchCompanies()];
 
       if (user?.role === 'admin') {
         promises.push(fetchAgents());
@@ -135,8 +135,9 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-      <div className="relative lg:left-64 pt-7 w-[96%] lg:w-[80%] flex flex-col gap-3 max-w-screen pl-3">
-        <div className="flex flex-col md:flex-row items-center justify-between ">
+      {/* Top Bar */}
+      <div className="relative lg:left-64 pt-10 w-full lg:w-[calc(100%-17rem)] pl-3 pr-3">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-6">
           <p className="text-4xl font-bold">Tablero</p>
           <div className="flex gap-2">
             <div>
@@ -162,9 +163,12 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="flex flex-col md:flex-row items-center flex-wrap xl:flex-nowrap md:justify-between gap-2">
-          <div className="flex flex-col gap-2">
-            <div className="text-white bg-[#1E242B] rounded-md mb-5 ">
+
+        {/* Main Content - Two Column Layout */}
+        <div className="relative w-[100%] flex flex-col md:flex-row gap-3">
+          {/* Left Column - Filters */}
+          <div className="flex flex-col align-center text-center gap-2">
+            <div className="text-white bg-[#1E242B] rounded-md mb-5">
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
                 adapterLocale="es"
@@ -248,13 +252,15 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pt-2 flex flex-col grow w-full pl-3 md:w-[40%] justify-between gap-3">
-            <div className="flex w-full h-[30%] gap-4 text-center pb-1 ">
+          {/* Right Column - Dashboard Cards */}
+          <div className="w-full lg:w-[100%] md:w-[80%] flex flex-col gap-3">
+            {/* First row - Summary boxes */}
+            <div className="flex w-full gap-4 text-center pb-1">
               <div
-                className="w-[32%] rounded-md flex flex-col items-left justify-left gap-3 p-3 shadow-md"
+                className="w-[33%] rounded-md flex flex-col items-left justify-left gap-3 p-3 shadow-md"
                 style={{ backgroundColor: 'white', height: '110px' }}
               >
-                <div className="flex gap-2 text-md items-left font-bold ">
+                <div className="flex gap-2 text-md items-left font-bold">
                   <h1>Tiempo promedio por llamada</h1>
                 </div>
                 <div className="text-5xl font-bold flex justify-left items-left h-16 flex-grow">
@@ -273,10 +279,10 @@ export default function Home() {
                 </div>
               </div>
               <div
-                className="w-[32%] shadow-md rounded-md flex flex-col items-left justify-left items-left gap-3 p-3"
+                className="w-[33%] shadow-md rounded-md flex flex-col items-left justify-left items-left gap-3 p-3"
                 style={{ backgroundColor: 'white', height: '110px' }}
               >
-                <div className="flex gap-2 text-md items-left font-bold ">
+                <div className="flex gap-2 text-md items-left font-bold">
                   <h1>Total de llamadas</h1>
                 </div>
                 <div className="text-5xl font-bold flex justify-left items-left h-16 flex-grow">
@@ -299,7 +305,7 @@ export default function Home() {
                 </div>
               </div>
               <div
-                className="w-[32%] shadow-md rounded-md flex flex-col items-left justify-left items-left gap-3 p-3"
+                className="w-[33%] shadow-md rounded-md flex flex-col items-left justify-left items-left gap-3 p-3"
                 style={{ backgroundColor: 'white', height: '110px' }}
               >
                 <div className="flex gap-2 text-md items-left font-bold">
@@ -343,8 +349,9 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Word cloud card */}
             <div
-              className="w-full shadow-md rounded-md  bg-white p-5 w-full"
+              className="w-full shadow-md rounded-md bg-white p-5"
               style={{ minHeight: '260px' }}
             >
               <h1 className="text-lg font-bold pl-5">
@@ -388,7 +395,8 @@ export default function Home() {
               </Box>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between w-full gap-3 pt-1 ">
+            {/* Bottom row - Chart cards */}
+            <div className="flex flex-col md:flex-row justify-between w-full gap-3 pt-1">
               <div
                 className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
                 style={{ minHeight: '300px' }}
