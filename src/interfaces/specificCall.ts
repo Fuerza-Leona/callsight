@@ -12,4 +12,8 @@ export interface SpecificCall {
     logo: string;
     name: string;
   };
+  rating: {
+    average: number;
+    count: number;
+  };
 }
