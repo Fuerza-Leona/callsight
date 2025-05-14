@@ -165,10 +165,10 @@ function CallDetail() {
               </Box>
             ) : (
               <>
-                0.0
+                {call?.rating.average ?? 0}
                 <span className="text-sm pl-3 pt-6 font-light">
                   {' '}
-                  de 0 reseñas
+                  de {call?.rating.count} reseñas
                 </span>
               </>
             )}
