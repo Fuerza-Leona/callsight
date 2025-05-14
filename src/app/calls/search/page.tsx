@@ -143,7 +143,7 @@ export default function Home() {
               <DateCalendar
                 value={selectedDate}
                 onChange={handleDateChange}
-                views={['month', 'year']}
+                views={['month']}
                 openTo="month"
                 className="bg-[#1E242B] rounded-md w-1/1"
               />
