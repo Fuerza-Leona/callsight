@@ -30,6 +30,8 @@ export const useLogin = () => {
       setError(
         `Error al Iniciar sesión: ${error instanceof Error ? error.message : String(error)}`
       );
+    } finally {
+      setLoading(false);
     }
   };
 
