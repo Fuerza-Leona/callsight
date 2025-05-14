@@ -134,14 +134,16 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-      <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3  pl-3">
-        <div className="w-3/10 flex flex-col align-center text-center gap-2">
-          <div className="text-white bg-[#1E242B] rounded-md mb-5 mt-3">
+      <div className="relative lg:left-64 top-8 w-[96%] lg:w-[calc(100%-17rem)]  flex flex-col md:justify-around md:flex-row gap-3  pl-3">
+        <div className="flex flex-col align-center text-center gap-2">
+          <p className="text-4xl font-bold text-left mt-2">Tablero</p>
+
+          <div className="text-white bg-[#1E242B] rounded-md mb-5 mt-4">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
               <DateCalendar
                 value={selectedDate}
                 onChange={handleDateChange}
-                views={['month', 'year']}
+                views={['month']}
                 openTo="month"
                 className="bg-[#1E242B] rounded-md w-1/1"
               />
@@ -227,14 +229,14 @@ export default function Home() {
             onChange={handleSearchChange}
           />
           {loadingConversations ? (
-            <div className="flex justify-center items-center w-full h-[400px]">
+            <div className="flex justify-center items-center w-full pt-20">
               <CircularProgress size={100} thickness={4} />
             </div>
           ) : (
             <div
               className="overflow-auto mt-8"
               style={{
-                maxHeight: '500px',
+                maxHeight: 'calc(100vh - 12rem)',
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#1E242B',
               }}
@@ -261,10 +263,21 @@ export default function Home() {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="w-2/6">ID</TableCell>
-                    <TableCell className="w-1/12">Fecha</TableCell>
-                    <TableCell className="w-1/6">Empresa</TableCell>
-                    <TableCell className="w-1/6">Categoría</TableCell>
+                    <TableCell className="w-2/6">
+                      <strong>ID</strong>
+                    </TableCell>
+                    <TableCell align="center" className="w-1/12">
+                      <strong>Fecha</strong>
+                    </TableCell>
+                    <TableCell align="center" className="w-1/12">
+                      <strong>Participantes</strong>
+                    </TableCell>
+                    <TableCell align="center" className="w-1/6">
+                      <strong>Empresa</strong>
+                    </TableCell>
+                    <TableCell align="center" className="w-1/6">
+                      <strong>Categoría</strong>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -277,7 +290,7 @@ export default function Home() {
                       <TableCell>
                         <p>{conversation.conversation_id}</p>
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <p>
                           {conversation.start_time
                             ? new Date(
@@ -286,13 +299,18 @@ export default function Home() {
                             : 'N/A'}
                         </p>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-2">
+                      <TableCell align="center">
+                        <div className="flex flex-wrap justify-center">
+                          {conversation.participants}
+                        </div>
+                      </TableCell>
+                      <TableCell align="center">
+                        <div className="flex flex-wrap justify-center">
                           {conversation.company}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-2">
+                      <TableCell align="center">
+                        <div className="flex flex-wrap justify-center">
                           {conversation.category && (
                             <Tag
                               key={conversation.category}

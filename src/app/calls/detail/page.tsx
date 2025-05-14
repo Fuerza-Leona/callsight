@@ -97,7 +97,7 @@ function CallDetail() {
       : 's.f.';
 
   return (
-    <div className="relative lg:left-64 pt-7 w-[98%] lg:w-[81%] flex flex-col gap-3 max-w-screen pl-3">
+    <div className="relative lg:left-64 pt-7 w-[98%] lg:w-[calc(100%-17rem)] flex flex-col gap-3 max-w-screen pl-3">
       <div className="flex flex-col md:flex-row items-center justify-between ">
         <div className="text-4xl font-bold">
           {loadingCall ? (
@@ -165,10 +165,10 @@ function CallDetail() {
               </Box>
             ) : (
               <>
-                0.0
+                {call?.rating.average ?? 0}
                 <span className="text-sm pl-3 pt-6 font-light">
                   {' '}
-                  de 0 reseñas
+                  de {call?.rating.count} reseñas
                 </span>
               </>
             )}
@@ -271,6 +271,9 @@ function CallDetail() {
         </div>
 
         <div className="bg-white rounded-md p-3 shadow-md lg:w-1/3">
+          <div className="flex gap-2 text-md items-left font-bold mb-3">
+            <h1>Empresa</h1>
+          </div>
           {call?.company?.logo && (
             <Image
               src={call.company.logo}
@@ -280,7 +283,7 @@ function CallDetail() {
               className="rounded-full mt-2 mb-4 object-cover"
             />
           )}
-          <div className="flex gap-2 text-md items-left font-bold pt-3 mb-2">
+          <div className="flex gap-2 text-md items-left font-bold mt-8 mb-2">
             <h1>Participantes</h1>
           </div>
           <div className="flex flex-col gap-3">

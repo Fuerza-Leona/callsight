@@ -12,6 +12,7 @@ interface ApiResponse {
   messages: SpecificCall['messages'];
   participants: SpecificCall['participants'];
   company: SpecificCall['company'];
+  rating: SpecificCall['rating'];
 }
 
 export const useSpecificCall = () => {
