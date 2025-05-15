@@ -1,6 +1,6 @@
 'use client';
 import ProtectedRoute from '@/components/ProtectedRoute';
-//import { useUser } from '@/context/UserContext';
+import { useUser } from '@/context/UserContext';
 import MultipleSelectChip from '@/components/MultipleSelectChip';
 import { useEffect, useState } from 'react';
 import {
@@ -16,7 +16,7 @@ import { useFetchCompanies } from '@/hooks/fetchCompanies';
 import { useUsers } from '@/hooks/useUsers';
 
 export default function Home() {
-  //const { user } = useUser();
+  const { user } = useUser();
 
   const { getUsers, data: users, loading } = useUsers();
 
@@ -51,12 +51,14 @@ export default function Home() {
               onChange={(e) => setSearch(e.target.value)}
               className="w-full"
             />
-            <button
-              className="rounded-2xl bg-[#13202A] text-white md:w-50 hover:cursor-pointer hover:bg-[#364550]"
-              onClick={() => (window.location.href = '/clients/clientCompany')}
-            >
-              Añadir cliente
-            </button>
+            {user && user!.role == 'admin' && (
+              <button
+                className="rounded-2xl bg-[#13202A] text-white md:w-50 hover:cursor-pointer hover:bg-[#364550]"
+                onClick={() => (window.location.href = '/users/nuevo')}
+              >
+                Añadir usuario
+              </button>
+            )}
           </div>
           {loading ? (
             <div className="flex justify-center items-center w-full h-[400px]">
