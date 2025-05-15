@@ -2,26 +2,28 @@
 
 import { useState } from 'react';
 import api from '@/utils/api';
+import { UUID } from 'crypto';
 
-export interface HistoryChat {
-  chatbot_conversation_id: string;
-  title: string;
+export interface Users {
+  user_id: UUID;
+  username: string;
+  email: string;
+  role: string;
+  company_id: UUID;
 }
 
-export const usePrevChatsHistory = () => {
-  const [data, setData] = useState<HistoryChat[] | null>(null);
+export const useUsers = () => {
+  const [data, setData] = useState<Users[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const getChats = async () => {
+  const getUsers = async () => {
     setLoading(true);
     setError(null);
 
     try {
       //Request with Auth header
-      const response = await api.get<HistoryChat[]>('/chatbot/all_chats');
-
-      console.log('previous chats history response:', response.data);
+      const response = await api.get<Users[]>('users');
       setData(response.data);
     } catch {
       setError('An unexpected error occurred.');
@@ -31,5 +33,5 @@ export const usePrevChatsHistory = () => {
     }
   };
 
-  return { getChats, data, loading, error };
+  return { getUsers, data, loading, error };
 };

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useCompanies } from '@/hooks/useCompanies';
 import { useRouter } from 'next/navigation';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { CircularProgress } from '@mui/material';
 
 // Definimos interfaces para los diferentes formatos de datos
 interface BaseCompany {
@@ -47,8 +49,8 @@ const CompaniesPage = () => {
   };
 
   // Función que maneja el clic en el botón para ir a la página de tickets
-  const handleCardClick = (companyId: string) => {
-    router.push(`/support?company_id=${companyId}`); // Redirige a la página de tickets
+  const handleCardClick = (companyId: string, companyName: string) => {
+    router.push(`/support?company_id=${companyId}&company_name=${companyName}`); // Redirige a la página de tickets
   };
 
   // Normalize all companies data
@@ -65,107 +67,104 @@ const CompaniesPage = () => {
       : normalizedCompanies;
 
   return (
-    <div className="pl-70 pt-32 pr-5">
-      {/* Título principal */}
-      <h1
-        className="text-7xl font-bold text-center"
-        style={{ color: 'var(--neoris-blue)' }}
-      >
-        Soporte a Clientes
-      </h1>
-
-      {/* Fila con search bar a la izquierda, solo si hay 2+ empresas */}
-      {normalizedCompanies.length > 1 && (
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <input
-              type="text"
-              placeholder=" 🔍 Buscar empresa..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-[500px] p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Texto descriptivo */}
-      <p className="text-center text-base text-gray-700 mb-8">
-        Selecciona un cliente para ir a su apartado de tickets:
-      </p>
-
-      {/* Lista de empresas */}
+    <ProtectedRoute>
       {loading ? (
-        <p>⏳ Loading companies...</p>
-      ) : error ? (
-        <p>❌ Error fetching companies: {error}</p>
-      ) : filteredCompanies && filteredCompanies.length > 0 ? (
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '24px',
-          }}
-        >
-          {filteredCompanies.map((company) => (
-            <button
-              key={company.company_id}
-              onClick={() => handleCardClick(company.company_id)}
-              style={{
-                backgroundColor: '#87CEEB',
-                borderRadius: '10px',
-                padding: '20px',
-                flex: '1 0 calc(25% - 24px)',
-                maxWidth: 'calc(25% - 24px)',
-                height: '320px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-                transition: 'transform 0.2s ease-in-out',
-                cursor: 'pointer',
-                textAlign: 'center',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <Image
-                src={company.logo}
-                alt={company.name}
-                width={0} // Will be overridden by style
-                height={0} // Will be overridden by style
-                style={{
-                  width: '80%',
-                  maxHeight: '130px',
-                  objectFit: 'contain',
-                }}
-                sizes="(max-width: 768px) 80vw, 80%"
-              />
-              <p
-                style={{
-                  marginTop: '16px',
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  fontSize: '18px',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {company.name}
-              </p>
-            </button>
-          ))}
+        <div className="pl-70 flex justify-center items-center w-full h-screen">
+          <CircularProgress size={100} />
         </div>
       ) : (
-        <p className="text-center text-gray-500">
-          😕 No se encontraron empresas.
-        </p>
+        <div className="pl-70 py-10 w-[calc(100%)]">
+          {/* Título principal */}
+          <h1
+            className="text-7xl font-bold text-center"
+            style={{ color: 'var(--neoris-blue)' }}
+          >
+            Soporte a Clientes
+          </h1>
+
+          {/* Fila con search bar a la izquierda, solo si hay 2+ empresas */}
+          {normalizedCompanies.length > 1 && (
+            <div className="flex items-center justify-between mb-6 items-center text-center justify-center">
+              <div>
+                <input
+                  type="text"
+                  placeholder=" Buscar empresa..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-[400px] mt-5 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Texto descriptivo */}
+          <p className="text-center text-base text-gray-700 my-8">
+            Selecciona una empresa para ir a su apartado de tickets:
+          </p>
+
+          {/* Lista de empresas */}
+          {error ? (
+            <p>Error: {error}</p>
+          ) : filteredCompanies && filteredCompanies.length > 0 ? (
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '24px',
+              }}
+            >
+              {filteredCompanies.map((company) => (
+                <button
+                  key={company.company_id}
+                  onClick={() =>
+                    handleCardClick(company.company_id, company.name)
+                  }
+                  style={{
+                    backgroundColor: '#87CEEB',
+                    borderRadius: '10px',
+                    padding: '20px',
+                    flex: '1 0 calc(25% - 24px)',
+                    maxWidth: 'calc(25% - 24px)',
+                    height: '200px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+                    transition: 'transform 0.2s ease-in-out',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  <Image
+                    src={company.logo}
+                    alt={company.name}
+                    width={0} // Will be overridden by style
+                    height={0} // Will be overridden by style
+                    style={{
+                      width: '80%',
+                      maxHeight: '130px',
+                      objectFit: 'contain',
+                    }}
+                    sizes="(max-width: 768px) 80vw, 80%"
+                  />
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500">
+              No se encontraron empresas.
+            </p>
+          )}
+        </div>
       )}
-    </div>
+    </ProtectedRoute>
   );
 };
 

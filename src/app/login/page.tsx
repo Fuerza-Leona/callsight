@@ -1,11 +1,9 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRef, useState } from 'react';
 import { useLogin } from '@/hooks/useLogin';
 
 export default function Home() {
-  const router = useRouter();
   const formRef = useRef(null);
 
   const [form, setForm] = useState({
@@ -13,7 +11,7 @@ export default function Home() {
     password: '',
   });
 
-  const { login, data, error, loading } = useLogin(); // Using the custom hook
+  const { login, error, loading } = useLogin();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,39 +20,17 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!form.email || !form.password) {
+      console.log('Todos los campos son requeridos');
+      return;
+    }
 
-    // Perform login
-    await login(form.email, form.password);
+    try {
+      await login(form.email, form.password);
+    } catch (err) {
+      console.error('Error during login:', err);
+    }
   };
-
-  // Handle successful login
-  useEffect(() => {
-    const handleSession = async () => {
-      if (data) {
-        try {
-          // Send login response to session API to set cookie
-          const sessionResponse = await fetch('/api/session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data), // include access_token, refresh_token, user
-          });
-
-          if (sessionResponse.ok) {
-            setTimeout(() => {
-              router.push('/perfil');
-            }, 100); // wait 100ms before pushing
-          } else {
-            console.error('Failed to set session cookie');
-          }
-        } catch (err) {
-          console.error('Session error:', err);
-        }
-      }
-    };
-
-    handleSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
 
   return (
     <div className="relative w-full min-h-screen flex flex-col items-center text-center justify-center">
@@ -99,7 +75,7 @@ export default function Home() {
                 disabled={loading}
                 className="inline-block px-5 py-3 rounded-[2.4rem] text-base bg-[#13202A] text-white border-2 tracking-[0.06rem] font-semibold transition duration-300 ease-in-out cursor-pointer"
               >
-                {loading ? 'Cargando...' : 'Log In'}
+                {loading ? 'Cargando...' : 'Iniciar sesión'}
               </button>
             </div>
             {error && <p className="text-red-500 mt-2 absolute">{error}</p>}

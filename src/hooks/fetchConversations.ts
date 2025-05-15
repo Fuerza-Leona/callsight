@@ -1,11 +1,12 @@
 'use client';
 
-import axios from 'axios';
 import { useState } from 'react';
-import { apiUrl } from '@/constants';
+import api from '@/utils/api';
 
 export interface Conversation {
   conversation_id: string;
+  company: string;
+  participants: number;
   start_time: string;
   end_time: string;
   category: string;
@@ -17,7 +18,8 @@ interface ConversationsResponse {
 
 interface FetchConversationsParams {
   clients: string[] | null;
-  categories: string[] | null;
+  agents: string[] | null;
+  companies: string[] | null;
   startDate: string | null;
   endDate: string | null;
   conversation_id: string | null;
@@ -32,34 +34,23 @@ export const useFetchConversations = () => {
     setLoading(true);
     setError('');
     try {
-      const tokenResponse = await axios.get('/api/getToken', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
       const requestBody = {
         ...(params?.startDate && { startDate: params.startDate }),
         ...(params?.endDate && { endDate: params.endDate }),
         ...(params?.clients &&
           params.clients.length > 0 && { clients: params.clients }),
-        ...(params?.categories &&
-          params.categories.length > 0 && { categories: params.categories }),
+        ...(params?.agents &&
+          params.agents.length > 0 && { agents: params.agents }),
+        ...(params?.companies &&
+          params.companies.length > 0 && { companies: params.companies }),
         ...(params?.conversation_id && {
           conversation_id: params.conversation_id,
         }),
       };
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.data.user}`,
-          'Content-Type': 'application/json',
-          withCredentials: true,
-        },
-      };
-
-      const conversationsResponse = await axios.post<ConversationsResponse>(
-        `${apiUrl}/conversations/mine`,
-        requestBody,
-        config
+      const conversationsResponse = await api.post<ConversationsResponse>(
+        '/conversations/mine',
+        requestBody
       );
 
       setConversations(conversationsResponse.data?.conversations || []);

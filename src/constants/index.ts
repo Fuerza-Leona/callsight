@@ -43,19 +43,29 @@ export const sideNavLinksAgent: NavLink[] = [
     href: 'calls/upload',
   },
   {
-    id: 4,
-    name: 'Mi perfil',
-    href: 'perfil',
+    id: 5,
+    name: 'Soporte',
+    href: 'companies',
   },
   {
-    id: 5,
-    name: 'Support',
-    href: 'companies',
+    id: 7,
+    name: 'Clientes',
+    href: 'clients',
+  },
+  {
+    id: 8,
+    name: 'Usuarios',
+    href: 'users',
   },
   {
     id: 6,
     name: 'Chatbot',
     href: 'chatbot',
+  },
+  {
+    id: 4,
+    name: 'Mi perfil',
+    href: 'perfil',
   },
 ];
 
@@ -63,7 +73,7 @@ export const sideNavLinksClient: NavLink[] = [
   {
     id: 1,
     name: 'Análisis de llamada',
-    href: 'calls/dashboard',
+    href: 'calls/search',
   },
   {
     id: 2,
@@ -77,7 +87,7 @@ export const sideNavLinksClient: NavLink[] = [
   },
   {
     id: 4,
-    name: 'Support',
+    name: 'Soporte',
     href: 'companies',
   },
 ];
