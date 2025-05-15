@@ -155,7 +155,7 @@ const ChatbotInner = () => {
     <>
       {!loading && !error && (
         <div
-          className={`relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 ${hasSent ? 'lg:pt-[50px]' : 'lg:pt-[150px]'}`}
+          className={`relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 ${hasSent ? 'lg:pt-[50px]' : 'lg:pt-[80px]'}`}
         >
           {!hasSent && (
             <div className="text-5xl font-bold px-10">
