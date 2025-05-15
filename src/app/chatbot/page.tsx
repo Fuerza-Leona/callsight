@@ -252,12 +252,10 @@ const ChatbotInner = () => {
 
 export default function Page() {
   return (
-    <ProtectedRoute>
       <Suspense
         fallback={<div className="text-white p-10">Cargando chatbot...</div>}
       >
         <ChatbotInner />
       </Suspense>
-    </ProtectedRoute>
   );
 }
