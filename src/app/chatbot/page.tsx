@@ -1,6 +1,5 @@
 'use client';
 import React, { Suspense, useEffect, useState } from 'react';
-import MultilineTextFields from '@/components/MultilineTextFields';
 import SuggestedPrompt from '@/components/SuggestedPrompt';
 import TextBubble from '@/components/TextBubble';
 import { useChatbot } from '@/hooks/useChatbot';
@@ -13,7 +12,7 @@ import {
 } from '@/hooks/useChatbotConversationHistory';
 import { useChatbotConversation } from '@/hooks/useChatbotConversation';
 import { useUser } from '@/context/UserContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ChatbotTextField from '@/components/ChatbotTextField';
 
 const formatSteps = (text: string): string[] => {
   //Enumarate steps if response has them
@@ -156,7 +155,7 @@ const ChatbotInner = () => {
     <>
       {!loading && !error && (
         <div
-          className={`relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 ${hasSent ? 'lg:pt-[50px]' : 'lg:pt-[150px]'}`}
+          className={`relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 ${hasSent ? 'lg:pt-[50px]' : 'lg:pt-[80px]'}`}
         >
           {!hasSent && (
             <div className="text-5xl font-bold px-10">
@@ -215,7 +214,7 @@ const ChatbotInner = () => {
             </div>
           )}
           <div className="w-full flex flex-col justify-center items-center h-full my-10">
-            <MultilineTextFields
+            <ChatbotTextField
               label=""
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -253,12 +252,10 @@ const ChatbotInner = () => {
 
 export default function Page() {
   return (
-    <ProtectedRoute>
       <Suspense
         fallback={<div className="text-white p-10">Cargando chatbot...</div>}
       >
         <ChatbotInner />
       </Suspense>
-    </ProtectedRoute>
   );
 }
