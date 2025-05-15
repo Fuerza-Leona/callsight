@@ -1,6 +1,5 @@
 'use client';
 import React, { Suspense, useEffect, useState } from 'react';
-import MultilineTextFields from '@/components/MultilineTextFields';
 import SuggestedPrompt from '@/components/SuggestedPrompt';
 import TextBubble from '@/components/TextBubble';
 import { useChatbot } from '@/hooks/useChatbot';
@@ -13,6 +12,7 @@ import {
 } from '@/hooks/useChatbotConversationHistory';
 import { useChatbotConversation } from '@/hooks/useChatbotConversation';
 import { useUser } from '@/context/UserContext';
+import ChatbotTextField from '@/components/ChatbotTextField';
 
 const formatSteps = (text: string): string[] => {
   //Enumarate steps if response has them
@@ -214,7 +214,7 @@ const ChatbotInner = () => {
             </div>
           )}
           <div className="w-full flex flex-col justify-center items-center h-full my-10">
-            <MultilineTextFields
+            <ChatbotTextField
               label=""
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
