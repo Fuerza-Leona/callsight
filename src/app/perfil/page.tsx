@@ -1,13 +1,13 @@
 'use client';
-import { useEffect, useState } from 'react';
-import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTable';
-import SearchBar from '@/components/SearchBar';
+import { useState, useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
 import { useFetchProfile } from '@/hooks/fetchPerfil';
-import { useFetchCompanyInformation } from '@/hooks/fetchCompanyInformation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import LogoutButton from '@/components/LogoutButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useFetchCompanyInformation } from '@/hooks/fetchCompanyInformation';
+import SearchBar from '@/components/SearchBar';
+import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTable';
 
 /*const rows = [
   { name: 'BBVA', usuarios: 30, proyectos: 3 },
@@ -42,8 +42,7 @@ export default function Home() {
     fetchProfile,
     loading: loadingProfile,
   } = useFetchProfile();
-  const { rows, loading, fetchCompanyInformation } =
-    useFetchCompanyInformation();
+  const { rows, loading } = useFetchCompanyInformation();
   const name = user?.username;
 
   const company = user?.department;
@@ -63,7 +62,6 @@ export default function Home() {
 
   useEffect(() => {
     fetchProfile();
-    fetchCompanyInformation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
