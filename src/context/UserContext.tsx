@@ -23,7 +23,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const response = await api.get('users/me');
         setUser(response.data.user);
-        if (window.location.pathname === '/') {
+        if (
+          window.location.pathname === '/' ||
+          window.location.pathname === '/login'
+        ) {
           router.push('/perfil');
         } else {
           router.push(window.location.pathname + window.location.search);
