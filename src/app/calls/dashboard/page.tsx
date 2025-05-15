@@ -157,7 +157,7 @@ export default function Home() {
                 style={{ backgroundColor: 'var(--neoris-blue)' }}
               >
                 <p className="">
-                  Buscar Llamadas <SearchIcon />
+                  Buscar conversación <SearchIcon />
                 </p>
               </div>
             </Link>

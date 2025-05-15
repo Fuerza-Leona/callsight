@@ -94,6 +94,8 @@ const SideNavItems = () => {
             const isActive =
               (name === 'Análisis de llamada' &&
                 pathname.includes('/calls/search')) ||
+              pathname.includes('/calls/detail') ||
+              (name === 'Soporte' && pathname.includes('/support')) ||
               pathname.includes(`/${href}`);
 
             return (
@@ -128,7 +130,9 @@ const SideNavItems = () => {
           {sideNavLinksAgent.map(({ id, href, name }) => {
             const isActive =
               (name === 'Análisis de llamada' &&
-                pathname.includes('/calls/search')) ||
+                (pathname.includes('/calls/search') ||
+                  pathname.includes('/calls/detail'))) ||
+              (name === 'Soporte' && pathname.includes('/support')) ||
               pathname.includes(`/${href}`);
 
             return (
