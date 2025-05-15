@@ -1,10 +1,13 @@
 'use client';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
 import { useFetchProfile } from '@/hooks/fetchPerfil';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import LogoutButton from '@/components/LogoutButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useFetchCompanyInformation } from '@/hooks/fetchCompanyInformation';
+import SearchBar from '@/components/SearchBar';
+import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTable';
 
 /*const rows = [
   { name: 'BBVA', usuarios: 30, proyectos: 3 },
@@ -20,6 +23,12 @@ import CircularProgress from '@mui/material/CircularProgress';
   { name: 'Cajamar', usuarios: 22, proyectos: 9 },
 ];*/
 
+const columns = [
+  { label: 'Cliente', key: 'name' },
+  { label: 'Usuarios', key: 'size' },
+  //{ label: 'Proyectos', key: 'proyectos' },
+];
+
 //Client
 const nProyects = 1;
 const tickets = 21;
@@ -33,12 +42,23 @@ export default function Home() {
     fetchProfile,
     loading: loadingProfile,
   } = useFetchProfile();
-  const { rows, loading, fetchCompanyInformation } =
-    useFetchCompanyInformation();
+  const { rows, loading } = useFetchCompanyInformation();
   const name = user?.username;
 
   const company = user?.department;
   const userRole = user?.role;
+
+  const [filteredRows, setFilteredRows] = useState(rows);
+  const handleSearch = (searchValue: string | null) => {
+    if (!searchValue || searchValue.length === 0) {
+      setFilteredRows(rows);
+    } else {
+      const filtered = rows.filter((row) =>
+        row['name'].toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredRows(filtered);
+    }
+  };
 
   useEffect(() => {
     fetchProfile();
