@@ -108,7 +108,7 @@ export default function Home() {
             {!loadingCompanies && (
               <div className="flex justify-between gap-5">
                 <SearchBar
-                  label="Buscar Compañía"
+                  label="Buscar Empresa"
                   options={companies.map((row) => ({
                     label: row.name,
                   }))}

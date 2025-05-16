@@ -49,7 +49,7 @@ export const sideNavLinksAgent: NavLink[] = [
   },
   {
     id: 7,
-    name: 'Clientes',
+    name: 'Empresas',
     href: 'clients',
   },
   {
