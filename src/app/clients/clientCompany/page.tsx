@@ -85,7 +85,7 @@ export default function Home() {
                 className="rounded-2xl bg-[#13202A] text-white md:w-50 h-15 hover:cursor-pointer hover:bg-[#364550]"
                 onClick={() => handleSubmit()}
               >
-                Submit
+                Guardar
               </button>
             </div>
           </div>

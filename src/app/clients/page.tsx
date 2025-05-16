@@ -12,7 +12,7 @@ export default function Home() {
   const { rows, loading, fetchCompanyInformation } =
     useFetchCompanyInformation();
   const columns = [
-    { label: 'Cliente', key: 'name' },
+    { label: 'Empresa', key: 'name' },
     { label: 'Usuarios', key: 'size' },
     //{ label: 'Proyectos', key: 'proyectos' },
   ];
@@ -39,7 +39,7 @@ export default function Home() {
             {!loading && (
               <div className="flex justify-between gap-5">
                 <SearchBar
-                  label="Buscar Cliente"
+                  label="Buscar Empresa"
                   options={rows.map((row) => ({ label: row.name }))}
                   onSelect={handleSearch}
                   sx={{ width: '100%' }}
@@ -50,7 +50,7 @@ export default function Home() {
                     (window.location.href = '/clients/clientCompany')
                   }
                 >
-                  Añadir cliente
+                  Añadir empresa
                 </button>
               </div>
             )}
