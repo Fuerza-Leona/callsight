@@ -1,5 +1,5 @@
 'use client';
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import SuggestedPrompt from '@/components/SuggestedPrompt';
 import TextBubble from '@/components/TextBubble';
 import { useChatbot } from '@/hooks/useChatbot';
@@ -130,8 +130,13 @@ const ChatbotInner = () => {
     string | null
   >(null);
 
+  const initializedRef = useRef(false);
+
   useEffect(() => {
-    getSuggestions();
+    if (!initializedRef.current) {
+      getSuggestions();
+      initializedRef.current = true;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
