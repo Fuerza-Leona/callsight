@@ -6,6 +6,7 @@ import api from '@/utils/api';
 interface ApiResponse {
   response: string;
   conversation_id: string;
+  title: string;
 }
 
 export const useChatbot = () => {

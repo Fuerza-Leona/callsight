@@ -30,6 +30,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import TicketMessagesList from '@/components/TicketMessagesList';
 import { UUID } from 'crypto';
 import { useEmployees } from '@/hooks/useEmployees';
+import { useUser } from '@/context/UserContext';
 
 const Tickets = () => {
   const [textFieldHeight, setTextFieldHeight] = useState(500);
@@ -47,6 +48,9 @@ const Tickets = () => {
   const companyId = searchParams.get('company_id');
   const companyName = searchParams.get('company_name') || 'Cliente';
 
+  const { user } = useUser();
+
+  console.log(textFieldHeight);
   // Custom hooks for tickets and messages
   const {
     tickets,
@@ -184,15 +188,17 @@ const Tickets = () => {
         </div>
       }
     >
-      <div className="relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 lg:pt-[150px]">
+      <div className="relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-10">
         {/* 🔙 Botón de Regresar */}
         <div className="pl-3 mb-4">
-          <button
-            className="bg-[#13202A] text-white px-4 py-2 rounded-lg hover:bg-[#1b2c3d] transition-colors"
-            onClick={() => router.push('/companies')}
-          >
-            ← Regresar
-          </button>
+          {user?.role != 'client' && (
+            <button
+              className="bg-[#13202A] text-white px-4 py-2 rounded-lg hover:bg-[#1b2c3d] transition-colors cursor-pointer"
+              onClick={() => router.push('/companies')}
+            >
+              ← Regresar
+            </button>
+          )}
         </div>
 
         {/* 🧾 Título centrado */}
@@ -248,7 +254,7 @@ const Tickets = () => {
               sx={{
                 flexGrow: 1,
                 overflowY: 'auto',
-                maxHeight: 'calc(100vh - 350px)',
+                height: 'calc(100vh - 350px)',
               }}
             >
               {loadingTickets ? (
@@ -313,7 +319,7 @@ const Tickets = () => {
           <Box
             sx={{
               width: 'calc(100% - 420px)',
-              height: `${textFieldHeight}px`,
+              height: 'calc(100vh - 300px)',
               display: 'flex',
               flexDirection: 'column',
               bgcolor: 'white',
