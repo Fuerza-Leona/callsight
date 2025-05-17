@@ -4,8 +4,8 @@ import SuggestedPrompt from '@/components/SuggestedPrompt';
 import TextBubble from '@/components/TextBubble';
 import { useChatbot } from '@/hooks/useChatbot';
 import { useSuggestedPrompts } from '@/hooks/useSuggestedPrompts';
-
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import {
   ChatMessage,
   useChatbotConversationHistoryHistory,
@@ -14,6 +14,7 @@ import { useChatbotConversation } from '@/hooks/useChatbotConversation';
 import { useUser } from '@/context/UserContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ChatBotText from '@/components/ChatBotText';
+import { usePrevChatsHistory } from '@/hooks/usePrevChatsHistory';
 
 const formatSteps = (text: string): string[] => {
   //Enumarate steps if response has them
@@ -22,6 +23,77 @@ const formatSteps = (text: string): string[] => {
 
   //Else try to split into paragraphs
   return text.split(/(?<=[.?!])\s+(?=[A-ZÁÉÍÓÚ])/).filter(Boolean);
+};
+
+const ChatHistorySidebar = () => {
+  const {
+    getChats,
+    data: getChatsData,
+    loading: getChatsLoading,
+    error: getChatsError,
+  } = usePrevChatsHistory();
+
+  useEffect(() => {
+    getChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const searchParams = useSearchParams();
+  const activeConversationId = searchParams.get('conversation_id');
+
+  return (
+    <div className="fixed right-8 top-12 bottom-12 w-64 bg-white shadow-lg rounded-xl z-10 p-6 hidden lg:block border border-gray-200">
+      <div className="flex flex-col h-full">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-2">
+            Historial de chats
+          </h2>
+          <button
+            onClick={() => {
+              window.location.href = '/chatbot';
+            }}
+            className="block w-full py-2 px-4 bg-blue-600 text-white rounded-md text-center hover:bg-blue-700 transition-colors"
+          >
+            Nuevo chat
+          </button>
+        </div>
+
+        <div className="overflow-y-auto flex-grow pr-4">
+          {getChatsLoading && (
+            <div className="flex flex-col items-center py-5">
+              <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+              <p className="text-sm text-gray-500 mt-2">Cargando chats...</p>
+            </div>
+          )}
+
+          {getChatsError && (
+            <p className="text-red-500 text-center">Error cargando historial</p>
+          )}
+
+          <ul className="space-y-2">
+            {getChatsData?.map(({ chatbot_conversation_id, title }) => {
+              const isActive = activeConversationId === chatbot_conversation_id;
+
+              return (
+                <li key={chatbot_conversation_id}>
+                  <Link
+                    href={`/chatbot?conversation_id=${chatbot_conversation_id}`}
+                    className={`block px-3 py-2 rounded-md ${
+                      isActive
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    } transition-colors text-sm break-words`}
+                  >
+                    {title.replace(/^"|"$/g, '')}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const ChatbotInner = () => {
@@ -159,12 +231,13 @@ const ChatbotInner = () => {
 
   return (
     <>
+      <ChatHistorySidebar />
       {!loading && !error && (
         <div
-          className={`relative w-full min-h-screen flex flex-col lg:pl-[256px]  ${hasSent ? 'lg:pt-[50px]' : 'lg:pt-[50px]'}`}
+          className={`relative w-full min-h-screen flex flex-col lg:pl-[256px] lg:pr-[300px]`}
         >
           {!hasSent && (
-            <div className="text-5xl font-bold px-10">
+            <div className="text-5xl font-bold pt-10 px-10">
               <p>Hola {name}.</p>
               <p>¿Qué te gustaría hacer?</p>
             </div>
@@ -196,14 +269,14 @@ const ChatbotInner = () => {
           )}
           {!hasSent && loadingPrompts && (
             <div className="">
-              <div className="relative w-full flex flex-col pt-[140px] md:pt-28 lg:h-[350px] items-center text-center">
+              <div className="relative w-full flex flex-col pt-[140px] md:pt-28 lg:h-[400px] items-center text-center">
                 <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
                 <p className="text-lg text-gray-600">Cargando sugerencias...</p>
               </div>
             </div>
           )}
           {hasSent && (
-            <div className="flex flex-col justify-start gap-10 p-20 min-h-[32rem] h-[32rem] overflow-scroll">
+            <div className="flex flex-col justify-start gap-10 p-20 h-[35vh] sm:h-[45vh] md:h-[55vh] lg:h-[65vh] overflow-auto">
               {messages.map((msg, i) => (
                 <TextBubble
                   key={i}
@@ -219,7 +292,7 @@ const ChatbotInner = () => {
               )}
             </div>
           )}
-          <div className="w-full flex flex-col justify-center items-center h-full my-10">
+          <div className="w-full flex flex-col justify-center items-center h-full mt-10">
             <ChatBotText
               label=""
               value={inputText}
@@ -245,7 +318,7 @@ const ChatbotInner = () => {
         </div>
       )}
       {loading && (
-        <div className="relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 lg:pt-[400px]">
+        <div className="relative w-full min-h-screen flex flex-col lg:pl-[256px] lg:pr-[256px] pt-[140px] md:pt-28 lg:pt-[400px]">
           <div className="flex flex-col items-center gap-4">
             <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
             <p className="text-lg text-gray-600">Cargando respuesta...</p>
