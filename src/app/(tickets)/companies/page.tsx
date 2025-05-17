@@ -5,6 +5,7 @@ import { useCompanies } from '@/hooks/useCompanies';
 import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { CircularProgress } from '@mui/material';
+import { useUser } from '@/context/UserContext';
 
 // Definimos interfaces para los diferentes formatos de datos
 interface BaseCompany {
@@ -28,6 +29,13 @@ const CompaniesPage = () => {
   const { companies, loading, error } = useCompanies();
   const [search, setSearch] = useState('');
   const router = useRouter();
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user?.role === 'client') {
+      router.push(`/support?company_id=${user?.company_id}`);
+    }
+  }, [user, router]);
 
   useEffect(() => {
     console.log('🧭 You are in CompaniesPage and hook has been called.');
@@ -67,7 +75,7 @@ const CompaniesPage = () => {
       : normalizedCompanies;
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['client', 'agent', 'admin']}>
       {loading ? (
         <div className="pl-70 flex justify-center items-center w-full h-screen">
           <CircularProgress size={100} />
@@ -143,7 +151,10 @@ const CompaniesPage = () => {
                   }}
                 >
                   <Image
-                    src={company.logo}
+                    src={
+                      company.logo ||
+                      'https://static.thenounproject.com/png/1738131-200.png'
+                    }
                     alt={company.name}
                     width={0} // Will be overridden by style
                     height={0} // Will be overridden by style

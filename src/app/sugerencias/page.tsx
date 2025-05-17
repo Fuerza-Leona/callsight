@@ -2,6 +2,7 @@
 
 import React, { useState, ChangeEvent } from 'react';
 import { Search } from 'lucide-react';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 interface Observation {
   client: string;
@@ -104,30 +105,36 @@ const Observaciones: React.FC = () => {
   });
 
   return (
-    <div className="pl-35">
-      <div className="max-w-[90rem] mx-auto p-4 space-y-6">
-        <header className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <h1 className="flex-1 text-3xl font-bold text-center sm:text-left bg-slate-900 text-white py-2 rounded-lg">
-            Observaciones
-          </h1>
-          <label className="relative flex items-center w-full sm:w-64">
-            <Search className="absolute left-3 h-5 w-5 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Buscar"
-              value={query}
-              onChange={handleChange}
-              className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-            />
-          </label>
-        </header>
-        <div className="flex flex-col gap-6">
-          {filtered.map((obs, idx) => (
-            <ObservationCard key={obs.client} data={obs} even={idx % 2 === 0} />
-          ))}
+    <ProtectedRoute allowedRoles={['admin', 'agent']}>
+      <div className="pl-35">
+        <div className="max-w-[90rem] mx-auto p-4 space-y-6">
+          <header className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <h1 className="flex-1 text-3xl font-bold text-center sm:text-left bg-slate-900 text-white py-2 rounded-lg">
+              Observaciones
+            </h1>
+            <label className="relative flex items-center w-full sm:w-64">
+              <Search className="absolute left-3 h-5 w-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Buscar"
+                value={query}
+                onChange={handleChange}
+                className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
+              />
+            </label>
+          </header>
+          <div className="flex flex-col gap-6">
+            {filtered.map((obs, idx) => (
+              <ObservationCard
+                key={obs.client}
+                data={obs}
+                even={idx % 2 === 0}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 };
 

@@ -134,7 +134,7 @@ export default function Home() {
   };
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['admin', 'agent']}>
       {/* Top Bar */}
       <div className="relative lg:left-64 pt-10 w-full lg:w-[calc(100%-17rem)] pl-3 pr-3">
         <div className="flex flex-col md:flex-row items-center justify-between mb-6">

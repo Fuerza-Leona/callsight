@@ -31,7 +31,7 @@ export default function Home() {
   }, []);
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['admin']}>
       <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3  pl-3">
         <div className="w-3/10 flex flex-col align-center text-center gap-2">
           <MultipleSelectChip
