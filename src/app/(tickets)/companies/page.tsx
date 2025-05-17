@@ -151,7 +151,10 @@ const CompaniesPage = () => {
                   }}
                 >
                   <Image
-                    src={company.logo}
+                    src={
+                      company.logo ||
+                      'https://static.thenounproject.com/png/1738131-200.png'
+                    }
                     alt={company.name}
                     width={0} // Will be overridden by style
                     height={0} // Will be overridden by style
