@@ -93,8 +93,8 @@ const SideNavItems = () => {
           {sideNavLinksClient.map(({ id, href, name }) => {
             const isActive =
               (name === 'Análisis de llamada' &&
-                pathname.includes('/calls/search')) ||
-              pathname.includes('/calls/detail') ||
+                (pathname.includes('/calls/search') ||
+                  pathname.includes('/calls/detail'))) ||
               (name === 'Soporte' && pathname.includes('/support')) ||
               pathname.includes(`/${href}`);
 

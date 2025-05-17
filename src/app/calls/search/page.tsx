@@ -135,7 +135,7 @@ export default function Home() {
   };
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['admin', 'agent', 'client']}>
       <div className="relative lg:left-64 top-8 w-[96%] lg:w-[calc(100%-17rem)]  flex flex-col md:justify-around md:flex-row gap-3  pl-3">
         <div className="flex flex-col align-center text-center gap-2">
           <button

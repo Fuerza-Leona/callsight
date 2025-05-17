@@ -258,7 +258,7 @@ const ChatbotInner = () => {
 
 export default function Page() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['client', 'agent', 'admin']}>
       <Suspense
         fallback={<div className="text-white">Cargando chatbot...</div>}
       >

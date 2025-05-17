@@ -328,7 +328,7 @@ function CallDetail() {
 
 export default function LlamadaPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['client', 'agent', 'admin']}>
       <Suspense fallback={<div className="p-4 text-center">Cargando...</div>}>
         <CallDetail />
       </Suspense>

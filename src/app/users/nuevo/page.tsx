@@ -58,7 +58,7 @@ export default function Home() {
   };
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['admin']}>
       <div className="relative lg:left-64 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3 pl-3">
         <div className="w-full flex flex-col">
           <div className="flex flex-col w-full gap-5 md:ml-10 p-30">

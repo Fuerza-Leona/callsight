@@ -67,7 +67,7 @@ const CompaniesPage = () => {
       : normalizedCompanies;
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['client', 'agent', 'admin']}>
       {loading ? (
         <div className="pl-70 flex justify-center items-center w-full h-screen">
           <CircularProgress size={100} />
