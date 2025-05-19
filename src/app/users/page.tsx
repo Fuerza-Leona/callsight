@@ -25,6 +25,22 @@ export default function Home() {
   const [search, setSearch] = useState<string>('');
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
 
+  const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
+
+  const handleFilter = (companies: string[]) => {
+    setSelectedCompanies(companies);
+  }
+
+  useEffect(() => {
+    setFilteredUsers(users)
+    if (selectedCompanies.length > 0) {
+      const selectedCompaniesIds = companies.filter((company) => selectedCompanies.includes(company.name)).map((company) => company.company_id);
+      setFilteredUsers(users.filter((user) => selectedCompaniesIds.includes(user.company_id)));
+    }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCompanies, users])
+
   useEffect(() => {
     getUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +55,7 @@ export default function Home() {
             names={companies.map((company) => company.name)}
             value={selectedCompanies}
             onChange={(e) => {
-              setSelectedCompanies([...e]);
+              handleFilter([...e]);
             }}
           />
         </div>
@@ -100,9 +116,9 @@ export default function Home() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users &&
+                  {filteredUsers &&
                     !loading &&
-                    users.map((person) => (
+                    filteredUsers.map((person) => (
                       <TableRow
                         key={person.user_id}
                         //onClick={() => handleClick(conversation.conversation_id)}
