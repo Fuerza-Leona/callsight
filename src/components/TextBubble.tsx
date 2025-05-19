@@ -27,7 +27,7 @@ const TextBubble = ({ message, isUser = false }: Props) => {
       <ReactMarkdown
         components={{
           p: ({ children }) => (
-            <Typography variant="body1" sx={{ mb: 2 }}>
+            <Typography variant="body1" sx={{ mb: 1 }}>
               {children}
             </Typography>
           ),
