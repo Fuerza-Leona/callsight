@@ -1,6 +1,8 @@
 import React from 'react';
 import Paper from '@mui/material/Paper';
+import ReactMarkdown from 'react-markdown';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 type Props = {
   message: string;
@@ -19,9 +21,40 @@ const TextBubble = ({ message, isUser = false }: Props) => {
         alignSelf: isUser ? 'flex-end' : 'flex-start',
         maxWidth: '75%',
         my: 1,
+        overflowWrap: 'break-word',
       }}
     >
-      <Typography sx={{ whiteSpace: 'pre-wrap' }}>{message}</Typography>
+      <ReactMarkdown
+        components={{
+          p: ({ children }) => (
+            <Typography variant="body1" sx={{ mb: 2 }}>
+              {children}
+            </Typography>
+          ),
+          strong: ({ children }) => (
+            <strong style={{ fontWeight: 700 }}>{children}</strong>
+          ),
+          li: ({ children }) => (
+            <li>
+              <Typography component="span" variant="body1">
+                {children}
+              </Typography>
+            </li>
+          ),
+          ul: ({ children }) => (
+            <Box component="ul" sx={{ pl: 3, mb: 2 }}>
+              {children}
+            </Box>
+          ),
+          ol: ({ children }) => (
+            <Box component="ol" sx={{ pl: 3, mb: 2 }}>
+              {children}
+            </Box>
+          ),
+        }}
+      >
+        {message}
+      </ReactMarkdown>
     </Paper>
   );
 };
