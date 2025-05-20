@@ -37,6 +37,7 @@ export default function UserDetail() {
 
   useEffect(() => {
     fetchUserInformation(userID!);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
