@@ -5,6 +5,7 @@ import { useFetchProfile } from '@/hooks/fetchPerfil';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import LogoutButton from '@/components/LogoutButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
 
 //Client
 const nProyects = 1;
@@ -13,6 +14,7 @@ const tickets = 21;
 export default function Home() {
   const { user } = useUser();
   const {
+    error,
     number: nCalls,
     rating: satisfaction,
     duration,
@@ -34,6 +36,22 @@ export default function Home() {
       {loadingProfile ? (
         <div className="lg:pl-[256px] w-full h-screen flex items-center justify-center">
           <CircularProgress size={100} thickness={4} />
+        </div>
+      ) : error ? (
+        <div className="lg:pl-[256px] w-full min-h-screen flex flex-col items-center justify-center px-4">
+          <Alert severity="error" className="mb-4 w-full max-w-2xl">
+            {typeof error === 'string'
+              ? error
+              : error instanceof Error
+                ? error.message
+                : String(error)}
+          </Alert>
+          <button
+            onClick={() => fetchProfile()}
+            className="mt-4 bg-slate-blue text-white px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
+          >
+            Intentar nuevamente
+          </button>
         </div>
       ) : (
         <div className="md:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px]">
