@@ -245,18 +245,21 @@ const ChatbotInner = () => {
           {!hasSent && !loadingPrompts && !suggestionsError && (
             <div className="flex justify-between gap-10 p-20">
               <SuggestedPrompt
+                id="suggestion-1"
                 title={promptsData?.[0] || 'Prompt 1'}
                 onClick={() => {
                   handleStartConversationFromPrompt(promptsData?.[0] || '');
                 }}
               />
               <SuggestedPrompt
+                id="suggestion-2"
                 title={promptsData?.[1] || 'Prompt 2'}
                 onClick={() => {
                   handleStartConversationFromPrompt(promptsData?.[1] || '');
                 }}
               />
               <SuggestedPrompt
+                id="suggestion-3"
                 title={promptsData?.[2] || 'Prompt 3'}
                 onClick={() => {
                   handleStartConversationFromPrompt(promptsData?.[2] || '');
@@ -279,6 +282,7 @@ const ChatbotInner = () => {
             <div className="flex flex-col justify-start gap-10 p-20 h-[35vh] sm:h-[45vh] md:h-[55vh] lg:h-[65vh] overflow-auto">
               {messages.map((msg, i) => (
                 <TextBubble
+                  index={i}
                   key={i}
                   message={formatSteps(msg.content).join('\n\n')}
                   isUser={msg.role === 'user'}
@@ -307,6 +311,7 @@ const ChatbotInner = () => {
               divider={false}
             />
             <button
+              id="submit"
               onClick={() => {
                 handleButtonSubmit();
               }}

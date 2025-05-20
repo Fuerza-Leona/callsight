@@ -57,7 +57,9 @@ export default function Home() {
         <div className="md:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px]">
           <div className="w-full text-start">
             <div className="bg-[#13202A] rounded-2xl mx-20 p-8 flex items-center justify-between">
-              <p className="text-white text-4xl">{name}</p>
+              <p id="name" className="text-white text-4xl">
+                {name}
+              </p>
               <LogoutButton />
             </div>
           </div>
@@ -68,7 +70,7 @@ export default function Home() {
               style={{ backgroundColor: 'var(--persian-pink)' }}
             >
               <p>Rol</p>
-              <h2 className="font-thin text-3xl">
+              <h2 id="role" className="font-thin text-3xl">
                 {userRole == 'admin'
                   ? 'Admin'
                   : userRole == 'agent'
@@ -95,7 +97,9 @@ export default function Home() {
             >
               <p>Duración promedio por llamada</p>
               <div className="flex">
-                <h2 className="font-thin text-3xl">{duration}</h2>
+                <h2 id="average_time" className="font-thin text-3xl">
+                  {duration}
+                </h2>
                 <p>min</p>
               </div>
             </div>
@@ -122,7 +126,9 @@ export default function Home() {
               style={{ backgroundColor: 'var(--sky-blue)' }}
             >
               <p>Llamadas totales</p>
-              <h2 className="font-thin text-3xl">{nCalls}</h2>
+              <h2 id="total_calls" className="font-thin text-3xl">
+                {nCalls}
+              </h2>
             </div>
           </div>
         </div>

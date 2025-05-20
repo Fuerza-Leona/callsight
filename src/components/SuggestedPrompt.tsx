@@ -2,6 +2,7 @@ import React from 'react';
 
 type Props = {
   title: string;
+  id: string;
   onClick?: () => void;
 };
 

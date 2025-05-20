@@ -64,6 +64,7 @@ export default function Home() {
           <div className="flex flex-col w-full gap-5 md:ml-10 p-30">
             <p>Crear nuevo usuario</p>
             <TextField
+              id="username"
               name="username"
               placeholder="Usuario"
               variant="outlined"
@@ -72,6 +73,7 @@ export default function Home() {
               onChange={handleInputChange}
             />
             <TextField
+              id="email"
               name="email"
               placeholder="Correo"
               variant="outlined"
@@ -81,6 +83,7 @@ export default function Home() {
               type="email"
             />
             <TextField
+              id="password"
               name="password"
               placeholder="Contraseña"
               variant="outlined"

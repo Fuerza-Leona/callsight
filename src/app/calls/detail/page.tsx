@@ -22,6 +22,7 @@ function CallDetail() {
     getSpecificCall,
     data: callData,
     loading: loadingCall,
+    error,
   } = useSpecificCall();
 
   useEffect(() => {
@@ -35,7 +36,8 @@ function CallDetail() {
   const call = callData;
 
   const renderTranscript = () => {
-    if (!call || !Array.isArray(call.messages)) return <p>No hay mensajes</p>;
+    if (error) return error;
+    if (!call || !Array.isArray(call.messages)) return 'No hay mensajes';
 
     const sortedMessages = [...call.messages].sort(
       (a, b) => a.offsetmilliseconds - b.offsetmilliseconds
@@ -60,8 +62,10 @@ function CallDetail() {
   };
 
   const renderParticipants = () => {
+    if (error) return error;
+
     if (!call || !call.participants || !Array.isArray(call.participants))
-      return <div>No hay participantes.</div>;
+      return 'No hay participantes';
 
     return call.participants.map((participant, index) => {
       const role = participant.users.role?.toLowerCase() || '';
@@ -144,10 +148,10 @@ function CallDetail() {
                 <CircularProgress size={30} />
               </Box>
             ) : (
-              <>
+              <div id="duration">
                 {call?.summary.duration}
                 <span className="text-sm pl-3 pt-6 font-light"> minutos</span>
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -164,13 +168,13 @@ function CallDetail() {
                 <CircularProgress size={30} />
               </Box>
             ) : (
-              <>
+              <div id="rating">
                 {call?.rating.average ?? 0}
                 <span className="text-sm pl-3 pt-6 font-light">
                   {' '}
                   de {call?.rating.count} reseñas
                 </span>
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -196,13 +200,17 @@ function CallDetail() {
                   <div className="flex text-md items-left font-bold">
                     <h1 className="mb-2">Problema</h1>
                   </div>
-                  <div className="text-md">{call.summary.problem}</div>
+                  <div id="problem" className="text-md">
+                    {call.summary.problem}
+                  </div>
                 </div>
                 <div className="text-black mt-8 mb-1">
                   <div className="flex text-md items-left font-bold">
                     <h1 className="mb-2">Solución</h1>
                   </div>
-                  <div className="text-md">{call.summary.solution}</div>
+                  <div id="solution" className="text-md">
+                    {call.summary.solution}
+                  </div>
                 </div>
               </>
             ) : (
@@ -276,6 +284,7 @@ function CallDetail() {
           </div>
           {call?.company?.logo && (
             <Image
+              id="logo"
               src={call.company.logo}
               width={200}
               height={200}
@@ -297,7 +306,7 @@ function CallDetail() {
                 <CircularProgress size={40} />
               </Box>
             ) : (
-              renderParticipants()
+              <div id="participants">{renderParticipants()}</div>
             )}
           </div>
         </div>
@@ -318,7 +327,7 @@ function CallDetail() {
               <CircularProgress size={50} />
             </Box>
           ) : (
-            renderTranscript()
+            <div id="transcript">{renderTranscript()}</div>
           )}
         </div>
       </div>
