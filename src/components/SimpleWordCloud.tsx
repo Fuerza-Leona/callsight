@@ -27,15 +27,9 @@ const SimpleWordCloud: React.FC<WordCloudProps> = ({
   const maxValue = Math.max(...displayWords.map((word) => word.value));
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 1.5,
-        justifyContent: 'left',
-        padding: 2,
-        width: '100%',
-      }}
+    <div
+      id="word-cloud"
+      className="flex justify-content-left flex-wrap gap-2 mt-5"
     >
       {displayWords.map((word, index) => {
         // Calculate the relative importance (0-1 range)
@@ -83,7 +77,7 @@ const SimpleWordCloud: React.FC<WordCloudProps> = ({
           />
         );
       })}
-    </Box>
+    </div>
   );
 };
 

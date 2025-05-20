@@ -135,7 +135,6 @@ export default function Home() {
 
   return (
     <ProtectedRoute allowedRoles={['admin', 'agent']}>
-      {/* Top Bar */}
       <div className="relative lg:left-64 pt-10 w-full lg:w-[calc(100%-17rem)] pl-3 pr-3">
         <div className="flex flex-col md:flex-row items-center justify-between mb-6">
           <p className="text-4xl font-bold">Tablero</p>
@@ -151,6 +150,7 @@ export default function Home() {
             <Link
               href={'/calls/search'}
               className="text-[#FFFFFF] rounded-md block"
+              id="search"
             >
               <div
                 className="p-2 items-center justify-center text-center flex rounded-md"
@@ -164,9 +164,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Main Content - Two Column Layout */}
         <div className="relative w-[100%] flex flex-col md:flex-row gap-3">
-          {/* Left Column - Filters */}
           <div className="flex flex-col align-center text-center gap-2">
             <div className="text-white bg-[#1E242B] rounded-md mb-5">
               <LocalizationProvider
@@ -184,6 +182,7 @@ export default function Home() {
             </div>
             <div className="">
               <MultipleSelectChip
+                id="clients"
                 title={
                   loadingClients
                     ? 'Clientes (Cargando...)'
@@ -207,6 +206,7 @@ export default function Home() {
             {user?.role === 'admin' && (
               <div className="">
                 <MultipleSelectChip
+                  id="agents"
                   title={
                     loadingAgents
                       ? 'Empleados (Cargando...)'
@@ -230,6 +230,7 @@ export default function Home() {
             )}
             <div className="">
               <MultipleSelectChip
+                id="companies"
                 title={
                   loadingCompanies
                     ? 'Empresas (Cargando...)'
@@ -252,9 +253,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Column - Dashboard Cards */}
           <div className="w-full lg:w-[100%] md:w-[80%] flex flex-col gap-3">
-            {/* First row - Summary boxes */}
             <div className="flex w-full gap-4 text-center pb-1">
               <div
                 className="w-[33%] rounded-md flex flex-col items-left justify-left gap-3 p-3 shadow-md"
@@ -271,7 +270,7 @@ export default function Home() {
                   ) : errorSummary ? (
                     <span className="text-2xl text-red-500">Error</span>
                   ) : (
-                    <div>
+                    <div id="average_time">
                       {summary?.average_minutes || 0}
                       <span className="text-sm pl-2 font-light"> minutos</span>
                     </div>
@@ -293,7 +292,7 @@ export default function Home() {
                   ) : errorSummary ? (
                     <span className="text-2xl text-red-500">Error</span>
                   ) : (
-                    <div>
+                    <div id="total_calls">
                       {summary?.conversation_count || 0}
                       <span className="text-sm pl-2 font-light">
                         {' '}
@@ -319,7 +318,7 @@ export default function Home() {
                   ) : errorRatings ? (
                     <span className="text-3xl text-red-500">Error</span>
                   ) : (
-                    <div>
+                    <div id="average_rating">
                       {ratings && ratings.length > 0
                         ? (() => {
                             const totalCount = ratings.reduce(
@@ -349,12 +348,11 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Word cloud card */}
             <div
               className="w-full shadow-md rounded-md bg-white p-5"
               style={{ minHeight: '260px' }}
             >
-              <h1 className="text-lg font-bold pl-5">
+              <h1 className="text-lg font-bold ">
                 Temas principales detectados
               </h1>
 
@@ -395,13 +393,12 @@ export default function Home() {
               </Box>
             </div>
 
-            {/* Bottom row - Chart cards */}
             <div className="flex flex-col md:flex-row justify-between w-full gap-3 pt-1">
               <div
                 className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
                 style={{ minHeight: '300px' }}
               >
-                <h1 className="text-lg font-bold pt-3 pb-3">
+                <h1 className="text-lg font-bold pb-2">
                   Emociones del cliente
                 </h1>
 
@@ -465,7 +462,7 @@ export default function Home() {
                 className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
                 style={{ minHeight: '300px' }}
               >
-                <h1 className="text-lg font-bold pt-3 pb-3">
+                <h1 className="text-lg font-bold pb-4">
                   Evaluaciones del cliente
                 </h1>
 
