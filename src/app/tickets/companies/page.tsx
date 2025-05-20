@@ -42,7 +42,6 @@ const CompaniesPage = () => {
     console.log('Companies data:', companies);
   }, [companies]);
 
-  // Function to normalize company data regardless of structure
   const normalizeCompanyData = (company: CompanyData): BaseCompany => {
     // Check if this is a client company structure
     if ('company_client' in company) {
@@ -56,17 +55,15 @@ const CompaniesPage = () => {
     return company as BaseCompany;
   };
 
-  // Función que maneja el clic en el botón para ir a la página de tickets
+  // Maneja el click para ir a la pagina de tickets
   const handleCardClick = (companyId: string, companyName: string) => {
     router.push(`/support?company_id=${companyId}&company_name=${companyName}`); // Redirige a la página de tickets
   };
 
-  // Normalize all companies data
   const normalizedCompanies: BaseCompany[] = companies
     ? companies.map((company) => normalizeCompanyData(company as CompanyData))
     : [];
 
-  // Apply filter if needed
   const filteredCompanies =
     normalizedCompanies.length > 1
       ? normalizedCompanies.filter((company) =>
