@@ -1,141 +1,150 @@
 'use client';
+// This page shows a list of companies for insights
+// Users can click on a company to see its specific insights
 
-import React, { useState, ChangeEvent } from 'react';
-import { Search } from 'lucide-react';
+import React, { useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { CircularProgress } from '@mui/material';
+import { useFetchCompanies } from '@/hooks/fetchCompanies';
 
-interface Observation {
-  client: string;
-  themes: string[];
-  recommendations: string[];
-}
+const CompaniesSuggestionsPage = () => {
+  // Use your existing custom hook to fetch companies data
+  const { companies, loading, error } = useFetchCompanies();
+  // State to manage the search input
+  const [search, setSearch] = useState('');
+  // Hook to navigate between pages
+  const router = useRouter();
 
-const OBSERVATIONS: Observation[] = [
-  {
-    client: 'BBVA',
-    themes: ['Budgets', 'uso Typescript', 'Tecnología'],
-    recommendations: [
-      'Llamadas de 30-35 minutos',
-      'Buscar tener un equipo amplio para el proyecto',
-      'Tener listo un prototipo de la sección de compras',
-    ],
-  },
-  {
-    client: 'Santander',
-    themes: ['Optimizar', 'Seguridad', 'Integrar'],
-    recommendations: [
-      'Utilizar un lenguaje menos técnico con el cliente',
-      'Hacer preguntas más específicas',
-      'Ofrecer alternativas de posibles soluciones',
-    ],
-  },
-  {
-    client: 'Telcel',
-    themes: ['Actualizar', 'Consultoría', 'Mejorar'],
-    recommendations: [
-      'Mostrar más empatía cuando el cliente exprese frustración',
-      'Resumir los puntos clave al final de la llamada',
-    ],
-  },
-  {
-    client: 'Bimbo',
-    themes: ['Soporte', 'Adaptación', 'Capacitar'],
-    recommendations: [
-      'Escuchar activamente sin interrumpir al cliente.',
-      'Validar las preocupaciones antes de proceder con soluciones',
-    ],
-  },
-];
+  // Function that runs when user clicks on a company card
+  const handleCardClick = (companyId: string, companyName: string) => {
+    // Navigate to the insights page with company information
+    // Fix: Include company_name in the URL parameters too
+    router.push(
+      `/sugerencias/suggestionList?company_id=${companyId}&company_name=${encodeURIComponent(companyName)}`
+    );
+  };
 
-const Tag: React.FC<{ label: string }> = ({ label }) => (
-  <span className="text-xs font-semibold text-white bg-slate-900 rounded-full px-3 py-1 whitespace-nowrap">
-    {label}
-  </span>
-);
-
-const ObservationCard: React.FC<{ data: Observation; even: boolean }> = ({
-  data,
-  even,
-}) => {
-  const cardBg = even ? 'bg-slate-100' : 'bg-slate-900';
-  const textColor = even ? 'text-slate-900' : 'text-white';
-
-  return (
-    <div
-      className={`w-full rounded-xl ${cardBg} ${textColor} px-6 py-4 flex flex-col gap-4`}
-    >
-      <div className="flex flex-col sm:flex-row sm:items-start sm:gap-6">
-        <div className="shrink-0 w-28 font-medium text-lg">{data.client}</div>
-        <div className="flex-1">
-          <p className="font-semibold mb-1">Temas principales:</p>
-          <div className="flex flex-wrap gap-2">
-            {data.themes.map((theme) => (
-              <Tag key={theme} label={theme} />
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col sm:flex-row sm:gap-6">
-        <div className="hidden sm:block shrink-0 w-28" />
-        <div className="flex-1">
-          <p className="font-semibold mb-1">
-            Recomendaciones en base a las llamadas pasadas:
-          </p>
-          <ul className="list-disc list-inside space-y-1">
-            {data.recommendations.map((rec) => (
-              <li key={rec}>{rec}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
+  // Filter companies based on the search input
+  // If user types something, filter companies whose names include that text
+  const filteredCompanies = companies.filter((company) =>
+    company.name.toLowerCase().includes(search.toLowerCase())
   );
-};
-
-const Observaciones: React.FC = () => {
-  const [query, setQuery] = useState<string>('');
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setQuery(e.target.value.toLowerCase());
-
-  const filtered = OBSERVATIONS.filter((obs) => {
-    const matchClient = obs.client.toLowerCase().includes(query);
-    const matchTheme = obs.themes.some((t) => t.toLowerCase().includes(query));
-    return matchClient || matchTheme;
-  });
 
   return (
-    <ProtectedRoute allowedRoles={['admin', 'agent']}>
-      <div className="pl-35">
-        <div className="max-w-[90rem] mx-auto p-4 space-y-6">
-          <header className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <h1 className="flex-1 text-3xl font-bold text-center sm:text-left bg-slate-900 text-white py-2 rounded-lg">
-              Observaciones
-            </h1>
-            <label className="relative flex items-center w-full sm:w-64">
-              <Search className="absolute left-3 h-5 w-5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Buscar"
-                value={query}
-                onChange={handleChange}
-                className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-              />
-            </label>
-          </header>
-          <div className="flex flex-col gap-6">
-            {filtered.map((obs, idx) => (
-              <ObservationCard
-                key={obs.client}
-                data={obs}
-                even={idx % 2 === 0}
-              />
-            ))}
-          </div>
+    // ProtectedRoute ensures only authorized users can see this page
+    <ProtectedRoute allowedRoles={['agent', 'admin']}>
+      {/* If loading, show a spinning wheel */}
+      {loading ? (
+        <div className="pl-70 flex justify-center items-center w-full h-screen">
+          <CircularProgress size={100} />
         </div>
-      </div>
+      ) : (
+        // Main content when not loading
+        <div className="pl-70 py-10 w-[calc(100%)]">
+          {/* Main title - same style as "Soporte a Clientes" */}
+          <h1
+            className="text-7xl font-bold text-center"
+            style={{ color: 'var(--neoris-blue)' }}
+          >
+            Sugerencias por Cliente
+          </h1>
+
+          {/* Search bar - only show if there are 2 or more companies */}
+          {companies.length > 1 && (
+            <div className="flex items-center justify-between mb-6 items-center text-center justify-center">
+              <div>
+                <input
+                  type="text"
+                  placeholder=" Buscar empresa..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-[400px] mt-5 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Descriptive text */}
+          <p className="text-center text-base text-gray-700 my-8">
+            Selecciona una empresa para ver sus sugerencias:
+          </p>
+
+          {/* Companies grid */}
+          {error ? (
+            // Show error message if something went wrong
+            <p className="text-center text-red-500">Error: {error}</p>
+          ) : filteredCompanies && filteredCompanies.length > 0 ? (
+            // Show companies in a grid layout
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '24px',
+              }}
+            >
+              {/* Map through each company and create a card */}
+              {filteredCompanies.map((company) => (
+                <button
+                  key={company.company_id}
+                  onClick={() =>
+                    handleCardClick(company.company_id, company.name)
+                  }
+                  style={{
+                    backgroundColor: '#87CEEB', // Light blue background
+                    borderRadius: '10px',
+                    padding: '20px',
+                    flex: '1 0 calc(25% - 24px)', // 4 cards per row
+                    maxWidth: 'calc(25% - 24px)',
+                    height: '200px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+                    transition: 'transform 0.2s ease-in-out',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    border: 'none', // Remove default button border
+                  }}
+                  // Mouse hover effects
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  {/* Company logo */}
+                  <Image
+                    src={
+                      company.logo ||
+                      'https://static.thenounproject.com/png/1738131-200.png'
+                    }
+                    alt={company.name}
+                    width={0}
+                    height={0}
+                    style={{
+                      width: '80%',
+                      maxHeight: '130px',
+                      objectFit: 'contain',
+                    }}
+                    sizes="(max-width: 768px) 80vw, 80%"
+                  />
+                </button>
+              ))}
+            </div>
+          ) : (
+            // Show message when no companies are found
+            <p className="text-center text-gray-500">
+              No se encontraron empresas.
+            </p>
+          )}
+        </div>
+      )}
     </ProtectedRoute>
   );
 };
 
-export default Observaciones;
+export default CompaniesSuggestionsPage;
