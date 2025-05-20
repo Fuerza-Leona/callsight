@@ -2,18 +2,10 @@
 
 import { useState } from 'react';
 import api from '@/utils/api';
-import { UUID } from 'crypto';
-
-export interface Users {
-  user_id: UUID;
-  username: string;
-  email: string;
-  role: string;
-  company_id: UUID;
-}
+import { User } from '@/interfaces/user';
 
 export const useUsers = () => {
-  const [data, setData] = useState<Users[] | null>(null);
+  const [data, setData] = useState<User[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -23,7 +15,7 @@ export const useUsers = () => {
 
     try {
       //Request with Auth header
-      const response = await api.get<Users[]>('users');
+      const response = await api.get<User[]>('users');
       setData(response.data);
     } catch {
       setError('An unexpected error occurred.');
