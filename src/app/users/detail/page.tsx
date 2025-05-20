@@ -1,13 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useUser } from '@/context/UserContext';
-import { useFetchProfile } from '@/hooks/fetchPerfil';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import LogoutButton from '@/components/LogoutButton';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useFetchCompanyInformation } from '@/hooks/fetchCompanyInformation';
-import SearchBar from '@/components/SearchBar';
-import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTable';
+import { useFetchUserInformation } from '@/hooks/fetchUser';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 /*const rows = [
   { name: 'BBVA', usuarios: 30, proyectos: 3 },
@@ -23,51 +19,29 @@ import CustomPaginationActionsTable from '@/components/CustomPaginationActionsTa
   { name: 'Cajamar', usuarios: 22, proyectos: 9 },
 ];*/
 
-const columns = [
-  { label: 'Cliente', key: 'name' },
-  { label: 'Usuarios', key: 'size' },
-  //{ label: 'Proyectos', key: 'proyectos' },
-];
-
 //Client
-const nProyects = 1;
-const tickets = 21;
+const duration = 0;
+const satisfaction = 0;
+const nCalls = 0;
+const tickets = 0;
+const nProyects = 0;
 
 export default function UserDetail() {
-  const { user } = useUser();
   const {
-    number: nCalls,
-    rating: satisfaction,
-    duration,
-    fetchProfile,
+    fetchUserInformation,
+    userFetched: user,
     loading: loadingProfile,
-  } = useFetchProfile();
-  const { rows, loading } = useFetchCompanyInformation();
-  const name = user?.username;
-
-  const company = user?.department;
-  const userRole = user?.role;
-
-  const [filteredRows, setFilteredRows] = useState(rows);
-  const handleSearch = (searchValue: string | null) => {
-    if (!searchValue || searchValue.length === 0) {
-      setFilteredRows(rows);
-    } else {
-      const filtered = rows.filter((row) =>
-        row['name'].toLowerCase().includes(searchValue.toLowerCase())
-      );
-      setFilteredRows(filtered);
-    }
-  };
+  } = useFetchUserInformation();
+  const searchParams = useSearchParams();
+  const userID = searchParams.get('detail');
 
   useEffect(() => {
-    fetchProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchUserInformation(userID!);
   }, []);
 
   return (
-    <ProtectedRoute>
-      {loadingProfile || loading ? (
+    <ProtectedRoute allowedRoles={['admin', 'agent', 'client']}>
+      {loadingProfile ? (
         <div className="lg:pl-[256px] w-full h-screen flex items-center justify-center">
           <CircularProgress size={100} thickness={4} />
         </div>
@@ -75,8 +49,7 @@ export default function UserDetail() {
         <div className="md:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px]">
           <div className="w-full text-start">
             <div className="bg-[#13202A] rounded-2xl mx-20 p-8 flex items-center justify-between">
-              <p className="text-white text-4xl">{name}</p>
-              <LogoutButton />
+              <p className="text-white text-4xl">{user?.username}</p>
             </div>
           </div>
 
@@ -87,9 +60,9 @@ export default function UserDetail() {
             >
               <p>Rol</p>
               <h2 className="font-thin text-3xl">
-                {userRole == 'admin'
+                {user?.role == 'admin'
                   ? 'Admin'
-                  : userRole == 'agent'
+                  : user?.role == 'agent'
                     ? 'Agente'
                     : 'Usuario'}
               </h2>
@@ -100,10 +73,10 @@ export default function UserDetail() {
               style={{ backgroundColor: 'var(--jonquil)' }}
             >
               <p>
-                {userRole == 'client' ? 'Tickets abiertos' : 'Departamento'}
+                {user?.role == 'client' ? 'Tickets abiertos' : 'Departamento'}
               </p>
               <h2 className="font-thin text-3xl">
-                {userRole == 'client' ? tickets : company}
+                {user?.role == 'client' ? tickets : user?.department}
               </h2>
             </div>
 
@@ -122,12 +95,12 @@ export default function UserDetail() {
               style={{ backgroundColor: 'var(--slate-blue)' }}
             >
               <p>
-                {userRole == 'admin' || userRole == 'agent'
+                {user?.role == 'admin' || user?.role == 'agent'
                   ? 'Satisfaccion promedio'
                   : 'Proyectos realizados'}
               </p>
               <h2 className="font-thin text-3xl">
-                {userRole == 'client'
+                {user?.role == 'client'
                   ? nProyects
                   : satisfaction != 0
                     ? satisfaction
@@ -145,37 +118,12 @@ export default function UserDetail() {
           </div>
 
           <div className="flex flex-col md:flex-row w-[calc(100%-8rem)] md:w-[calc(100%-10rem)] gap-5 md:items-center justify-between">
-            {userRole == 'client' && (
+            {user?.role == 'client' && (
               <div className="flex flex-col bg-gray-200 w-full h-80 md:mt-10 rounded-2xl justify-center items-center">
                 <p>Clientes</p>
                 <h2 className="font-thin text-3xl">
                   aliqua irure officia culpa labore
                 </h2>
-              </div>
-            )}
-            {(userRole == 'admin' || userRole == 'agent') && (
-              <div className="flex flex-col w-full gap-5 md:ml-10">
-                {!loading && (
-                  <div className="flex justify-between gap-5">
-                    <SearchBar
-                      label="Buscar Cliente"
-                      options={rows.map((row) => ({ label: row.name }))}
-                      onSelect={handleSearch}
-                      sx={{ width: '100%' }}
-                    />
-                    <button className="rounded-2xl bg-[#13202A] text-white md:w-50 hover:cursor-pointer hover:bg-[#364550]">
-                      Añadir cliente
-                    </button>
-                  </div>
-                )}
-                <div className="h-[200px] w-full">
-                  {rows.length > 1 && (
-                    <CustomPaginationActionsTable
-                      rows={filteredRows}
-                      columns={columns}
-                    />
-                  )}
-                </div>
               </div>
             )}
           </div>

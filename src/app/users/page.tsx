@@ -14,9 +14,12 @@ import {
 } from '@mui/material';
 import { useFetchCompanies } from '@/hooks/fetchCompanies';
 import { useUsers } from '@/hooks/useUsers';
+import { useRouter } from 'next/navigation';
+import { User } from '@/interfaces/user';
 
 export default function Home() {
   const { user } = useUser();
+  const router = useRouter();
 
   const { getUsers, data: users, loading } = useUsers();
 
@@ -25,21 +28,25 @@ export default function Home() {
   const [search, setSearch] = useState<string>('');
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
 
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>(users!);
 
   const handleFilter = (companies: string[]) => {
     setSelectedCompanies(companies);
-  }
+  };
 
   useEffect(() => {
-    setFilteredUsers(users)
+    setFilteredUsers(users!);
     if (selectedCompanies.length > 0) {
-      const selectedCompaniesIds = companies.filter((company) => selectedCompanies.includes(company.name)).map((company) => company.company_id);
-      setFilteredUsers(users.filter((user) => selectedCompaniesIds.includes(user.company_id)));
+      const selectedCompaniesIds = companies
+        .filter((company) => selectedCompanies.includes(company.name))
+        .map((company) => company.company_id);
+      setFilteredUsers(
+        users!.filter((user) => selectedCompaniesIds.includes(user.company_id))
+      );
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCompanies, users])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCompanies, users]);
 
   useEffect(() => {
     getUsers();
@@ -121,7 +128,9 @@ export default function Home() {
                     filteredUsers.map((person) => (
                       <TableRow
                         key={person.user_id}
-                        //onClick={() => handleClick(conversation.conversation_id)}
+                        onClick={() =>
+                          router.push(`/users/detail?detail=${person.user_id}`)
+                        }
                         className="cursor-pointer hover:bg-gray-100"
                       >
                         <TableCell>

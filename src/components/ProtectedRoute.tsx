@@ -10,7 +10,10 @@ interface ProtectedRouteProps {
   allowedRoles: UserRole[];
 }
 
-const ProtectedRoute = ({ children, allowedRoles=["client, agent, admin"] }: ProtectedRouteProps) => {
+const ProtectedRoute = ({
+  children,
+  allowedRoles = ['client, agent, admin'],
+}: ProtectedRouteProps) => {
   const { user } = useUser();
   const router = useRouter();
 
