@@ -37,6 +37,7 @@ export default function ChatBotText({
       {divider && <Divider />}
       <Box sx={{ flexGrow: 1, px: '2rem' }}>
         <textarea
+          id="chatbot-input"
           value={value}
           defaultValue={defaultValue}
           autoCapitalize="on"

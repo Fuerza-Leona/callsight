@@ -6,6 +6,7 @@ const LogoutButton = () => {
   return (
     <button
       onClick={logout}
+      id="logout"
       className="text-sm bg-white text-black rounded-lg cursor-pointer font-semibold p-3 shadow"
     >
       Cerrar sesión

@@ -162,6 +162,7 @@ export default function Home() {
           </div>
           {user?.role !== 'client' && (
             <MultipleSelectChip
+              id="client"
               title={
                 loadingClients
                   ? 'Cliente (Cargando...)'
@@ -186,6 +187,7 @@ export default function Home() {
           {user?.role === 'admin' && (
             <div className="">
               <MultipleSelectChip
+                id="agents"
                 title={
                   loadingAgents
                     ? 'Empleados (Cargando...)'
@@ -211,6 +213,7 @@ export default function Home() {
           {user?.role !== 'client' && (
             <div className="">
               <MultipleSelectChip
+                id="companies"
                 title={
                   loadingCompanies
                     ? 'Empresas (Cargando...)'
@@ -292,8 +295,9 @@ export default function Home() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {conversations.map((conversation) => (
+                  {conversations.map((conversation, index) => (
                     <TableRow
+                      id={conversation + '_' + index}
                       key={conversation.conversation_id}
                       onClick={() => handleClick(conversation.conversation_id)}
                       className="cursor-pointer hover:bg-gray-100"

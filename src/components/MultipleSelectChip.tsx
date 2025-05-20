@@ -22,6 +22,7 @@ const MenuProps = {
 type ItemType = string | { id: string; name: string };
 
 interface multipleProps {
+  id: string;
   title: string;
   names: ItemType[];
   value: string[];
@@ -67,16 +68,13 @@ export default function MultipleSelectChip(props: multipleProps) {
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-chip-label">{props.title}</InputLabel>
+        <InputLabel>{props.title}</InputLabel>
         <Select
-          labelId="demo-multiple-chip-label"
-          id="demo-multiple-chip"
+          id={props.id}
           multiple
           value={props.value}
           onChange={handleChange}
-          input={
-            <OutlinedInput id="select-multiple-chip" label={props.title} />
-          }
+          input={<OutlinedInput label={props.title} />}
           renderValue={(selected) => (
             <Box
               sx={{
@@ -95,8 +93,9 @@ export default function MultipleSelectChip(props: multipleProps) {
           )}
           MenuProps={MenuProps}
         >
-          {props.names.map((item) => (
+          {props.names.map((item, index) => (
             <MenuItem
+              id={props.id + '_' + index}
               key={getItemValue(item)}
               value={getItemValue(item)}
               style={getStyles(item, props.value, theme)}
