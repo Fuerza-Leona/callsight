@@ -7,4 +7,5 @@ export interface User {
   role: UserRole;
   department: string;
   company_id: string;
+  created_at?: string;
 }
