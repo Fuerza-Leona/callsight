@@ -3,7 +3,6 @@ import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
-// Import the component without SSR to avoid the useSearchParams issue
 const TicketsContent = dynamic(() => import('./tickets-content'), {
   ssr: false,
   loading: () => (
