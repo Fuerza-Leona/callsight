@@ -1,79 +1,56 @@
 'use client';
-// This page shows insights/suggestions for a specific company
-// It displays the company logo, name, insights, and now also top topics
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { CircularProgress } from '@mui/material';
 import { useInsights } from '@/hooks/useInsights';
-import { useFetchCompanies } from '@/hooks/fetchCompanies';
-import { useFetchTopics } from '@/hooks/fetchTopics';
+import { useFetchTopicsInsights } from '@/hooks/fetchTopicInsights';
 
 const CompanyInsightsPage = () => {
-  // Hooks for navigation and URL parameters
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get company information from URL parameters
   const companyId = searchParams.get('company_id');
   const companyName = searchParams.get('company_name');
 
-  // Use your existing hook to get companies (to find the logo)
-  const { companies } = useFetchCompanies();
+  const { topics, loadingTopics, errorTopics, fetchTopics } =
+    useFetchTopicsInsights();
+  const { insights, loadingInsights, errorInsights, fetchInsights } =
+    useInsights();
 
-  // Use our custom hook to fetch insights for the specific company
-  const {
-    insights,
-    loading: insightsLoading,
-    error: insightsError,
-  } = useInsights(companyId || '');
-
-  // Use the topics hook
-  const { topics, loadingTopics, errorTopics, fetchTopics } = useFetchTopics();
-
-  // Find the current company to get its logo
-  const currentCompany = companies.find(
-    (company) => company.company_id === companyId
-  );
-  const companyLogo = currentCompany?.logo;
-
-  // Fetch topics when the component mounts or companyId changes
+  const ref = useRef(false);
   useEffect(() => {
-    if (companyId) {
-      fetchTopics({
-        limit: 10,
-        companies: [companyId],
-        clients: null,
-        agents: null,
-        startDate: '1900-01-01', // Very old date to include all historical data
-        endDate: '2150-12-31', // Future date to include all upcoming data
-      });
+    async function fetchData() {
+      if (companyId && !ref.current) {
+        ref.current = true;
+
+        await fetchTopics({
+          limit: 10,
+          companies: [companyId],
+          clients: [],
+          agents: [],
+          startDate: '',
+          endDate: '',
+        });
+
+        await fetchInsights(companyId);
+      }
     }
-  });
 
-  // If we don't have a company ID, redirect back to companies list
-  if (!companyId) {
-    router.push('/sugerencias');
-    return null;
-  }
-
-  // Check if either insights or topics are still loading
-  const loading = insightsLoading || loadingTopics;
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    // ProtectedRoute ensures only authorized users can see this page
     <ProtectedRoute allowedRoles={['agent', 'admin']}>
-      {/* If loading, show a spinning wheel */}
-      {loading ? (
+      {loadingInsights || loadingTopics ? (
         <div className="pl-70 flex justify-center items-center w-full h-screen">
           <CircularProgress size={100} />
         </div>
       ) : (
-        // Main content when not loading
         <div className="pl-70 py-10 w-[calc(100%)]">
-          {/* Header section with dark background - matches the Figma design */}
           <div
             className="text-center py-8 mb-8 rounded-lg"
             style={{ backgroundColor: '#1a1a1a' }}
@@ -83,24 +60,18 @@ const CompanyInsightsPage = () => {
             </h1>
           </div>
 
-          {/* Main content area with light gray background */}
           <div
             className="rounded-lg p-8"
             style={{ backgroundColor: '#f5f5f5' }}
           >
-            {/* Company section */}
             <div className="mb-8">
-              {/* Company logo in a white card */}
               <div
                 className="inline-block p-6 rounded-lg shadow-md"
                 style={{ backgroundColor: 'white' }}
               >
                 <Image
-                  src={
-                    companyLogo ||
-                    'https://static.thenounproject.com/png/1738131-200.png'
-                  }
-                  alt={companyName || 'Company'}
+                  src={'https://static.thenounproject.com/png/1738131-200.png'}
+                  alt={'Company'}
                   width={200}
                   height={120}
                   style={{
@@ -111,7 +82,6 @@ const CompanyInsightsPage = () => {
               </div>
             </div>
 
-            {/* Topics section */}
             <div className="mb-8">
               <h3
                 className="text-2xl font-semibold mb-6"
@@ -145,20 +115,17 @@ const CompanyInsightsPage = () => {
               )}
             </div>
 
-            {/* Insights section */}
-            {insightsError ? (
-              // Show error message if something went wrong
+            {errorInsights ? (
               <div className="text-center">
-                <p className="text-red-500 text-lg">Error: {insightsError}</p>
+                <p className="text-red-500 text-lg">Error: {errorInsights}</p>
                 <button
-                  onClick={() => router.push('/sugerencias-por-cliente')}
+                  onClick={() => router.push('/tickets')}
                   className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                 >
                   Volver a la lista de empresas
                 </button>
               </div>
             ) : insights && insights.length > 0 ? (
-              // Show insights when available
               <div>
                 <h3
                   className="text-2xl font-semibold mb-6"
@@ -167,16 +134,13 @@ const CompanyInsightsPage = () => {
                   Recomendaciones en base a las llamadas pasadas:
                 </h3>
 
-                {/* List of insights */}
                 <div className="space-y-4">
                   {insights.map((insight, index) => (
                     <div key={index} className="flex items-start">
-                      {/* Bullet point */}
                       <span
                         className="w-2 h-2 rounded-full mt-3 mr-3 flex-shrink-0"
                         style={{ backgroundColor: '#1a1a1a' }}
                       ></span>
-                      {/* Insight text */}
                       <p className="text-lg text-gray-800 leading-relaxed">
                         {insight}
                       </p>
@@ -184,7 +148,6 @@ const CompanyInsightsPage = () => {
                   ))}
                 </div>
 
-                {/* Back button */}
                 <div className="mt-8 text-center">
                   <button
                     onClick={() => router.push('/sugerencias')}
@@ -195,7 +158,6 @@ const CompanyInsightsPage = () => {
                 </div>
               </div>
             ) : (
-              // Show message when no insights are available
               <div className="text-center">
                 <p className="text-gray-600 text-lg mb-4">
                   No hay observaciones disponibles para esta empresa.
