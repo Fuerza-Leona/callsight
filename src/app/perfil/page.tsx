@@ -7,10 +7,6 @@ import LogoutButton from '@/components/LogoutButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 
-//Client
-const nProyects = 1;
-const tickets = 21;
-
 export default function Home() {
   const { user } = useUser();
   const {
@@ -23,7 +19,7 @@ export default function Home() {
   } = useFetchProfile();
   const name = user?.username;
 
-  const company = user?.department;
+  const department = user?.department;
   const userRole = user?.role;
 
   useEffect(() => {
@@ -46,12 +42,6 @@ export default function Home() {
                 ? error.message
                 : String(error)}
           </Alert>
-          <button
-            onClick={() => fetchProfile()}
-            className="mt-4 bg-slate-blue text-white px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
-          >
-            Intentar nuevamente
-          </button>
         </div>
       ) : (
         <div className="md:relative absolute w-full min-h-screen flex flex-col items-center text-center justify-center lg:pl-[256px]">
@@ -75,21 +65,19 @@ export default function Home() {
                   ? 'Admin'
                   : userRole == 'agent'
                     ? 'Agente'
-                    : 'Usuario'}
+                    : 'Cliente'}
               </h2>
             </div>
 
-            <div
-              className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
-              style={{ backgroundColor: 'var(--jonquil)' }}
-            >
-              <p>
-                {userRole == 'client' ? 'Tickets abiertos' : 'Departamento'}
-              </p>
-              <h2 className="font-thin text-3xl">
-                {userRole == 'client' ? tickets : company}
-              </h2>
-            </div>
+            {userRole != 'client' && (
+              <div
+                className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
+                style={{ backgroundColor: 'var(--jonquil)' }}
+              >
+                <p>Empresa</p>
+                <h2 className="font-thin text-3xl">{department}</h2>
+              </div>
+            )}
 
             <div
               className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center text-white"
@@ -107,18 +95,9 @@ export default function Home() {
               className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center text-white"
               style={{ backgroundColor: 'var(--slate-blue)' }}
             >
-              <p>
-                {userRole == 'admin' || userRole == 'agent'
-                  ? 'Satisfaccion promedio'
-                  : 'Proyectos realizados'}
-              </p>
-              <h2 className="font-thin text-3xl">
-                {userRole == 'client'
-                  ? nProyects
-                  : satisfaction != 0
-                    ? satisfaction
-                    : '--'}
-              </h2>
+              <p>Satisfacción promedio del cliente</p>
+
+              <h2 className="font-thin text-3xl">{satisfaction}</h2>
             </div>
 
             <div
