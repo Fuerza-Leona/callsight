@@ -45,7 +45,7 @@ export const sideNavLinksAdmin: NavLink[] = [
   {
     id: 5,
     name: 'Soporte',
-    href: 'companies',
+    href: 'tickets',
   },
   {
     id: 7,
@@ -88,7 +88,7 @@ export const sideNavLinksAgent: NavLink[] = [
   {
     id: 5,
     name: 'Soporte',
-    href: 'companies',
+    href: 'tickets',
   },
   {
     id: 6,
@@ -121,6 +121,6 @@ export const sideNavLinksClient: NavLink[] = [
   {
     id: 4,
     name: 'Soporte',
-    href: 'companies',
+    href: 'tickets',
   },
 ];

@@ -376,11 +376,9 @@ export default function Home() {
                     <CircularProgress size={60} />
                   </Box>
                 ) : errorTopics ? (
-                  <p className="pl-5 mt-3">
-                    Error al cargar los temas principales
-                  </p>
+                  <p className=" mt-3">Error al cargar los temas principales</p>
                 ) : !topics || topics.length == 0 ? (
-                  <p className="pl-5 mt-3">No hay temas principales</p>
+                  <p className=" mt-3">No hay temas principales</p>
                 ) : (
                   <SimpleWordCloud
                     words={topics.map((topic) => ({

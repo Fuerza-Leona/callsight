@@ -35,15 +35,9 @@ const CompaniesPage = () => {
     if (user?.role === 'client') {
       router.push(`/support?company_id=${user?.company_id}`);
     }
-  }, [user, router]);
-
-  useEffect(() => {
-    console.log('🧭 You are in CompaniesPage and hook has been called.');
-    console.log('Companies data:', companies);
-  }, [companies]);
+  });
 
   const normalizeCompanyData = (company: CompanyData): BaseCompany => {
-    // Check if this is a client company structure
     if ('company_client' in company) {
       return {
         company_id: company.company_id,
@@ -51,13 +45,13 @@ const CompaniesPage = () => {
         logo: company.company_client.logo,
       };
     }
-    // For admin/agent, the structure is already correct
     return company as BaseCompany;
   };
 
-  // Maneja el click para ir a la pagina de tickets
   const handleCardClick = (companyId: string, companyName: string) => {
-    router.push(`/support?company_id=${companyId}&company_name=${companyName}`); // Redirige a la página de tickets
+    router.push(
+      `tickets/support?company_id=${companyId}&company_name=${companyName}`
+    ); // Redirige a la página de tickets
   };
 
   const normalizedCompanies: BaseCompany[] = companies
