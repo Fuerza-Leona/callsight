@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { CircularProgress } from '@mui/material';
 import { useInsights } from '@/hooks/useInsights';
@@ -50,7 +49,7 @@ const CompanyInsightsPage = () => {
           <CircularProgress size={100} />
         </div>
       ) : (
-        <div className="pl-70 py-10 w-[calc(100%)]">
+        <div className="pl-70 py-10 w-[calc(99%)]">
           <div
             className="text-center py-8 mb-8 rounded-lg"
             style={{ backgroundColor: '#1a1a1a' }}
@@ -64,24 +63,6 @@ const CompanyInsightsPage = () => {
             className="rounded-lg p-8"
             style={{ backgroundColor: '#f5f5f5' }}
           >
-            <div className="mb-8">
-              <div
-                className="inline-block p-6 rounded-lg shadow-md"
-                style={{ backgroundColor: 'white' }}
-              >
-                <Image
-                  src={'https://static.thenounproject.com/png/1738131-200.png'}
-                  alt={'Company'}
-                  width={200}
-                  height={120}
-                  style={{
-                    objectFit: 'contain',
-                    maxHeight: '120px',
-                  }}
-                />
-              </div>
-            </div>
-
             <div className="mb-8">
               <h3
                 className="text-2xl font-semibold mb-6"
@@ -101,7 +82,7 @@ const CompanyInsightsPage = () => {
                       key={index}
                       className="bg-white p-4 rounded-md shadow-sm flex flex-col items-center"
                     >
-                      <span className="text-lg font-medium">{topic.topic}</span>
+                      <span className="text-center font-sm">{topic.topic}</span>
                       <span className="text-sm text-gray-500">
                         {topic.amount} llamadas
                       </span>
@@ -141,7 +122,7 @@ const CompanyInsightsPage = () => {
                         className="w-2 h-2 rounded-full mt-3 mr-3 flex-shrink-0"
                         style={{ backgroundColor: '#1a1a1a' }}
                       ></span>
-                      <p className="text-lg text-gray-800 leading-relaxed">
+                      <p className="text-md text-gray-800 leading-relaxed">
                         {insight}
                       </p>
                     </div>
