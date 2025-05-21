@@ -147,6 +147,7 @@ export default function Home() {
                           <DropDown
                             value={person.role}
                             options={['admin', 'client', 'agent']}
+                            appliedUser={person.user_id}
                           />
                         </TableCell>
                         <TableCell>{person.email}</TableCell>
