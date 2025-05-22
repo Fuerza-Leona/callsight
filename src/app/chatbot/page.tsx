@@ -61,7 +61,10 @@ const ChatHistorySidebar = () => {
         <div className="overflow-y-auto flex-grow pr-4">
           {getChatsLoading && (
             <div className="flex flex-col items-center py-5">
-              <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+              <div
+                className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"
+                id="loading_chats"
+              />
               <p className="text-sm text-gray-500 mt-2">Cargando chats...</p>
             </div>
           )}
@@ -71,12 +74,13 @@ const ChatHistorySidebar = () => {
           )}
 
           <ul className="space-y-2">
-            {getChatsData?.map(({ chatbot_conversation_id, title }) => {
+            {getChatsData?.map(({ chatbot_conversation_id, title }, index) => {
               const isActive = activeConversationId === chatbot_conversation_id;
 
               return (
                 <li key={chatbot_conversation_id}>
                   <Link
+                    id={`chat_${index}`}
                     href={`/chatbot?conversation_id=${chatbot_conversation_id}`}
                     className={`block px-3 py-2 rounded-md ${
                       isActive
@@ -273,7 +277,10 @@ const ChatbotInner = () => {
           {!hasSent && loadingPrompts && (
             <div className="">
               <div className="relative w-full flex flex-col pt-[140px] md:pt-28 lg:h-[400px] items-center text-center">
-                <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
+                <div
+                  id="loading_prompts"
+                  className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin"
+                />
                 <p className="text-lg text-gray-600">Cargando sugerencias...</p>
               </div>
             </div>
