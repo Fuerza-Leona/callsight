@@ -19,6 +19,7 @@ import {
 import { PieChart } from '@mui/x-charts/PieChart';
 import Image from 'next/image';
 import { useFetchRating } from '@/hooks/fetchRating';
+import { usePostRating } from '@/hooks/userPostRating';
 
 // Client component that uses useSearchParams
 function CallDetail() {
@@ -30,10 +31,14 @@ function CallDetail() {
 
   const [reviewValue, setReviewValue] = useState<number | null>(null);
 
-  const handleReviewChange = (
+  const { postRating } = usePostRating();
+
+  const handleReviewChange = async (
     event: React.SyntheticEvent,
     value: number | null
   ) => {
+    if (!call_id || call_id.trim() === '' || !value) return;
+    await postRating(call_id, value);
     setReviewValue(value);
     setShowModal(false);
   };
@@ -52,8 +57,9 @@ function CallDetail() {
     if (!call_id || call_id.trim() === '') return;
 
     const fetchData = async () => {
-      const promises = [fetchRating(call_id), getSpecificCall(call_id)];
-      await Promise.all(promises);
+      await fetchRating(call_id);
+
+      await getSpecificCall(call_id);
     };
 
     fetchData();
