@@ -193,6 +193,7 @@ const Tickets = () => {
             <button
               className="bg-[#13202A] text-white px-4 py-2 rounded-lg hover:bg-[#1b2c3d] transition-colors cursor-pointer"
               onClick={() => router.push('/tickets')}
+              id="back-button"
             >
               ← Regresar
             </button>
@@ -230,6 +231,7 @@ const Tickets = () => {
                   <FilterListIcon fontSize="small" />
                 </IconButton>
                 <IconButton
+                  id="new-ticket-button"
                   size="small"
                   sx={{
                     color: 'white',
@@ -459,6 +461,7 @@ const Tickets = () => {
               >
                 <InputBase
                   sx={{ ml: 1, flex: 1 }}
+                  id="message-input"
                   placeholder={
                     selectedTicketId
                       ? 'Escriba su mensaje aquí...'
@@ -510,6 +513,7 @@ const Tickets = () => {
             <TextField
               autoFocus
               margin="dense"
+              id="new_ticket_subject"
               label="Asunto"
               fullWidth
               variant="outlined"
@@ -519,6 +523,7 @@ const Tickets = () => {
             />
             <TextField
               margin="dense"
+              id="new_ticket_description"
               label="Descripción"
               fullWidth
               multiline
@@ -530,12 +535,14 @@ const Tickets = () => {
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 3 }}>
             <Button
+              id="cancel-button"
               onClick={handleCloseNewTicketModal}
               sx={{ color: 'text.secondary' }}
             >
               Cancelar
             </Button>
             <Button
+              id="create-button"
               onClick={handleCreateNewTicket}
               variant="contained"
               disabled={!newTicketSubject || !newTicketDescription}

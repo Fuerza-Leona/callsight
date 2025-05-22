@@ -82,8 +82,16 @@ const CompanyInsightsPage = () => {
                       key={index}
                       className="bg-white p-4 rounded-md shadow-sm flex flex-col items-center"
                     >
-                      <span className="text-center font-sm">{topic.topic}</span>
-                      <span className="text-sm text-gray-500">
+                      <span
+                        id={`topic_${index}`}
+                        className="text-center font-sm"
+                      >
+                        {topic.topic}
+                      </span>
+                      <span
+                        id={`calls_amount_${index}`}
+                        className="text-sm text-gray-500"
+                      >
                         {topic.amount} llamadas
                       </span>
                     </div>
@@ -122,7 +130,10 @@ const CompanyInsightsPage = () => {
                         className="w-2 h-2 rounded-full mt-3 mr-3 flex-shrink-0"
                         style={{ backgroundColor: '#1a1a1a' }}
                       ></span>
-                      <p className="text-md text-gray-800 leading-relaxed">
+                      <p
+                        id={`insight_${index}`}
+                        className="text-md text-gray-800 leading-relaxed"
+                      >
                         {insight}
                       </p>
                     </div>
@@ -131,8 +142,9 @@ const CompanyInsightsPage = () => {
 
                 <div className="mt-8 text-center">
                   <button
+                    id="back-button"
                     onClick={() => router.push('/sugerencias')}
-                    className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors cursor-pointer"
                   >
                     Volver a la lista de empresas
                   </button>

@@ -86,6 +86,7 @@ const CompaniesPage = () => {
             <div className="flex items-center justify-between mb-6 items-center text-center justify-center">
               <div>
                 <input
+                  id="search"
                   type="text"
                   placeholder=" Buscar empresa..."
                   value={search}
@@ -112,8 +113,9 @@ const CompaniesPage = () => {
                 gap: '24px',
               }}
             >
-              {filteredCompanies.map((company) => (
+              {filteredCompanies.map((company, index) => (
                 <button
+                  id={`company_${index}`}
                   key={company.company_id}
                   onClick={() =>
                     handleCardClick(company.company_id, company.name)
