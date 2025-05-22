@@ -14,12 +14,13 @@ import {
 } from '@mui/material';
 import { useFetchCompanies } from '@/hooks/fetchCompanies';
 import { useUsers } from '@/hooks/useUsers';
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
 import { User } from '@/interfaces/user';
+import DropDown from '@/components/AdminEditDropdown';
 
 export default function Home() {
   const { user } = useUser();
-  const router = useRouter();
+  //const router = useRouter();
 
   const { getUsers, data: users, loading } = useUsers();
 
@@ -119,8 +120,10 @@ export default function Home() {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="w-2/6">ID</TableCell>
+                    <TableCell className="w-1/6">ID</TableCell>
                     <TableCell className="w-1/12">Nombre</TableCell>
+                    <TableCell className="w-1/12">Rol</TableCell>
+                    <TableCell className="w-1/12">Email</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -129,10 +132,10 @@ export default function Home() {
                     filteredUsers.map((person) => (
                       <TableRow
                         key={person.user_id}
-                        onClick={() =>
+                        /*onClick={() =>
                           router.push(`/users/detail?detail=${person.user_id}`)
-                        }
-                        className="cursor-pointer hover:bg-gray-100"
+                        }*/
+                        className="hover:bg-gray-100"
                       >
                         <TableCell>
                           <p>{person.user_id}</p>
@@ -140,6 +143,14 @@ export default function Home() {
                         <TableCell>
                           <p>{person.username}</p>
                         </TableCell>
+                        <TableCell>
+                          <DropDown
+                            value={person.role}
+                            options={['admin', 'client', 'agent']}
+                            appliedUser={person.user_id}
+                          />
+                        </TableCell>
+                        <TableCell>{person.email}</TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
