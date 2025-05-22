@@ -19,6 +19,7 @@ export default function SearchBar({
 }: SearchBarProps) {
   return (
     <Autocomplete
+      id="search-bar"
       disablePortal
       options={options}
       onChange={(_, value) => onSelect(value ? value.label : null)}

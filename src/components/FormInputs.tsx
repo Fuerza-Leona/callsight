@@ -129,7 +129,7 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
                       className="bg-[#0f1a22] text-white px-3 py-1 rounded-full cursor-pointer"
                       onClick={() => removeParticipant(userId)}
                     >
-                      {participant?.username} ✕
+                      {participant?.username}
                     </span>
                   );
                 })}
@@ -144,8 +144,9 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
                 ) : participants.length === 0 ? (
                   <p>No hay participantes disponibles</p>
                 ) : (
-                  participants.map((participant) => (
+                  participants.map((participant, index) => (
                     <span
+                      id={`participant_${index}`}
                       key={participant.user_id}
                       className={`px-3 py-1 rounded-full cursor-pointer ${
                         selectedParticipants.includes(participant.user_id)
@@ -175,6 +176,7 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
             </div>
 
             <button
+              id="submit-button"
               type="button"
               onClick={handleSubmit}
               className="w-full p-3 bg-[#13202a] cursor-pointer text-white rounded-lg hover:bg-blue-600 transition mt-auto"
@@ -185,7 +187,10 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
 
           {isSubmitting && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/50">
-              <div className="w-16 h-16 border-4 border-gray-300 border-t-[#13202a] rounded-full animate-spin"></div>
+              <div
+                className="w-16 h-16 border-4 border-gray-300 border-t-[#13202a] rounded-full animate-spin"
+                id="loading"
+              ></div>
               <p className="mt-4 text-center font-medium">
                 Procesando llamada...
               </p>

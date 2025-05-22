@@ -30,6 +30,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import TicketMessagesList from '@/components/TicketMessagesList';
 import { UUID } from 'crypto';
 import { useEmployees } from '@/hooks/useEmployees';
+import { useUser } from '@/context/UserContext';
 
 const Tickets = () => {
   const [textFieldHeight, setTextFieldHeight] = useState(500);
@@ -47,6 +48,9 @@ const Tickets = () => {
   const companyId = searchParams.get('company_id');
   const companyName = searchParams.get('company_name') || 'Cliente';
 
+  const { user } = useUser();
+
+  console.log(textFieldHeight);
   // Custom hooks for tickets and messages
   const {
     tickets,
@@ -161,7 +165,6 @@ const Tickets = () => {
     }
   };
 
-  // Transform tickets for SelectableCheckboxList
   const ticketItems = tickets.map((ticket) => ({
     id: ticket.ticket_id,
     label: ticket.subject,
@@ -180,22 +183,23 @@ const Tickets = () => {
     <Suspense
       fallback={
         <div className="flex justify-center items-center min-h-screen">
-          loading...
+          Cargando...
         </div>
       }
     >
-      <div className="relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-[140px] md:pt-28 lg:pt-[150px]">
-        {/* 🔙 Botón de Regresar */}
+      <div className="relative w-full min-h-screen flex flex-col lg:pl-[256px] pt-10">
         <div className="pl-3 mb-4">
-          <button
-            className="bg-[#13202A] text-white px-4 py-2 rounded-lg hover:bg-[#1b2c3d] transition-colors"
-            onClick={() => router.push('/companies')}
-          >
-            ← Regresar
-          </button>
+          {user?.role != 'client' && (
+            <button
+              className="bg-[#13202A] text-white px-4 py-2 rounded-lg hover:bg-[#1b2c3d] transition-colors cursor-pointer"
+              onClick={() => router.push('/tickets')}
+              id="back-button"
+            >
+              ← Regresar
+            </button>
+          )}
         </div>
 
-        {/* 🧾 Título centrado */}
         <div className="w-full text-center mb-6">
           <div className="bg-[#13202A] rounded-2xl mx-20 p-6 inline-block shadow-md">
             <p className="text-white text-3xl font-semibold">
@@ -205,9 +209,7 @@ const Tickets = () => {
         </div>
 
         <div className="w-full flex justify-between px-4">
-          {/* Left column - Tickets list */}
           <div className="flex flex-col w-96 bg-white rounded-lg shadow-md overflow-hidden">
-            {/* Header with action buttons */}
             <Box
               sx={{
                 display: 'flex',
@@ -229,6 +231,7 @@ const Tickets = () => {
                   <FilterListIcon fontSize="small" />
                 </IconButton>
                 <IconButton
+                  id="new-ticket-button"
                   size="small"
                   sx={{
                     color: 'white',
@@ -243,12 +246,11 @@ const Tickets = () => {
               </Box>
             </Box>
 
-            {/* Tickets list */}
             <Box
               sx={{
                 flexGrow: 1,
                 overflowY: 'auto',
-                maxHeight: 'calc(100vh - 350px)',
+                height: 'calc(100vh - 350px)',
               }}
             >
               {loadingTickets ? (
@@ -309,11 +311,10 @@ const Tickets = () => {
             </Box>
           </div>
 
-          {/* Right column - Chat area */}
           <Box
             sx={{
               width: 'calc(100% - 420px)',
-              height: `${textFieldHeight}px`,
+              height: 'calc(100vh - 300px)',
               display: 'flex',
               flexDirection: 'column',
               bgcolor: 'white',
@@ -323,7 +324,6 @@ const Tickets = () => {
               transition: 'height 0.02s ease-in-out',
             }}
           >
-            {/* Chat header */}
             <Box
               sx={{
                 p: 2,
@@ -371,7 +371,6 @@ const Tickets = () => {
               </div>
             </Box>
 
-            {/* Messages area */}
             <Box
               sx={{
                 flexGrow: 1,
@@ -420,7 +419,6 @@ const Tickets = () => {
                     alt="No messages"
                     sx={{ width: 120, height: 120, opacity: 0.7, mb: 3 }}
                     onError={(e) => {
-                      // Fallback in case image doesn't exist
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
                   />
@@ -443,7 +441,6 @@ const Tickets = () => {
               )}
             </Box>
 
-            {/* Message input area */}
             <Box
               sx={{
                 p: 2,
@@ -464,6 +461,7 @@ const Tickets = () => {
               >
                 <InputBase
                   sx={{ ml: 1, flex: 1 }}
+                  id="message-input"
                   placeholder={
                     selectedTicketId
                       ? 'Escriba su mensaje aquí...'
@@ -502,7 +500,6 @@ const Tickets = () => {
           </Box>
         </div>
 
-        {/* New Ticket Modal */}
         <Dialog
           open={isNewTicketModalOpen}
           onClose={handleCloseNewTicketModal}
@@ -516,6 +513,7 @@ const Tickets = () => {
             <TextField
               autoFocus
               margin="dense"
+              id="new_ticket_subject"
               label="Asunto"
               fullWidth
               variant="outlined"
@@ -525,6 +523,7 @@ const Tickets = () => {
             />
             <TextField
               margin="dense"
+              id="new_ticket_description"
               label="Descripción"
               fullWidth
               multiline
@@ -536,12 +535,14 @@ const Tickets = () => {
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 3 }}>
             <Button
+              id="cancel-button"
               onClick={handleCloseNewTicketModal}
               sx={{ color: 'text.secondary' }}
             >
               Cancelar
             </Button>
             <Button
+              id="create-button"
               onClick={handleCreateNewTicket}
               variant="contained"
               disabled={!newTicketSubject || !newTicketDescription}

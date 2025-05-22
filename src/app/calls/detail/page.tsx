@@ -1,14 +1,24 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import TranscriptBubble from '@/components/TranscriptBubble';
 import { useUser } from '@/context/UserContext';
 import { useSpecificCall } from '@/hooks/useSpecificCall';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { Box, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Rating,
+} from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import Image from 'next/image';
+import { useFetchRating } from '@/hooks/fetchRating';
 
 // Client component that uses useSearchParams
 function CallDetail() {
@@ -18,24 +28,43 @@ function CallDetail() {
   const { user } = useUser();
   const isClient = user?.role === 'client';
 
+  const [reviewValue, setReviewValue] = useState<number | null>(null);
+
+  const handleReviewChange = (
+    event: React.SyntheticEvent,
+    value: number | null
+  ) => {
+    setReviewValue(value);
+    setShowModal(false);
+  };
+
   const {
     getSpecificCall,
     data: callData,
     loading: loadingCall,
+    error,
   } = useSpecificCall();
+
+  const { loadingRating, showModal, setShowModal, fetchRating } =
+    useFetchRating();
 
   useEffect(() => {
     if (!call_id || call_id.trim() === '') return;
 
-    getSpecificCall(call_id);
-    console.log('ENTIRE call data: ', callData); //Ver que respuesta da
+    const fetchData = async () => {
+      const promises = [fetchRating(call_id), getSpecificCall(call_id)];
+      await Promise.all(promises);
+    };
+
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [call_id]);
 
   const call = callData;
 
   const renderTranscript = () => {
-    if (!call || !Array.isArray(call.messages)) return <p>No hay mensajes</p>;
+    if (error) return error;
+    if (!call || !Array.isArray(call.messages)) return 'No hay mensajes';
 
     const sortedMessages = [...call.messages].sort(
       (a, b) => a.offsetmilliseconds - b.offsetmilliseconds
@@ -60,8 +89,10 @@ function CallDetail() {
   };
 
   const renderParticipants = () => {
+    if (error) return error;
+
     if (!call || !call.participants || !Array.isArray(call.participants))
-      return <div>No hay participantes.</div>;
+      return 'No hay participantes';
 
     return call.participants.map((participant, index) => {
       const role = participant.users.role?.toLowerCase() || '';
@@ -100,7 +131,7 @@ function CallDetail() {
     <div className="relative lg:left-64 pt-7 w-[98%] lg:w-[calc(100%-17rem)] flex flex-col gap-3 max-w-screen pl-3">
       <div className="flex flex-col md:flex-row items-center justify-between ">
         <div className="text-4xl font-bold">
-          {loadingCall ? (
+          {loadingCall || loadingRating ? (
             <Box display="flex" alignItems="center" height="42px">
               <CircularProgress size={40} />
             </Box>
@@ -122,7 +153,7 @@ function CallDetail() {
             <h1>Fecha de la llamada</h1>
           </div>
           <div className="text-5xl font-bold flex justify-left items-left h-16 flex-grow">
-            {loadingCall ? (
+            {loadingCall || loadingRating ? (
               <Box display="flex" alignItems="center">
                 <CircularProgress size={30} />
               </Box>
@@ -139,15 +170,15 @@ function CallDetail() {
             <h1>Duración de la llamada</h1>
           </div>
           <div className="text-5xl font-bold flex justify-left items-left h-16 flex-grow">
-            {loadingCall ? (
+            {loadingCall || loadingRating ? (
               <Box display="flex" alignItems="center">
                 <CircularProgress size={30} />
               </Box>
             ) : (
-              <>
+              <div id="duration">
                 {call?.summary.duration}
                 <span className="text-sm pl-3 pt-6 font-light"> minutos</span>
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -159,18 +190,18 @@ function CallDetail() {
             <h1>Promedio de evaluación</h1>
           </div>
           <div className="text-5xl font-bold flex justify-left items-left h-16 flex-grow">
-            {loadingCall ? (
+            {loadingCall || loadingRating ? (
               <Box display="flex" alignItems="center">
                 <CircularProgress size={30} />
               </Box>
             ) : (
-              <>
+              <div id="rating">
                 {call?.rating.average ?? 0}
                 <span className="text-sm pl-3 pt-6 font-light">
                   {' '}
                   de {call?.rating.count} reseñas
                 </span>
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -181,7 +212,7 @@ function CallDetail() {
       >
         <div className="flex flex-col bg-white p-3 rounded-md justify-start shadow-md lg:w-1/3">
           <div className="flex flex-col justify-start py-1">
-            {loadingCall ? (
+            {loadingCall || loadingRating ? (
               <Box
                 display="flex"
                 justifyContent="center"
@@ -196,13 +227,17 @@ function CallDetail() {
                   <div className="flex text-md items-left font-bold">
                     <h1 className="mb-2">Problema</h1>
                   </div>
-                  <div className="text-md">{call.summary.problem}</div>
+                  <div id="problem" className="text-md">
+                    {call.summary.problem}
+                  </div>
                 </div>
                 <div className="text-black mt-8 mb-1">
                   <div className="flex text-md items-left font-bold">
                     <h1 className="mb-2">Solución</h1>
                   </div>
-                  <div className="text-md">{call.summary.solution}</div>
+                  <div id="solution" className="text-md">
+                    {call.summary.solution}
+                  </div>
                 </div>
               </>
             ) : (
@@ -227,7 +262,7 @@ function CallDetail() {
               justifyContent: 'center',
             }}
           >
-            {loadingCall ? (
+            {loadingCall || loadingRating ? (
               <Box
                 display="flex"
                 justifyContent="center"
@@ -276,6 +311,7 @@ function CallDetail() {
           </div>
           {call?.company?.logo && (
             <Image
+              id="logo"
               src={call.company.logo}
               width={200}
               height={200}
@@ -287,7 +323,7 @@ function CallDetail() {
             <h1>Participantes</h1>
           </div>
           <div className="flex flex-col gap-3">
-            {loadingCall ? (
+            {loadingCall || loadingRating ? (
               <Box
                 display="flex"
                 justifyContent="center"
@@ -297,7 +333,7 @@ function CallDetail() {
                 <CircularProgress size={40} />
               </Box>
             ) : (
-              renderParticipants()
+              <div id="participants">{renderParticipants()}</div>
             )}
           </div>
         </div>
@@ -308,7 +344,7 @@ function CallDetail() {
           <div className="flex text-md items-left font-bold">
             <h1 className="mt-1 mb-4">Transcripción</h1>
           </div>
-          {loadingCall ? (
+          {loadingCall || loadingRating ? (
             <Box
               display="flex"
               justifyContent="center"
@@ -318,17 +354,32 @@ function CallDetail() {
               <CircularProgress size={50} />
             </Box>
           ) : (
-            renderTranscript()
+            <div id="transcript">{renderTranscript()}</div>
           )}
         </div>
       </div>
+      <Dialog open={showModal} onClose={() => setShowModal(false)}>
+        <DialogTitle>Califica esta llamada</DialogTitle>
+        <DialogContent>
+          <Rating
+            name="call-review"
+            value={reviewValue}
+            onChange={handleReviewChange}
+            size="large"
+            max={5}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowModal(false)}>Cancelar</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
 
 export default function LlamadaPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['client', 'agent', 'admin']}>
       <Suspense fallback={<div className="p-4 text-center">Cargando...</div>}>
         <CallDetail />
       </Suspense>

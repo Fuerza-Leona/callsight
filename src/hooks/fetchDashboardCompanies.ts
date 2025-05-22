@@ -6,6 +6,7 @@ import api from '@/utils/api';
 export interface Company {
   company_id: string;
   name: string;
+  logo: string;
 }
 
 export interface FetchCompanyResponse {
