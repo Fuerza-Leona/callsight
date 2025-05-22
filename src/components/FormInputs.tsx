@@ -187,7 +187,10 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
 
           {isSubmitting && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/50">
-              <div className="w-16 h-16 border-4 border-gray-300 border-t-[#13202a] rounded-full animate-spin"></div>
+              <div
+                className="w-16 h-16 border-4 border-gray-300 border-t-[#13202a] rounded-full animate-spin"
+                id="loading"
+              ></div>
               <p className="mt-4 text-center font-medium">
                 Procesando llamada...
               </p>

@@ -58,6 +58,7 @@ const CompaniesSuggestionsPage = () => {
                 <input
                   type="text"
                   placeholder=" Buscar empresa..."
+                  id="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-[400px] mt-5 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -85,8 +86,9 @@ const CompaniesSuggestionsPage = () => {
               }}
             >
               {/* Map through each company and create a card */}
-              {filteredCompanies.map((company) => (
+              {filteredCompanies.map((company, index) => (
                 <button
+                  id={`company_${index}`}
                   key={company.company_id}
                   onClick={() =>
                     handleCardClick(company.company_id, company.name)

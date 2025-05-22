@@ -37,7 +37,10 @@ const ChatbotSideNavItems = () => {
           <p className="text-neutral-400 italic">Historial de chats</p>
           {getChatsLoading && (
             <div className="relative w-full flex flex-col py-[50px] items-center text-center">
-              <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
+              <div
+                className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin"
+                id="loading_chats"
+              />
               <p className="text-lg text-gray-600">Cargando chats...</p>
             </div>
           )}
