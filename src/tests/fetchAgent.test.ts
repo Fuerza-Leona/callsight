@@ -22,16 +22,17 @@ const happyResponse = {
   headers: {},
 };
 
+const errorResponse = {
+  data: {
+    error: 'Network Error',
+  },
+  status: 400,
+  statusText: 'Bad Request',
+  headers: {},
+};
+
 describe('useFetchAgents', () => {
   test('happy path', async () => {
-    /*
-
-    const { fetchAgents, agents } = useFetchAgents();
-    await fetchAgents();
-
-    expect(api.get).toHaveBeenCalledWith('/users/employees');
-    expect(agents).toEqual(mockAgents);*/
-
     (api.get as jest.Mock).mockResolvedValueOnce(happyResponse);
 
     const { result } = renderHook(() => useFetchAgents());
@@ -40,22 +41,20 @@ describe('useFetchAgents', () => {
       await result.current.fetchAgents();
     });
 
-    console.log(result.current.agents);
-    expect(true).toEqual(true); // Placeholder for actual test logic
+    expect(result.current.agents).toEqual(mockAgents);
+    expect(result.current.loadingAgents).toBe(false);
+    expect(result.current.errorAgents).toBe('');
   });
 
-  /*test('should set loading to true when fetching agents', async () => {
-    const { fetchAgents, loadingAgents } = useFetchAgents();
-    const promise = fetchAgents();
-    expect(loadingAgents).toBe(true);
-    await promise;
-  });
+  test('error path', async () => {
+    (api.get as jest.Mock).mockRejectedValueOnce(errorResponse);
 
-  test('should set error when fetching agents fails', async () => {
-    const { fetchAgents, errorAgents } = useFetchAgents();
-    // Mock the API call to throw an error
-    jest.spyOn(api, 'get').mockRejectedValue(new Error('Network Error'));
-    await fetchAgents();
-    expect(errorAgents).toBeInstanceOf(Error);
-  });*/
+    const { result } = renderHook(() => useFetchAgents());
+
+    await act(async () => {
+      await result.current.fetchAgents();
+    });
+    expect(result.current.loadingAgents).toBe(false);
+    expect(result.current.errorAgents).toBe(errorResponse);
+  });
 });
