@@ -6,15 +6,17 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "test": "echo \"Not testing for now\" && exit 0",
+    "test": "jest",
     "lint": "eslint src --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext js,jsx,ts,tsx --fix",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,html}'",
     "prepare": "husky"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.27.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@jest/globals": "^29.7.0",
     "@mui/icons-material": "^6.4.9",
     "@mui/material": "^6.4.10",
     "@mui/x-charts": "^7.28.0",
@@ -24,6 +26,8 @@
     "cookie": "^1.0.2",
     "d3-cloud": "^1.2.7",
     "dayjs": "^1.11.13",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.0.0-beta.3",
     "lucide-react": "^0.511.0",
     "next": "^15.3.0",
     "react": "^18.3.1",
@@ -31,12 +35,14 @@
     "react-responsive": "^10.0.1",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
-    "tailwindcss": "^4.0.12"
+    "tailwindcss": "^4.0.12",
+    "ts-jest": "^29.3.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/eslintrc": "^3",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
