@@ -46,10 +46,19 @@ body {
 }
 
 @keyframes flicker {
-  0%, 100% { opacity: 0.05; }
-  45% { opacity: 0.15; }
-  50% { opacity: 0.3; }
-  55% { opacity: 0.1; }
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  45% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  55% {
+    opacity: 0.1;
+  }
 }
 
 .animate-flicker {
