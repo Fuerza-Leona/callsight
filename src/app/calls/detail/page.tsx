@@ -6,6 +6,7 @@ import TranscriptBubble from '@/components/TranscriptBubble';
 import { useUser } from '@/context/UserContext';
 import { useSpecificCall } from '@/hooks/useSpecificCall';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import ChatbotPopup from '@/components/ChatbotPopup';
 import {
   Box,
   Button,
@@ -15,7 +16,9 @@ import {
   DialogContent,
   DialogTitle,
   Rating,
+  Fab,
 } from '@mui/material';
+import ChatIcon from '@mui/icons-material/Chat';
 import { PieChart } from '@mui/x-charts/PieChart';
 import Image from 'next/image';
 import { useFetchRating } from '@/hooks/fetchRating';
@@ -30,6 +33,7 @@ function CallDetail() {
   const isClient = user?.role === 'client';
 
   const [reviewValue, setReviewValue] = useState<number | null>(null);
+  const [chatbotOpen, setChatbotOpen] = useState(false);
 
   const { postRating } = usePostRating();
 
@@ -364,6 +368,7 @@ function CallDetail() {
           )}
         </div>
       </div>
+
       <Dialog open={showModal} onClose={() => setShowModal(false)}>
         <DialogTitle>Califica esta llamada</DialogTitle>
         <DialogContent>
@@ -379,6 +384,31 @@ function CallDetail() {
           <Button onClick={() => setShowModal(false)}>Cancelar</Button>
         </DialogActions>
       </Dialog>
+
+      {/* Floating Chatbot Button */}
+      <Fab
+        aria-label="chat"
+        onClick={() => setChatbotOpen(true)}
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: 16,
+          zIndex: 1000,
+          color: '#fff',
+          backgroundColor: '#13202A',
+        }}
+      >
+        <ChatIcon />
+      </Fab>
+
+      {/* Chatbot Popup */}
+      {call?.conversation?.conversation_id && (
+        <ChatbotPopup
+          open={chatbotOpen}
+          onClose={() => setChatbotOpen(false)}
+          conversationId={call.conversation.conversation_id}
+        />
+      )}
     </div>
   );
 }

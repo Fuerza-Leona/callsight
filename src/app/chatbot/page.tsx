@@ -15,6 +15,7 @@ import { useUser } from '@/context/UserContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ChatBotText from '@/components/ChatBotText';
 import { usePrevChatsHistory } from '@/hooks/usePrevChatsHistory';
+import ProviderBase from '@/components/ProviderBase';
 
 const formatSteps = (text: string): string[] => {
   //Enumarate steps if response has them
@@ -227,6 +228,10 @@ const ChatbotInner = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationIdFromParams]);
 
+  const hasTrigger = messages.some(
+    (m) => m.role === 'user' && m.content.trim().toLowerCase() === 'leones'
+  );
+
   useEffect(() => {
     if (data?.conversation_id) {
       setCurrentConversationID(data.conversation_id);
@@ -238,8 +243,20 @@ const ChatbotInner = () => {
       <ChatHistorySidebar />
       {!loading && !error && (
         <div
-          className={`relative w-full min-h-screen flex flex-col lg:pl-[256px] lg:pr-[300px]`}
+          className={`relative w-full min-h-screen flex flex-col lg:pl-[256px] lg:pr-[300px] overflow-hidden`}
         >
+          {hasTrigger && (
+            <>
+              <ProviderBase />
+              <div className="pointer-events-none absolute inset-0 z-20 animate-flicker bg-black opacity-10" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://media1.tenor.com/m/5lETWCF3G7kAAAAC/alex.gif"
+                alt="wasaaaaa"
+                className="w-full h-full object-cover opacity-60 animate-fade-in"
+              />
+            </>
+          )}
           {!hasSent && (
             <div className="text-5xl font-bold pt-10 px-10">
               <p>Hola {name}.</p>
