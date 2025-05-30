@@ -102,25 +102,32 @@ export const sideNavLinksAgent: NavLink[] = [
   },
 ];
 
-export const sideNavLinksClient: NavLink[] = [
-  {
-    id: 1,
-    name: 'Análisis de llamada',
-    href: 'calls/search',
-  },
-  {
-    id: 2,
-    name: 'Chatbot',
-    href: 'chatbot',
-  },
-  {
-    id: 3,
-    name: 'Mi perfil',
-    href: 'perfil',
-  },
-  {
-    id: 4,
-    name: 'Soporte',
-    href: 'tickets',
-  },
-];
+import { useUser } from '../context/UserContext';
+
+export const useSideNavLinksClient = () => {
+  const { user } = useUser();
+  const companyId = user?.company_id || '';
+
+  return [
+    {
+      id: 1,
+      name: 'Análisis de llamada',
+      href: 'calls/search',
+    },
+    {
+      id: 2,
+      name: 'Chatbot',
+      href: 'chatbot',
+    },
+    {
+      id: 3,
+      name: 'Mi perfil',
+      href: 'perfil',
+    },
+    {
+      id: 4,
+      name: 'Soporte',
+      href: `tickets/support?company_id=${companyId}`,
+    },
+  ];
+};
