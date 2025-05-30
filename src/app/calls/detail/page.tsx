@@ -17,12 +17,14 @@ import {
   DialogTitle,
   Rating,
   Fab,
+  Tooltip,
 } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import { PieChart } from '@mui/x-charts/PieChart';
 import Image from 'next/image';
 import { useFetchRating } from '@/hooks/fetchRating';
 import { usePostRating } from '@/hooks/userPostRating';
+import { Info } from '@mui/icons-material';
 
 // Client component that uses useSearchParams
 function CallDetail() {
@@ -290,8 +292,22 @@ function CallDetail() {
         </div>
 
         <div className="bg-white rounded-md p-3 flex flex-col justify-left shadow-md lg:w-1/3">
-          <div className="flex text-md items-left font-bold">
-            <h1 className="mt-1">Emociones detectadas del cliente</h1>
+          <div className="flex gap-2 items-center mb-3">
+            <h1 className="text-md font-bold">Emociones del cliente</h1>
+            <Tooltip
+              title="Gráfico de pastel que muestra la proporción de emociones detectadas del cliente en las conversaciones. Las emociones se clasifican en positivas, neutras y negativas."
+              placement="top"
+              slotProps={{
+                tooltip: {
+                  sx: {
+                    fontSize: '16px',
+                    maxWidth: '300px',
+                  },
+                },
+              }}
+            >
+              <Info sx={{ fontSize: 20, color: '#666', cursor: 'help' }} />
+            </Tooltip>
           </div>
           <Box
             sx={{
@@ -317,7 +333,7 @@ function CallDetail() {
               <PieChart
                 series={[
                   {
-                    arcLabel: (item) => `${item.value.toFixed(3)}`,
+                    arcLabel: (item) => `${Math.round(item.value * 100)}%`,
                     data: [
                       {
                         id: 0,
@@ -382,8 +398,22 @@ function CallDetail() {
 
       <div className="flex w-[calc(100%)] justify-start gap-31 mt-4 bg-white rounded-xl mb-3 shadow-lg">
         <div className="flex flex-col w-full px-4 py-4 gap-2" id="transcript">
-          <div className="flex text-md items-left font-bold">
-            <h1 className="mt-1 mb-4">Transcripción</h1>
+          <div className="flex gap-2 items-center mb-3">
+            <h1 className="text-md font-bold">Transcripción</h1>
+            <Tooltip
+              title="La transcripción de la llamada muestra el texto de la conversación entre el cliente y el agente. Los mensajes están ordenados cronológicamente. Los textos de la izquierda son del agente y los de la derecha del cliente."
+              placement="top"
+              slotProps={{
+                tooltip: {
+                  sx: {
+                    fontSize: '16px',
+                    maxWidth: '300px',
+                  },
+                },
+              }}
+            >
+              <Info sx={{ fontSize: 20, color: '#666', cursor: 'help' }} />
+            </Tooltip>
           </div>
           {loadingCall || loadingRating ? (
             <Box

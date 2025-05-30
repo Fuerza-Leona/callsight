@@ -22,6 +22,7 @@ import {
   LinearProgress,
   styled,
   CircularProgress,
+  Tooltip,
 } from '@mui/material';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import {
@@ -29,6 +30,7 @@ import {
   Company,
 } from '@/hooks/fetchDashboardCompanies';
 import { useUser } from '@/context/UserContext';
+import { Info } from '@mui/icons-material';
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -352,9 +354,25 @@ export default function Home() {
               className="w-full shadow-md rounded-md bg-white p-5"
               style={{ minHeight: '260px' }}
             >
-              <h1 className="text-lg font-bold ">
-                Temas principales detectados
-              </h1>
+              <div className="flex gap-2 items-center mb-3">
+                <h1 className="text-lg font-bold">
+                  Temas principales detectados
+                </h1>
+                <Tooltip
+                  title="Nube de palabras que muestra los temas más frecuentes detectados en las conversaciones. Entre más grande y resaltada aparece una palabra o frase, mayor es su frecuencia."
+                  placement="top"
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        fontSize: '16px',
+                        maxWidth: '300px',
+                      },
+                    },
+                  }}
+                >
+                  <Info sx={{ fontSize: 20, color: '#666', cursor: 'help' }} />
+                </Tooltip>
+              </div>
 
               <Box
                 sx={{
@@ -396,9 +414,25 @@ export default function Home() {
                 className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
                 style={{ minHeight: '300px' }}
               >
-                <h1 className="text-lg font-bold pb-2">
-                  Emociones del cliente
-                </h1>
+                <div className="flex gap-2 items-center mb-3">
+                  <h1 className="text-lg font-bold">Emociones del cliente</h1>
+                  <Tooltip
+                    title="Gráfico de pastel que muestra la proporción de emociones detectadas del cliente en las conversaciones. Las emociones se clasifican en positivas, neutras y negativas."
+                    placement="top"
+                    slotProps={{
+                      tooltip: {
+                        sx: {
+                          fontSize: '16px',
+                          maxWidth: '300px',
+                        },
+                      },
+                    }}
+                  >
+                    <Info
+                      sx={{ fontSize: 20, color: '#666', cursor: 'help' }}
+                    />
+                  </Tooltip>
+                </div>
 
                 <Box
                   sx={{
@@ -428,7 +462,8 @@ export default function Home() {
                     <PieChart
                       series={[
                         {
-                          arcLabel: (item) => `${item.value}`,
+                          arcLabel: (item) =>
+                            `${Math.round(item.value * 100)}%`,
                           data: [
                             {
                               id: 0,
@@ -460,9 +495,27 @@ export default function Home() {
                 className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
                 style={{ minHeight: '300px' }}
               >
-                <h1 className="text-lg font-bold pb-4">
-                  Evaluaciones del cliente
-                </h1>
+                <div className="flex gap-2 items-center mb-3">
+                  <h1 className="text-lg font-bold">
+                    Evaluaciones del cliente
+                  </h1>
+                  <Tooltip
+                    title="Barras que muestran la proporción de evaluaciones de los clientes en las conversaciones que participan. Las evaluaciones se clasifican del 1 al 5, donde 1 es la peor y 5 la mejor."
+                    placement="top"
+                    slotProps={{
+                      tooltip: {
+                        sx: {
+                          fontSize: '16px',
+                          maxWidth: '300px',
+                        },
+                      },
+                    }}
+                  >
+                    <Info
+                      sx={{ fontSize: 20, color: '#666', cursor: 'help' }}
+                    />
+                  </Tooltip>
+                </div>
 
                 <Box
                   sx={{
