@@ -26,11 +26,9 @@ import {
   useFetchDashboardCompanies,
 } from '@/hooks/fetchDashboardCompanies';
 import { useUser } from '@/context/UserContext';
-import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const { user } = useUser();
-  const router = useRouter();
 
   const { clients, loadingClients, errorClients, fetchClients } =
     useFetchClients();
@@ -137,17 +135,8 @@ export default function Home() {
   return (
     <ProtectedRoute allowedRoles={['admin', 'agent', 'client']}>
       <div className="relative lg:left-64 top-8 w-[96%] lg:w-[calc(100%-17rem)]  flex flex-col md:justify-around md:flex-row gap-3  pl-3">
-        <div className="flex flex-col align-center text-center gap-2">
-          {user?.role != 'client' ? (
-            <button
-              className=" bg-[#13202A] text-white w-[200px] mt-2 py-2 rounded-lg hover:bg-[#1b2c3d] transition-colors cursor-pointer"
-              onClick={() => router.push('/calls/dashboard')}
-            >
-              ← Regresar al tablero
-            </button>
-          ) : (
-            <p className="text-4xl font-bold text-left">Tablero</p>
-          )}
+        <div className="flex flex-col align-center text-left gap-2">
+          <p className="text-4xl font-bold mt-2">Llamadas</p>
 
           <div className="text-white bg-[#1E242B] rounded-md mb-5 mt-4">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
