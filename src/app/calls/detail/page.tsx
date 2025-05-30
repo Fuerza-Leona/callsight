@@ -34,18 +34,12 @@ function CallDetail() {
 
   const [reviewValue, setReviewValue] = useState<number | null>(null);
   const [chatbotOpen, setChatbotOpen] = useState(false);
+  const [callRatingData, setCallRatingData] = useState<{
+    average: number | 0;
+    count: number | 0;
+  }>();
 
   const { postRating } = usePostRating();
-
-  const handleReviewChange = async (
-    event: React.SyntheticEvent,
-    value: number | null
-  ) => {
-    if (!call_id || call_id.trim() === '' || !value) return;
-    await postRating(call_id, value);
-    setReviewValue(value);
-    setShowModal(false);
-  };
 
   const {
     getSpecificCall,
@@ -56,6 +50,37 @@ function CallDetail() {
 
   const { loadingRating, showModal, setShowModal, fetchRating } =
     useFetchRating();
+
+  const handleReviewChange = async (
+    event: React.SyntheticEvent,
+    value: number | null
+  ) => {
+    if (!call_id || call_id.trim() === '' || !value) return;
+    setReviewValue(value);
+    try {
+      await postRating(call_id, value);
+
+      if (callData) {
+        const currentTotal = callData.rating?.average;
+        const newCount = callData.rating?.count + 1;
+        const newAverage = (currentTotal + value) / newCount;
+
+        setCallRatingData({
+          average: newAverage,
+          count: newCount,
+        });
+      } else {
+        setCallRatingData({
+          average: value,
+          count: 1,
+        });
+      }
+    } catch (error) {
+      console.error('Error posting rating:', error);
+    } finally {
+      setShowModal(false);
+    }
+  };
 
   useEffect(() => {
     if (!call_id || call_id.trim() === '') return;
@@ -71,6 +96,12 @@ function CallDetail() {
   }, [call_id]);
 
   const call = callData;
+
+  useEffect(() => {
+    if (call?.rating) {
+      setCallRatingData(call.rating);
+    }
+  }, [call?.rating]);
 
   const renderTranscript = () => {
     if (error) return error;
@@ -206,10 +237,10 @@ function CallDetail() {
               </Box>
             ) : (
               <div id="rating">
-                {call?.rating.average ?? 0}
+                {callRatingData?.average}
                 <span className="text-sm pl-3 pt-6 font-light">
                   {' '}
-                  de {call?.rating.count} reseñas
+                  de {callRatingData?.count} reseñas
                 </span>
               </div>
             )}
