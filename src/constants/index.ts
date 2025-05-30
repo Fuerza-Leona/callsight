@@ -12,17 +12,17 @@ export const navBarLinks: NavLink[] = [
   {
     id: 1,
     name: '¿Quiénes somos?',
-    href: 'nosotros',
+    href: '#nosotros',
   },
   {
     id: 2,
     name: '¿Qué hacemos?',
-    href: 'que-hacemos',
+    href: '#que-hacemos',
   },
   {
     id: 3,
     name: '¿Cómo funciona?',
-    href: 'como-funciona',
+    href: '#como-funciona',
   },
 ];
 
