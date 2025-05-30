@@ -24,8 +24,12 @@ export const useLogin = () => {
       });
 
       setUser(response.data.user);
-
-      router.push('/perfil');
+      const role = response.data.user.role;
+      if (role !== 'client') {
+        router.push('/calls/dashboard');
+      } else {
+        router.push('/calls/search');
+      }
     } catch (error) {
       setError(
         `Error al Iniciar sesión: ${error instanceof Error ? error.message : String(error)}`

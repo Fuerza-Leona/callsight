@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation'; // Importar usePathname
 import { navBarLinks } from '@/constants';
 import { useUser } from '@/context/UserContext';
 
@@ -28,10 +29,14 @@ const NavItems = () => {
 
 const Navbar = () => {
   const { user } = useUser();
+  const pathname = usePathname(); // Obtener la ruta actual
 
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
+
+  // Determinar si estamos en la página de login
+  const isLoginPage = pathname === '/login';
 
   return (
     <header className="lg:pl-0 fixed top-0 left-0 right-0 z-50 bg-[#13202A]">
@@ -65,16 +70,15 @@ const Navbar = () => {
                 height={24}
               />
             </button>
+
+            {/* Botón dinámico: Login/Regresar según la página actual */}
             {!user && (
-              <Link href={'/login'}>
-                <p className="w-30 rounded-2xl text-center py-2 bg-white block">
-                  Iniciar sesión
+              <Link href={isLoginPage ? '/' : '/login'}>
+                <p className="w-30 rounded-2xl text-center py-2 bg-white px-2 hover:bg-gray-300 transition-colors">
+                  {isLoginPage ? 'Regresar' : 'Iniciar sesión'}
                 </p>
               </Link>
             )}
-            {/* <a href={user? "/" : "/login"}>
-                        <p className="rounded-2xl px-3 py-1 bg-white">{user? "Logout" : "Login"}</p>
-                </a> */}
           </div>
         </div>
       </div>
