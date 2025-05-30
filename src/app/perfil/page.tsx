@@ -74,7 +74,7 @@ export default function Home() {
                 className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center"
                 style={{ backgroundColor: 'var(--jonquil)' }}
               >
-                <p>Empresa</p>
+                <p>Departamento</p>
                 <h2 className="font-thin text-3xl">{department}</h2>
               </div>
             )}

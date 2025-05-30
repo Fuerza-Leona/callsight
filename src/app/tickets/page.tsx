@@ -78,7 +78,7 @@ const CompaniesPage = () => {
             className="text-7xl font-bold text-center"
             style={{ color: 'var(--neoris-blue)' }}
           >
-            Soporte a Clientes
+            Soporte por Empresas
           </h1>
 
           {/* Fila con search bar a la izquierda, solo si hay 2+ empresas */}
