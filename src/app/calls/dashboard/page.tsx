@@ -31,6 +31,7 @@ import {
 } from '@/hooks/fetchDashboardCompanies';
 import { useUser } from '@/context/UserContext';
 import { Info } from '@mui/icons-material';
+import { useFetchReport } from '@/hooks/useFetchReport';
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -62,6 +63,8 @@ export default function Home() {
 
   const { companies, loadingCompanies, errorCompanies, fetchCompanies } =
     useFetchDashboardCompanies();
+
+  const { loadingReport, fetchReport } = useFetchReport();
 
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
@@ -143,10 +146,13 @@ export default function Home() {
           <div className="flex gap-2">
             <div>
               <button
-                className="text-[#FFFFFF] rounded-md p-2 w-full"
+                className="text-[#FFFFFF] rounded-md p-2 w-full cursor-pointer"
                 style={{ backgroundColor: 'var(--sky-blue)' }}
+                onClick={fetchReport}
+                disabled={loadingReport}
               >
-                Exportar como PDF <FileDownloadIcon />
+                {loadingReport ? 'Exportando...' : 'Exportar como PDF'}{' '}
+                <FileDownloadIcon />
               </button>
             </div>
             <Link
