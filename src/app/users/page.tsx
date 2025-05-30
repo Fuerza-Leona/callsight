@@ -56,32 +56,30 @@ export default function Home() {
 
   return (
     <ProtectedRoute allowedRoles={['admin']}>
-      <div className="relative lg:left-64 top-32 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3  pl-3">
-        <div className="w-3/10 flex flex-col align-center text-center gap-2">
-          <MultipleSelectChip
-            id="companies"
-            title={'Empresa'}
-            names={companies.map((company) => company.name)}
-            value={selectedCompanies}
-            onChange={(e) => {
-              handleFilter([...e]);
-            }}
-          />
-        </div>
-        <div className="w-full md:w-[80%] flex flex-col">
-          <div className="flex justify-between gap-5">
+      <div className="relative lg:left-64 top-16 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3  pl-3">
+        <div className="w-full md:w-[90%] flex flex-col">
+          <div className="flex justify-between items-center gap-5">
             <TextField
               label="Buscar"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full"
             />
+            <MultipleSelectChip
+              id="companies"
+              title={'Empresa'}
+              names={companies.map((company) => company.name)}
+              value={selectedCompanies}
+              onChange={(e) => {
+                handleFilter([...e]);
+              }}
+            />
             {user && user!.role == 'admin' && (
               <button
-                className="rounded-2xl bg-[#13202A] text-white md:w-50 hover:cursor-pointer hover:bg-[#364550]"
+                className="rounded-2xl bg-[#13202A] text-white md:w-60 hover:cursor-pointer hover:bg-[#364550] h-14 p-2"
                 onClick={() => (window.location.href = '/users/nuevo')}
               >
-                Añadir usuario
+                <p className="text-md">Añadir usuario</p>
               </button>
             )}
           </div>
@@ -119,7 +117,7 @@ export default function Home() {
 
               <Table stickyHeader>
                 <TableHead>
-                  <TableRow>
+                  <TableRow className="bg-[#f3f4f6]">
                     <TableCell className="w-1/6">ID</TableCell>
                     <TableCell className="w-1/12">Nombre</TableCell>
                     <TableCell className="w-1/12">Rol</TableCell>
@@ -135,13 +133,17 @@ export default function Home() {
                         /*onClick={() =>
                           router.push(`/users/detail?detail=${person.user_id}`)
                         }*/
-                        className="hover:bg-gray-100"
+                        className="hover:bg-gray-100 bg-white"
                       >
                         <TableCell>
-                          <p>{person.user_id}</p>
+                          <div className="bg-gray-100 rounded-md p-2 w-fit text-gray-500">
+                            <p>{person.user_id}</p>
+                          </div>
                         </TableCell>
                         <TableCell>
-                          <p>{person.username}</p>
+                          <b>
+                            <p className="text-md">{person.username}</p>
+                          </b>
                         </TableCell>
                         <TableCell>
                           <DropDown
@@ -150,7 +152,9 @@ export default function Home() {
                             appliedUser={person.user_id}
                           />
                         </TableCell>
-                        <TableCell>{person.email}</TableCell>
+                        <TableCell className="text-gray-500">
+                          {person.email}
+                        </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>

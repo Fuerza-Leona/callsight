@@ -51,9 +51,9 @@ export default function Home() {
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <div className="relative lg:left-64 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3  pl-3">
-        <div className="w-full flex flex-col">
-          <div className="flex flex-col w-full gap-5 md:ml-10 p-30">
-            <p>Crear nueva empresa</p>
+        <div className="w-full flex flex-col justify-center items-center m-10 rounded">
+          <div className="flex flex-col gap-5 md:ml-10 p-30 bg-white rounded-xl w-[80%]">
+            <p className="text-2xl font-bold">Crear nueva empresa</p>
             <TextField
               placeholder="Nombre de la empresa"
               variant="outlined"
