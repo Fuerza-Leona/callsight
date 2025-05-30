@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
-  sideNavLinksClient,
+  useSideNavLinksClient,
   sideNavLinksAgent,
   sideNavLinksAdmin,
 } from '@/constants';
@@ -84,6 +84,7 @@ const ChatbotSideNavItems = () => {
 const SideNavItems = () => {
   const pathname = usePathname();
   const { user } = useUser();
+  const sideNavLinksClient = useSideNavLinksClient();
 
   return (
     <ul className="flex flex-col items-center text-center gap-4 lg:gap-6 relative z-20 ">

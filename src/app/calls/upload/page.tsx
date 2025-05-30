@@ -35,7 +35,7 @@ const Page: React.FC = () => {
       <div className="relative left-64 top-20 w-82/100 flex justify-center">
         <div className="w-full max-w-md pb-10">
           <h1 className="text-black text-2xl font-bold text-center mb-6">
-            Analizar una llamada
+            Subir una llamada
           </h1>
           <FormInputs onFormSubmit={handleFormSubmit} />
         </div>

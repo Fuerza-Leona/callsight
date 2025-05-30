@@ -48,7 +48,7 @@ const CompaniesSuggestionsPage = () => {
             className="text-7xl font-bold text-center"
             style={{ color: 'var(--neoris-blue)' }}
           >
-            Sugerencias por Cliente
+            Sugerencias por Empresa
           </h1>
 
           {/* Search bar - only show if there are 2 or more companies */}

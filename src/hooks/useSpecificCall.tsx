@@ -18,11 +18,10 @@ interface ApiResponse {
 export const useSpecificCall = () => {
   const [data, setData] = useState<SpecificCall | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getSpecificCall = async (call_id: string) => {
     console.log('Fetching call with call_id:', call_id);
-    setLoading(true);
     setError(null);
 
     try {

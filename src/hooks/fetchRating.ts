@@ -4,6 +4,7 @@ import { useState } from 'react';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
 import { AxiosError } from 'axios';
+import { useUser } from '@/context/UserContext';
 
 interface RatingResponse {
   rating?: number;
@@ -11,9 +12,11 @@ interface RatingResponse {
 
 export const useFetchRating = () => {
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | unknown>('');
   const router = useRouter();
+  const user = useUser();
+  const role = user.user?.role;
 
   const fetchRating = async (conversation_id: string) => {
     try {
@@ -22,19 +25,18 @@ export const useFetchRating = () => {
       );
       const rating = response.data?.rating || 0;
       if (rating == 0) {
-        setTimeout(() => setShowModal(true), 200);
+        setTimeout(() => setShowModal(true), 5000);
       }
     } catch (err) {
-      let detail = 'Error fetching ticket messages';
-      if ((err as AxiosError).isAxiosError) {
-        detail =
-          (err as AxiosError<{ detail?: string }>).response?.data?.detail ||
-          detail;
+      if (err instanceof AxiosError) {
+        const message = err.response?.data?.detail;
+        console.log('Error:', message);
+        if (message == '401: User is not a participant' && role != 'admin') {
+          router.push('/perfil');
+        } else {
+          setError('Ocurrio un error.');
+        }
       }
-      if (detail === 'User is not a participant') {
-        router.push('/perfil');
-      }
-      setError(detail);
     } finally {
       setLoading(false);
     }
