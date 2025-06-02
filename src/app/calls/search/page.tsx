@@ -133,10 +133,10 @@ export default function Home() {
   };
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['admin', 'agent', 'client']}>
       <div className="relative lg:left-64 top-8 w-[96%] lg:w-[calc(100%-17rem)]  flex flex-col md:justify-around md:flex-row gap-3  pl-3">
-        <div className="flex flex-col align-center text-center gap-2">
-          <p className="text-4xl font-bold text-left mt-2">Tablero</p>
+        <div className="flex flex-col align-center text-left gap-2">
+          <p className="text-4xl font-bold mt-2">Llamadas</p>
 
           <div className="text-white bg-[#1E242B] rounded-md mb-5 mt-4">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
@@ -149,38 +149,16 @@ export default function Home() {
               />
             </LocalizationProvider>
           </div>
-          {user?.role !== 'client' && (
-            <MultipleSelectChip
-              title={
-                loadingClients
-                  ? 'Cliente (Cargando...)'
-                  : errorClients
-                    ? 'Cliente (Error)'
-                    : 'Cliente'
-              }
-              names={(() => {
-                if (loadingClients || errorClients || !clients) {
-                  return [];
-                }
-                return clients.map((client: Client) => ({
-                  id: client.user_id,
-                  name: client.username,
-                }));
-              })()}
-              value={selectedClients}
-              onChange={handleClientsChange}
-            />
-          )}
-
           {user?.role === 'admin' && (
             <div className="">
               <MultipleSelectChip
+                id="agents"
                 title={
                   loadingAgents
-                    ? 'Empleados (Cargando...)'
+                    ? 'Agentes (Cargando...)'
                     : errorAgents
-                      ? 'Empleados (Error)'
-                      : 'Empleados'
+                      ? 'Agentes (Error)'
+                      : 'Agentes'
                 }
                 names={(() => {
                   if (loadingAgents || errorAgents || !agents) {
@@ -194,12 +172,16 @@ export default function Home() {
                 value={selectedAgents}
                 onChange={handleAgentsChange}
               />
+              <small className="text-gray-500 text-left block px-4 mt-1 mb-2">
+                Personal que atiende la llamada
+              </small>
             </div>
           )}
 
           {user?.role !== 'client' && (
             <div className="">
               <MultipleSelectChip
+                id="companies"
                 title={
                   loadingCompanies
                     ? 'Empresas (Cargando...)'
@@ -219,6 +201,38 @@ export default function Home() {
                 value={selectedCompanies}
                 onChange={handleCompaniesChange}
               />
+              <small className="text-gray-500 text-left block px-4 mt-1 mb-2">
+                Organizaciones a las que se le brinda soporte
+              </small>
+            </div>
+          )}
+
+          {user?.role !== 'client' && (
+            <div>
+              <MultipleSelectChip
+                id="client"
+                title={
+                  loadingClients
+                    ? 'Cliente (Cargando...)'
+                    : errorClients
+                      ? 'Cliente (Error)'
+                      : 'Cliente'
+                }
+                names={(() => {
+                  if (loadingClients || errorClients || !clients) {
+                    return [];
+                  }
+                  return clients.map((client: Client) => ({
+                    id: client.user_id,
+                    name: client.username,
+                  }));
+                })()}
+                value={selectedClients}
+                onChange={handleClientsChange}
+              />
+              <small className="text-gray-500 text-left block px-4 mt-1 mb-2">
+                Usuarios de la empresa que reciben soporte
+              </small>
             </div>
           )}
         </div>
@@ -234,9 +248,9 @@ export default function Home() {
             </div>
           ) : (
             <div
-              className="overflow-auto mt-8"
+              className="overflow-auto mt-4"
               style={{
-                maxHeight: 'calc(100vh - 12rem)',
+                maxHeight: 'calc(100vh - 10rem)',
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#1E242B',
               }}
@@ -281,8 +295,9 @@ export default function Home() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {conversations.map((conversation) => (
+                  {conversations.map((conversation, index) => (
                     <TableRow
+                      id={conversation + '_' + index}
                       key={conversation.conversation_id}
                       onClick={() => handleClick(conversation.conversation_id)}
                       className="cursor-pointer hover:bg-gray-100"

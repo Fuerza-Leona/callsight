@@ -22,6 +22,7 @@ import {
   LinearProgress,
   styled,
   CircularProgress,
+  Tooltip,
 } from '@mui/material';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import {
@@ -29,6 +30,8 @@ import {
   Company,
 } from '@/hooks/fetchDashboardCompanies';
 import { useUser } from '@/context/UserContext';
+import { Info } from '@mui/icons-material';
+import { useFetchReport } from '@/hooks/useFetchReport';
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -60,6 +63,8 @@ export default function Home() {
 
   const { companies, loadingCompanies, errorCompanies, fetchCompanies } =
     useFetchDashboardCompanies();
+
+  const { loadingReport, fetchReport } = useFetchReport();
 
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
@@ -134,39 +139,40 @@ export default function Home() {
   };
 
   return (
-    <ProtectedRoute>
-      {/* Top Bar */}
+    <ProtectedRoute allowedRoles={['admin', 'agent']}>
       <div className="relative lg:left-64 pt-10 w-full lg:w-[calc(100%-17rem)] pl-3 pr-3">
         <div className="flex flex-col md:flex-row items-center justify-between mb-6">
           <p className="text-4xl font-bold">Tablero</p>
           <div className="flex gap-2">
             <div>
               <button
-                className="text-[#FFFFFF] rounded-md p-2 w-full"
+                className="text-[#FFFFFF] rounded-md p-2 w-full cursor-pointer"
                 style={{ backgroundColor: 'var(--sky-blue)' }}
+                onClick={fetchReport}
+                disabled={loadingReport}
               >
-                Exportar como PDF <FileDownloadIcon />
+                {loadingReport ? 'Exportando...' : 'Exportar como PDF'}{' '}
+                <FileDownloadIcon />
               </button>
             </div>
             <Link
               href={'/calls/search'}
               className="text-[#FFFFFF] rounded-md block"
+              id="search"
             >
               <div
                 className="p-2 items-center justify-center text-center flex rounded-md"
                 style={{ backgroundColor: 'var(--neoris-blue)' }}
               >
                 <p className="">
-                  Buscar Llamadas <SearchIcon />
+                  Buscar llamada <SearchIcon />
                 </p>
               </div>
             </Link>
           </div>
         </div>
 
-        {/* Main Content - Two Column Layout */}
         <div className="relative w-[100%] flex flex-col md:flex-row gap-3">
-          {/* Left Column - Filters */}
           <div className="flex flex-col align-center text-center gap-2">
             <div className="text-white bg-[#1E242B] rounded-md mb-5">
               <LocalizationProvider
@@ -182,37 +188,17 @@ export default function Home() {
                 />
               </LocalizationProvider>
             </div>
-            <div className="">
-              <MultipleSelectChip
-                title={
-                  loadingClients
-                    ? 'Clientes (Cargando...)'
-                    : errorClients
-                      ? 'Clientes (Error)'
-                      : 'Clientes'
-                }
-                names={(() => {
-                  if (loadingClients || errorClients || !clients) {
-                    return [];
-                  }
-                  return clients.map((client: Client) => ({
-                    id: client.user_id,
-                    name: client.username,
-                  }));
-                })()}
-                value={selectedClients}
-                onChange={handleClientsChange}
-              />
-            </div>
+
             {user?.role === 'admin' && (
               <div className="">
                 <MultipleSelectChip
+                  id="agents"
                   title={
                     loadingAgents
-                      ? 'Empleados (Cargando...)'
+                      ? 'Agentes (Cargando...)'
                       : errorAgents
-                        ? 'Empleados (Error)'
-                        : 'Empleados'
+                        ? 'Agentes (Error)'
+                        : 'Agentes'
                   }
                   names={(() => {
                     if (loadingAgents || errorAgents || !agents) {
@@ -226,10 +212,14 @@ export default function Home() {
                   value={selectedAgents}
                   onChange={handleAgentsChange}
                 />
+                <small className="text-gray-500 text-left block px-4 mt-1 mb-2">
+                  Personal que atiende la llamada
+                </small>
               </div>
             )}
             <div className="">
               <MultipleSelectChip
+                id="companies"
                 title={
                   loadingCompanies
                     ? 'Empresas (Cargando...)'
@@ -249,12 +239,40 @@ export default function Home() {
                 value={selectedCompanies}
                 onChange={handleCompaniesChange}
               />
+              <small className="text-gray-500 text-left block px-4 mt-1 mb-2">
+                Organizaciones a las que se le brinda soporte
+              </small>
+            </div>
+
+            <div className="">
+              <MultipleSelectChip
+                id="clients"
+                title={
+                  loadingClients
+                    ? 'Clientes (Cargando...)'
+                    : errorClients
+                      ? 'Clientes (Error)'
+                      : 'Clientes'
+                }
+                names={(() => {
+                  if (loadingClients || errorClients || !clients) {
+                    return [];
+                  }
+                  return clients.map((client: Client) => ({
+                    id: client.user_id,
+                    name: client.username,
+                  }));
+                })()}
+                value={selectedClients}
+                onChange={handleClientsChange}
+              />
+              <small className="text-gray-500 text-left block px-4 mt-1 mb-2">
+                Usuarios de la empresa que reciben soporte
+              </small>
             </div>
           </div>
 
-          {/* Right Column - Dashboard Cards */}
           <div className="w-full lg:w-[100%] md:w-[80%] flex flex-col gap-3">
-            {/* First row - Summary boxes */}
             <div className="flex w-full gap-4 text-center pb-1">
               <div
                 className="w-[33%] rounded-md flex flex-col items-left justify-left gap-3 p-3 shadow-md"
@@ -271,7 +289,7 @@ export default function Home() {
                   ) : errorSummary ? (
                     <span className="text-2xl text-red-500">Error</span>
                   ) : (
-                    <div>
+                    <div id="average_time">
                       {summary?.average_minutes || 0}
                       <span className="text-sm pl-2 font-light"> minutos</span>
                     </div>
@@ -293,7 +311,7 @@ export default function Home() {
                   ) : errorSummary ? (
                     <span className="text-2xl text-red-500">Error</span>
                   ) : (
-                    <div>
+                    <div id="total_calls">
                       {summary?.conversation_count || 0}
                       <span className="text-sm pl-2 font-light">
                         {' '}
@@ -319,7 +337,7 @@ export default function Home() {
                   ) : errorRatings ? (
                     <span className="text-3xl text-red-500">Error</span>
                   ) : (
-                    <div>
+                    <div id="average_rating">
                       {ratings && ratings.length > 0
                         ? (() => {
                             const totalCount = ratings.reduce(
@@ -349,14 +367,29 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Word cloud card */}
             <div
               className="w-full shadow-md rounded-md bg-white p-5"
               style={{ minHeight: '260px' }}
             >
-              <h1 className="text-lg font-bold pl-5">
-                Temas principales detectados
-              </h1>
+              <div className="flex gap-2 items-center mb-3">
+                <h1 className="text-lg font-bold">
+                  Temas principales detectados
+                </h1>
+                <Tooltip
+                  title="Nube de palabras que muestra los temas más frecuentes detectados en las conversaciones. Entre más grande y resaltada aparece una palabra o frase, mayor es su frecuencia."
+                  placement="top"
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        fontSize: '16px',
+                        maxWidth: '300px',
+                      },
+                    },
+                  }}
+                >
+                  <Info sx={{ fontSize: 20, color: '#666', cursor: 'help' }} />
+                </Tooltip>
+              </div>
 
               <Box
                 sx={{
@@ -378,11 +411,9 @@ export default function Home() {
                     <CircularProgress size={60} />
                   </Box>
                 ) : errorTopics ? (
-                  <p className="pl-5 mt-3">
-                    Error al cargar los temas principales
-                  </p>
+                  <p className=" mt-3">Error al cargar los temas principales</p>
                 ) : !topics || topics.length == 0 ? (
-                  <p className="pl-5 mt-3">No hay temas principales</p>
+                  <p className=" mt-3">No hay temas principales</p>
                 ) : (
                   <SimpleWordCloud
                     words={topics.map((topic) => ({
@@ -395,15 +426,30 @@ export default function Home() {
               </Box>
             </div>
 
-            {/* Bottom row - Chart cards */}
             <div className="flex flex-col md:flex-row justify-between w-full gap-3 pt-1">
               <div
                 className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
                 style={{ minHeight: '300px' }}
               >
-                <h1 className="text-lg font-bold pt-3 pb-3">
-                  Emociones del cliente
-                </h1>
+                <div className="flex gap-2 items-center mb-3">
+                  <h1 className="text-lg font-bold">Emociones del cliente</h1>
+                  <Tooltip
+                    title="Gráfico de pastel que muestra la proporción de emociones detectadas del cliente en las conversaciones. Las emociones se clasifican en positivas, neutras y negativas."
+                    placement="top"
+                    slotProps={{
+                      tooltip: {
+                        sx: {
+                          fontSize: '16px',
+                          maxWidth: '300px',
+                        },
+                      },
+                    }}
+                  >
+                    <Info
+                      sx={{ fontSize: 20, color: '#666', cursor: 'help' }}
+                    />
+                  </Tooltip>
+                </div>
 
                 <Box
                   sx={{
@@ -433,7 +479,8 @@ export default function Home() {
                     <PieChart
                       series={[
                         {
-                          arcLabel: (item) => `${item.value}`,
+                          arcLabel: (item) =>
+                            `${Math.round(item.value * 100)}%`,
                           data: [
                             {
                               id: 0,
@@ -465,9 +512,27 @@ export default function Home() {
                 className="h-full shadow-md rounded-md bg-white p-5 w-full md:w-[49%]"
                 style={{ minHeight: '300px' }}
               >
-                <h1 className="text-lg font-bold pt-3 pb-3">
-                  Evaluaciones del cliente
-                </h1>
+                <div className="flex gap-2 items-center mb-3">
+                  <h1 className="text-lg font-bold">
+                    Evaluaciones del cliente
+                  </h1>
+                  <Tooltip
+                    title="Barras que muestran la proporción de evaluaciones de los clientes en las conversaciones que participan. Las evaluaciones se clasifican del 1 al 5, donde 1 es la peor y 5 la mejor."
+                    placement="top"
+                    slotProps={{
+                      tooltip: {
+                        sx: {
+                          fontSize: '16px',
+                          maxWidth: '300px',
+                        },
+                      },
+                    }}
+                  >
+                    <Info
+                      sx={{ fontSize: 20, color: '#666', cursor: 'help' }}
+                    />
+                  </Tooltip>
+                </div>
 
                 <Box
                   sx={{

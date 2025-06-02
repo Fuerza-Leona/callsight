@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'agent' | 'leader' | 'client';
+export type UserRole = 'admin' | 'agent' | 'client';
 
 export interface User {
   user_id: string;
@@ -6,4 +6,6 @@ export interface User {
   email: string;
   role: UserRole;
   department: string;
+  company_id: string;
+  created_at?: string;
 }

@@ -12,30 +12,30 @@ export const navBarLinks: NavLink[] = [
   {
     id: 1,
     name: '¿Quiénes somos?',
-    href: 'nosotros',
+    href: '#nosotros',
   },
   {
     id: 2,
     name: '¿Qué hacemos?',
-    href: 'que-hacemos',
+    href: '#que-hacemos',
   },
   {
     id: 3,
     name: '¿Cómo funciona?',
-    href: 'como-funciona',
+    href: '#como-funciona',
   },
 ];
 
-export const sideNavLinksAgent: NavLink[] = [
+export const sideNavLinksAdmin: NavLink[] = [
   {
     id: 1,
-    name: 'Análisis de llamada',
+    name: 'Tablero',
     href: 'calls/dashboard',
   },
   {
     id: 2,
-    name: 'Sugerencias para mis clientes',
-    href: 'sugerencias',
+    name: 'Llamadas',
+    href: 'calls/search',
   },
   {
     id: 3,
@@ -44,40 +44,101 @@ export const sideNavLinksAgent: NavLink[] = [
   },
   {
     id: 4,
-    name: 'Mi perfil',
-    href: 'perfil',
+    name: 'Chatbot',
+    href: 'chatbot',
   },
   {
     id: 5,
-    name: 'Soporte',
-    href: 'companies',
+    name: 'Sugerencias',
+    href: 'sugerencias',
   },
   {
     id: 6,
-    name: 'Chatbot',
-    href: 'chatbot',
+    name: 'Soporte',
+    href: 'tickets',
   },
-];
+  {
+    id: 7,
+    name: 'Empresas',
+    href: 'clients',
+  },
+  {
+    id: 8,
+    name: 'Usuarios',
+    href: 'users',
+  },
 
-export const sideNavLinksClient: NavLink[] = [
   {
-    id: 1,
-    name: 'Análisis de llamada',
-    href: 'calls/search',
-  },
-  {
-    id: 2,
-    name: 'Chatbot',
-    href: 'chatbot',
-  },
-  {
-    id: 3,
+    id: 9,
     name: 'Mi perfil',
     href: 'perfil',
   },
+];
+
+export const sideNavLinksAgent: NavLink[] = [
+  {
+    id: 1,
+    name: 'Tablero',
+    href: 'calls/dashboard',
+  },
+  {
+    id: 2,
+    name: 'Llamadas',
+    href: 'calls/search',
+  },
+  {
+    id: 3,
+    name: 'Subir una llamada',
+    href: 'calls/upload',
+  },
   {
     id: 4,
+    name: 'Chatbot',
+    href: 'chatbot',
+  },
+  {
+    id: 5,
+    name: 'Sugerencias',
+    href: 'sugerencias',
+  },
+
+  {
+    id: 6,
     name: 'Soporte',
-    href: 'companies',
+    href: 'tickets',
+  },
+  {
+    id: 7,
+    name: 'Mi perfil',
+    href: 'perfil',
   },
 ];
+
+import { useUser } from '../context/UserContext';
+
+export const useSideNavLinksClient = () => {
+  const { user } = useUser();
+  const companyId = user?.company_id || '';
+  return [
+    {
+      id: 1,
+      name: 'Llamadas',
+      href: 'calls/search',
+    },
+    {
+      id: 2,
+      name: 'Chatbot',
+      href: 'chatbot',
+    },
+    {
+      id: 3,
+      name: 'Soporte',
+      href: `tickets/support?company_id=${companyId}`,
+    },
+    {
+      id: 4,
+      name: 'Mi perfil',
+      href: 'perfil',
+    },
+  ];
+};

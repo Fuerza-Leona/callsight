@@ -1,7 +1,11 @@
 'use client';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { sideNavLinksClient, sideNavLinksAgent } from '@/constants';
+import {
+  useSideNavLinksClient,
+  sideNavLinksAgent,
+  sideNavLinksAdmin,
+} from '@/constants';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext';
 
@@ -33,7 +37,10 @@ const ChatbotSideNavItems = () => {
           <p className="text-neutral-400 italic">Historial de chats</p>
           {getChatsLoading && (
             <div className="relative w-full flex flex-col py-[50px] items-center text-center">
-              <div className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin" />
+              <div
+                className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin"
+                id="loading_chats"
+              />
               <p className="text-lg text-gray-600">Cargando chats...</p>
             </div>
           )}
@@ -77,6 +84,7 @@ const ChatbotSideNavItems = () => {
 const SideNavItems = () => {
   const pathname = usePathname();
   const { user } = useUser();
+  const sideNavLinksClient = useSideNavLinksClient();
 
   return (
     <ul className="flex flex-col items-center text-center gap-4 lg:gap-6 relative z-20 ">
@@ -93,7 +101,9 @@ const SideNavItems = () => {
           {sideNavLinksClient.map(({ id, href, name }) => {
             const isActive =
               (name === 'Análisis de llamada' &&
-                pathname.includes('/calls/search')) ||
+                (pathname.includes('/calls/search') ||
+                  pathname.includes('/calls/detail'))) ||
+              (name === 'Soporte' && pathname.includes('/support')) ||
               pathname.includes(`/${href}`);
 
             return (
@@ -123,12 +133,51 @@ const SideNavItems = () => {
           })}
         </>
       )}
-      {user?.role != 'client' && (
+      {user?.role == 'agent' && (
         <>
           {sideNavLinksAgent.map(({ id, href, name }) => {
             const isActive =
               (name === 'Análisis de llamada' &&
-                pathname.includes('/calls/search')) ||
+                (pathname.includes('/calls/search') ||
+                  pathname.includes('/calls/detail'))) ||
+              (name === 'Soporte' && pathname.includes('/support')) ||
+              pathname.includes(`/${href}`);
+
+            return (
+              <li
+                key={id}
+                className={`
+                    ${
+                      isActive
+                        ? 'text-white font-bold'
+                        : 'text-neutral-400 hover:text-white'
+                    }
+                    max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
+                `}
+              >
+                <Link
+                  href={`/${href}`}
+                  className={`
+                      text-lg lg:text-base 
+                      transition-colors w-full block
+                      ${isActive ? 'text-white' : 'hover:text-white'}
+                  `}
+                >
+                  {name}
+                </Link>
+              </li>
+            );
+          })}
+        </>
+      )}
+      {user?.role == 'admin' && (
+        <>
+          {sideNavLinksAdmin.map(({ id, href, name }) => {
+            const isActive =
+              (name === 'Análisis de llamada' &&
+                (pathname.includes('/calls/search') ||
+                  pathname.includes('/calls/detail'))) ||
+              (name === 'Soporte' && pathname.includes('/support')) ||
               pathname.includes(`/${href}`);
 
             return (
@@ -190,7 +239,7 @@ const Sidebar = () => {
           <div className="flex flex-col justify-between h-full py-5">
             <nav className="lg:flex flex-col w-full justify-center">
               <SideNavItems />
-              {pathname.includes('chatbot') && (
+              {pathname.includes('chatbot') && isOpen && (
                 <button
                   onClick={() => (window.location.href = '/chatbot')}
                   className="text-neutral-200 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all mx-[1rem] my-[1rem] hover:cursor-pointer hover:text-white"
@@ -198,7 +247,9 @@ const Sidebar = () => {
                   Crear chat
                 </button>
               )}
-              {pathname.includes('chatbot') && <ChatbotSideNavItems />}
+              {pathname.includes('chatbot') && isOpen && (
+                <ChatbotSideNavItems />
+              )}
             </nav>
           </div>
         </aside>
