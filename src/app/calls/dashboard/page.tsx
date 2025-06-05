@@ -32,6 +32,7 @@ import {
 import { useUser } from '@/context/UserContext';
 import { Info } from '@mui/icons-material';
 import { useFetchReport } from '@/hooks/useFetchReport';
+import { useFetchTeams } from '@/hooks/fetchTeams';
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -66,6 +67,8 @@ export default function Home() {
 
   const { loadingReport, fetchReport } = useFetchReport();
 
+  const { meetings, loadingTeams, fetchTeams } = useFetchTeams();
+
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
@@ -77,6 +80,10 @@ export default function Home() {
   useEffect(() => {
     const loadAllData = async () => {
       const promises = [fetchClients(), fetchCompanies()];
+
+      if (user?.isConnected == true) {
+        promises.push(fetchTeams());
+      }
 
       if (user?.role === 'admin') {
         promises.push(fetchAgents());
@@ -118,7 +125,13 @@ export default function Home() {
 
     loadAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, selectedClients, selectedAgents, selectedCompanies]);
+  }, [
+    selectedDate,
+    selectedClients,
+    selectedAgents,
+    selectedCompanies,
+    meetings,
+  ]);
 
   const handleDateChange = (newDate: dayjs.Dayjs | null) => {
     if (newDate) {
@@ -144,6 +157,23 @@ export default function Home() {
         <div className="flex flex-col md:flex-row items-center justify-between mb-6">
           <p className="text-4xl font-bold">Tablero</p>
           <div className="flex gap-2">
+            <div>
+              {user?.isConnected ? (
+                loadingTeams ? (
+                  <div>Cargando reuniones desde Teams...</div>
+                ) : typeof meetings === 'number' ? (
+                  meetings > 0 ? (
+                    <div>{`Nuevas reuniones en Teams: ${meetings}`}</div>
+                  ) : (
+                    <div>No hay nuevas reuniones en Teams</div>
+                  )
+                ) : (
+                  <div>No se pudo obtener el estado de Teams</div>
+                )
+              ) : (
+                <div>Teams no está conectado</div>
+              )}
+            </div>
             <div>
               <button
                 className="text-[#FFFFFF] rounded-md p-2 w-full cursor-pointer"
