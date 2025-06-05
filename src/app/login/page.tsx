@@ -2,17 +2,23 @@
 
 import { useRef, useState } from 'react';
 import { useLogin } from '@/hooks/useLogin';
+import { useUser } from '@/context/UserContext';
+import { useTeamsConnect } from '@/hooks/useTeamsConnect';
+import TeamsConnectButton from '@/components/TeamsConnectButton';
 import Image from 'next/image';
 
 export default function Home() {
   const formRef = useRef(null);
+  const [showTeamsModal, setShowTeamsModal] = useState(false);
 
   const [form, setForm] = useState({
     email: '',
     password: '',
   });
 
-  const { login, error, loading } = useLogin();
+  const { login, redirectBasedOnRole, error, loading } = useLogin();
+  const { user } = useUser();
+  const { loading: teamsLoading, error: teamsError } = useTeamsConnect();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,14 +33,27 @@ export default function Home() {
     }
 
     try {
-      await login(form.email, form.password);
+      const user = await login(form.email, form.password);
+      // Check if user needs Teams connection
+      if (user && !user.isConnected) {
+        setShowTeamsModal(true);
+      }
+      // If user is already connected, login hook will handle the redirect
     } catch (err) {
       console.error('Error during login:', err);
     }
   };
 
+  const handleProceedToPage = () => {
+    setShowTeamsModal(false);
+    // Use the current user from context to redirect based on role
+    if (user) {
+      redirectBasedOnRole(user);
+    }
+  };
+
   return (
-    <div className="relative w-full min-h-screen flex items-center justify-center ">
+    <div className="relative w-full min-h-screen flex items-center justify-center">
       {/* Imagen de fondo */}
       <Image
         src="/fuerzaLeona.jpg"
@@ -86,13 +105,15 @@ export default function Home() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || teamsLoading}
               className="bg-[#13202A] text-white font-semibold py-2 rounded-md hover:opacity-90 transition"
             >
-              {loading ? 'Cargando...' : 'Iniciar sesión'}
+              {loading || teamsLoading ? 'Cargando...' : 'Iniciar sesión'}
             </button>
 
-            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            {(error || teamsError) && (
+              <p className="text-red-500 text-sm mt-1">{error || teamsError}</p>
+            )}
 
             <p className="text-sm text-center mt-2 text-gray-700">
               ¿Aún no tienes una cuenta?{' '}
@@ -104,6 +125,25 @@ export default function Home() {
           </form>
         </div>
       </div>
+
+      {/* Teams Connection Modal */}
+      {showTeamsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10">
+          <div className="bg-white rounded-xl p-8 shadow-xl w-full max-w-md mx-4 border border-gray-200">
+            <div className="text-center">
+              <h3 className="text-2xl font-semibold text-[#313A26] mb-4">
+                Conectar con Microsoft Teams
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Para aprovechar al máximo nuestras funcionalidades, te
+                recomendamos conectar tu cuenta con Microsoft Teams.
+              </p>
+
+              <TeamsConnectButton onSkip={handleProceedToPage} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

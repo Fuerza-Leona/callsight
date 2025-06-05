@@ -8,7 +8,6 @@ import {
 } from '@/constants';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext';
-
 import Image from 'next/image';
 import { usePrevChatsHistory } from '@/hooks/usePrevChatsHistory';
 
@@ -30,65 +29,185 @@ const ChatbotSideNavItems = () => {
 
   return (
     <div className="overflow-y-auto max-h-[calc(30vh)] bg-gray-950/60 rounded-3xl">
-      {' '}
-      {/* TO DO: Adjust spacing for other sizes, like mobile*/}
       <ul className="flex flex-col items-center text-center gap-4 lg:gap-6 relative z-20 pt-15 md:pt-10">
-        <>
-          <p className="text-neutral-400 italic">Historial de chats</p>
-          {getChatsLoading && (
-            <div className="relative w-full flex flex-col py-[50px] items-center text-center">
-              <div
-                className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin"
-                id="loading_chats"
-              />
-              <p className="text-lg text-gray-600">Cargando chats...</p>
-            </div>
-          )}
-          {getChatsError && (
-            <p className="text-neutral-400">Error cargando chats</p>
-          )}
-          {getChatsData?.map(({ chatbot_conversation_id, title }) => {
-            const isActive = activeConversationId === chatbot_conversation_id;
+        <p className="text-neutral-400 italic">Historial de chats</p>
+        {getChatsLoading && (
+          <div className="relative w-full flex flex-col py-[50px] items-center text-center">
+            <div
+              className="w-10 h-10 border-4 border-gray-300 border-t-[#13202A] rounded-full animate-spin"
+              id="loading_chats"
+            />
+            <p className="text-lg text-gray-600">Cargando chats...</p>
+          </div>
+        )}
+        {getChatsError && (
+          <p className="text-neutral-400">Error cargando chats</p>
+        )}
+        {getChatsData?.map(({ chatbot_conversation_id, title }) => {
+          const isActive = activeConversationId === chatbot_conversation_id;
 
-            return (
-              <li
-                key={chatbot_conversation_id}
+          return (
+            <li
+              key={chatbot_conversation_id}
+              className={`
+                ${
+                  isActive
+                    ? 'text-blue-100'
+                    : 'text-neutral-400 hover:text-blue-100'
+                }
+                max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
+            `}
+            >
+              <Link
+                href={`/chatbot?conversation_id=${chatbot_conversation_id}`}
                 className={`
-                
-                  ${
-                    isActive
-                      ? 'text-blue-100'
-                      : 'text-neutral-400 hover:text-blue-100'
-                  }
-                  max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
+                  text-lg lg:text-base 
+                  transition-colors w-full block
+                  ${isActive ? 'text-blue-100' : 'hover:text-blue-100'}
               `}
               >
-                <Link
-                  href={`/chatbot?conversation_id=${chatbot_conversation_id}`}
-                  className={`
-                    text-lg lg:text-base 
-                    transition-colors w-full block
-                    ${isActive ? 'text-blue-100' : 'hover:text-blue-100'}
-                `}
-                >
-                  {title.replace(/^"|"$/g, '')}
-                </Link>
-              </li>
-            );
-          })}
-        </>
+                {title.replace(/^"|"$/g, '')}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
 };
 
-const SideNavItems = () => {
+const AdminNavSection = () => {
   const pathname = usePathname();
-  const { user } = useUser();
-  const sideNavLinksClient = useSideNavLinksClient();
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [asistentesOpen, setAsistentesOpen] = useState(false);
+
+  // Find the dropdown items by their structure
+  const administracionDropdown = sideNavLinksAdmin.find(
+    (link) => link.name === 'Administración' && link.isDropdown
+  );
+  const asistentesDropdown = sideNavLinksAdmin.find(
+    (link) => link.name === 'IA' && link.isDropdown
+  );
+
+  // Get other items that are not dropdowns
+  const otherItems = sideNavLinksAdmin.filter(
+    (link) => !link.isDropdown && link.href
+  );
 
   return (
-    <div className="flex flex-col relative z-20">
+    <>
+      {/* Logo and profile icon */}
+      <div className="flex justify-between items-center px-5 mb-10">
+        <Image src="/neoris.png" alt="Logo" width={150} height={50} priority />
+        <Link href="/perfil">
+          <Image
+            src="/assets/profileIcon.png"
+            alt="Perfil"
+            width={32}
+            height={32}
+            className="rounded-full cursor-pointer hover:opacity-80"
+          />
+        </Link>
+      </div>
+
+      {/* Asistentes Dropdown */}
+      <div className="w-full px-5 mt-4">
+        <button
+          className="text-white font-semibold mb-2 flex items-center"
+          onClick={() => setAsistentesOpen(!asistentesOpen)}
+        >
+          IA {asistentesOpen ? '▴' : '▾'}
+        </button>
+        {asistentesOpen && asistentesDropdown?.children && (
+          <ul className="pl-2 flex flex-col gap-2">
+            {asistentesDropdown.children.map(({ id, href, name }) => {
+              const isActive = href && pathname.includes(`/${href}`);
+              return (
+                <li
+                  key={id}
+                  className={`${
+                    isActive
+                      ? 'text-white font-bold'
+                      : 'text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  <Link href={`/${href}`} className="text-base block">
+                    {name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
+      {/* Other links */}
+      <ul className="pl-5 mt-4 flex flex-col gap-4">
+        {otherItems.map(({ id, href, name }) => {
+          const isActive =
+            (name === 'Análisis de llamada' &&
+              (pathname.includes('/calls/search') ||
+                pathname.includes('/calls/detail'))) ||
+            (name === 'Soporte' && pathname.includes('/support')) ||
+            pathname.includes(`/${href}`);
+
+          return (
+            <li
+              key={id}
+              className={`${
+                isActive
+                  ? 'text-white font-bold'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              <Link href={`/${href}`} className="text-base block">
+                {name}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      {/* Administración Dropdown */}
+      <div className="w-full px-5 pt-5">
+        <button
+          className="text-white font-semibold mb-2 flex items-center"
+          onClick={() => setAdminOpen(!adminOpen)}
+        >
+          Administración {adminOpen ? '▴' : '▾'}
+        </button>
+        {adminOpen && administracionDropdown?.children && (
+          <ul className="pl-2 flex flex-col gap-2">
+            {administracionDropdown.children.map(({ id, href, name }) => {
+              const isActive = href && pathname.includes(`/${href}`);
+              return (
+                <li
+                  key={id}
+                  className={`${
+                    isActive
+                      ? 'text-white font-bold'
+                      : 'text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  <Link href={`/${href}`} className="text-base block">
+                    {name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </>
+  );
+};
+
+const ClientAgentNavSection = ({ role }: { role: 'client' | 'agent' }) => {
+  const pathname = usePathname();
+  const sideNavLinksClient = useSideNavLinksClient();
+  const links = role === 'client' ? sideNavLinksClient : sideNavLinksAgent;
+
+  return (
+    <>
       {/* Keep logo centered */}
       <div className="flex justify-center mb-10">
         <Image src="/neoris.png" alt="Logo" width={150} height={50} priority />
@@ -96,121 +215,52 @@ const SideNavItems = () => {
 
       {/* Nav items aligned left */}
       <ul className="flex flex-col items-start text-left pl-5 gap-4 lg:gap-6">
-        {user?.role === 'client' && (
-          <>
-            {sideNavLinksClient.map(({ id, href, name }) => {
-              const isActive =
-                (name === 'Análisis de llamada' &&
-                  (pathname.includes('/calls/search') ||
-                    pathname.includes('/calls/detail'))) ||
-                (name === 'Soporte' && pathname.includes('/support')) ||
-                pathname.includes(`/${href}`);
+        {links.map(({ id, href, name }) => {
+          const isActive =
+            (name === 'Análisis de llamada' &&
+              (pathname.includes('/calls/search') ||
+                pathname.includes('/calls/detail'))) ||
+            (name === 'Soporte' && pathname.includes('/support')) ||
+            pathname.includes(`/${href}`);
 
-              return (
-                <li
-                  key={id}
-                  className={`
-                  
-                      ${
-                        isActive
-                          ? 'text-white font-bold'
-                          : 'text-neutral-400 hover:text-white'
-                      }
-                      max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-                  `}
-                >
-                  <Link
-                    href={`/${href}`}
-                    className={`
-                        text-lg lg:text-base 
-                        transition-colors w-full block
-                        ${isActive ? 'text-white' : 'hover:text-white'}
-                    `}
-                  >
-                    {name}
-                  </Link>
-                </li>
-              );
-            })}
-          </>
-        )}
-        {user?.role == 'agent' && (
-          <>
-            {sideNavLinksAgent.map(({ id, href, name }) => {
-              const isActive =
-                (name === 'Análisis de llamada' &&
-                  (pathname.includes('/calls/search') ||
-                    pathname.includes('/calls/detail'))) ||
-                (name === 'Soporte' && pathname.includes('/support')) ||
-                pathname.includes(`/${href}`);
-
-              return (
-                <li
-                  key={id}
-                  className={`
-                  
-                      ${
-                        isActive
-                          ? 'text-white font-bold'
-                          : 'text-neutral-400 hover:text-white'
-                      }
-                      max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-                  `}
-                >
-                  <Link
-                    href={`/${href}`}
-                    className={`
-                        text-lg lg:text-base 
-                        transition-colors w-full block
-                        ${isActive ? 'text-white' : 'hover:text-white'}
-                    `}
-                  >
-                    {name}
-                  </Link>
-                </li>
-              );
-            })}
-          </>
-        )}
-        {user?.role == 'admin' && (
-          <>
-            {sideNavLinksAdmin.map(({ id, href, name }) => {
-              const isActive =
-                (name === 'Análisis de llamada' &&
-                  (pathname.includes('/calls/search') ||
-                    pathname.includes('/calls/detail'))) ||
-                (name === 'Soporte' && pathname.includes('/support')) ||
-                pathname.includes(`/${href}`);
-
-              return (
-                <li
-                  key={id}
-                  className={`
-                  
-                      ${
-                        isActive
-                          ? 'text-white font-bold'
-                          : 'text-neutral-400 hover:text-white'
-                      }
-                      max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-                  `}
-                >
-                  <Link
-                    href={`/${href}`}
-                    className={`
-                        text-lg lg:text-base 
-                        transition-colors w-full block
-                        ${isActive ? 'text-white' : 'hover:text-white'}
-                    `}
-                  >
-                    {name}
-                  </Link>
-                </li>
-              );
-            })}
-          </>
-        )}
+          return (
+            <li
+              key={id}
+              className={`
+                ${
+                  isActive
+                    ? 'text-white font-bold'
+                    : 'text-neutral-400 hover:text-white'
+                }
+                max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
+            `}
+            >
+              <Link
+                href={`/${href}`}
+                className={`
+                  text-lg lg:text-base 
+                  transition-colors w-full block
+                  ${isActive ? 'text-white' : 'hover:text-white'}
+              `}
+              >
+                {name}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
+    </>
+  );
+};
+
+const SideNavItems = () => {
+  const { user } = useUser();
+
+  return (
+    <div className="flex flex-col relative z-20">
+      {user?.role === 'client' && <ClientAgentNavSection role="client" />}
+      {user?.role === 'agent' && <ClientAgentNavSection role="agent" />}
+      {user?.role === 'admin' && <AdminNavSection />}
     </div>
   );
 };
@@ -238,7 +288,9 @@ const Sidebar = () => {
         </button>
 
         <aside
-          className={`h-screen w-full md:w-64 pt-1 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:fixed lg:translate-x-0`}
+          className={`h-screen w-full md:w-64 pt-1 lg:w-64 bg-[#13202A] z-20 transition-all duration-300 ease-in-out fixed left-0 ${
+            isOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:fixed lg:translate-x-0`}
         >
           <div className="flex flex-col justify-between h-full py-5">
             <nav className="lg:flex flex-col w-full justify-center">
