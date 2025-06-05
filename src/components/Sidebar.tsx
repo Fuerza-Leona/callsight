@@ -54,21 +54,22 @@ const ChatbotSideNavItems = () => {
               <li
                 key={chatbot_conversation_id}
                 className={`
-                ${
-                  isActive
-                    ? 'text-blue-100'
-                    : 'text-neutral-400 hover:text-blue-100'
-                }
-                max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-            `}
+                
+                  ${
+                    isActive
+                      ? 'text-blue-100'
+                      : 'text-neutral-400 hover:text-blue-100'
+                  }
+                  max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
+              `}
               >
                 <Link
                   href={`/chatbot?conversation_id=${chatbot_conversation_id}`}
                   className={`
-                  text-lg lg:text-base 
-                  transition-colors w-full block
-                  ${isActive ? 'text-blue-100' : 'hover:text-blue-100'}
-              `}
+                    text-lg lg:text-base 
+                    transition-colors w-full block
+                    ${isActive ? 'text-blue-100' : 'hover:text-blue-100'}
+                `}
                 >
                   {title.replace(/^"|"$/g, '')}
                 </Link>
@@ -87,127 +88,130 @@ const SideNavItems = () => {
   const sideNavLinksClient = useSideNavLinksClient();
 
   return (
-    <ul className="flex flex-col items-center text-center gap-4 lg:gap-6 relative z-20 ">
-      <Image
-        src="/neoris.png"
-        className="mb-10"
-        alt="Logo"
-        width={150}
-        height={50}
-        priority
-      />
-      {user?.role === 'client' && (
-        <>
-          {sideNavLinksClient.map(({ id, href, name }) => {
-            const isActive =
-              (name === 'Análisis de llamada' &&
-                (pathname.includes('/calls/search') ||
-                  pathname.includes('/calls/detail'))) ||
-              (name === 'Soporte' && pathname.includes('/support')) ||
-              pathname.includes(`/${href}`);
+    <div className="flex flex-col relative z-20">
+      {/* Keep logo centered */}
+      <div className="flex justify-center mb-10">
+        <Image src="/neoris.png" alt="Logo" width={150} height={50} priority />
+      </div>
 
-            return (
-              <li
-                key={id}
-                className={`
-                    ${
-                      isActive
-                        ? 'text-white font-bold'
-                        : 'text-neutral-400 hover:text-white'
-                    }
-                    max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-                `}
-              >
-                <Link
-                  href={`/${href}`}
+      {/* Nav items aligned left */}
+      <ul className="flex flex-col items-start text-left pl-5 gap-4 lg:gap-6">
+        {user?.role === 'client' && (
+          <>
+            {sideNavLinksClient.map(({ id, href, name }) => {
+              const isActive =
+                (name === 'Análisis de llamada' &&
+                  (pathname.includes('/calls/search') ||
+                    pathname.includes('/calls/detail'))) ||
+                (name === 'Soporte' && pathname.includes('/support')) ||
+                pathname.includes(`/${href}`);
+
+              return (
+                <li
+                  key={id}
                   className={`
-                      text-lg lg:text-base 
-                      transition-colors w-full block
-                      ${isActive ? 'text-white' : 'hover:text-white'}
+                  
+                      ${
+                        isActive
+                          ? 'text-white font-bold'
+                          : 'text-neutral-400 hover:text-white'
+                      }
+                      max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
                   `}
                 >
-                  {name}
-                </Link>
-              </li>
-            );
-          })}
-        </>
-      )}
-      {user?.role == 'agent' && (
-        <>
-          {sideNavLinksAgent.map(({ id, href, name }) => {
-            const isActive =
-              (name === 'Análisis de llamada' &&
-                (pathname.includes('/calls/search') ||
-                  pathname.includes('/calls/detail'))) ||
-              (name === 'Soporte' && pathname.includes('/support')) ||
-              pathname.includes(`/${href}`);
+                  <Link
+                    href={`/${href}`}
+                    className={`
+                        text-lg lg:text-base 
+                        transition-colors w-full block
+                        ${isActive ? 'text-white' : 'hover:text-white'}
+                    `}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              );
+            })}
+          </>
+        )}
+        {user?.role == 'agent' && (
+          <>
+            {sideNavLinksAgent.map(({ id, href, name }) => {
+              const isActive =
+                (name === 'Análisis de llamada' &&
+                  (pathname.includes('/calls/search') ||
+                    pathname.includes('/calls/detail'))) ||
+                (name === 'Soporte' && pathname.includes('/support')) ||
+                pathname.includes(`/${href}`);
 
-            return (
-              <li
-                key={id}
-                className={`
-                    ${
-                      isActive
-                        ? 'text-white font-bold'
-                        : 'text-neutral-400 hover:text-white'
-                    }
-                    max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-                `}
-              >
-                <Link
-                  href={`/${href}`}
+              return (
+                <li
+                  key={id}
                   className={`
-                      text-lg lg:text-base 
-                      transition-colors w-full block
-                      ${isActive ? 'text-white' : 'hover:text-white'}
+                  
+                      ${
+                        isActive
+                          ? 'text-white font-bold'
+                          : 'text-neutral-400 hover:text-white'
+                      }
+                      max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
                   `}
                 >
-                  {name}
-                </Link>
-              </li>
-            );
-          })}
-        </>
-      )}
-      {user?.role == 'admin' && (
-        <>
-          {sideNavLinksAdmin.map(({ id, href, name }) => {
-            const isActive =
-              (name === 'Análisis de llamada' &&
-                (pathname.includes('/calls/search') ||
-                  pathname.includes('/calls/detail'))) ||
-              (name === 'Soporte' && pathname.includes('/support')) ||
-              pathname.includes(`/${href}`);
+                  <Link
+                    href={`/${href}`}
+                    className={`
+                        text-lg lg:text-base 
+                        transition-colors w-full block
+                        ${isActive ? 'text-white' : 'hover:text-white'}
+                    `}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              );
+            })}
+          </>
+        )}
+        {user?.role == 'admin' && (
+          <>
+            {sideNavLinksAdmin.map(({ id, href, name }) => {
+              const isActive =
+                (name === 'Análisis de llamada' &&
+                  (pathname.includes('/calls/search') ||
+                    pathname.includes('/calls/detail'))) ||
+                (name === 'Soporte' && pathname.includes('/support')) ||
+                pathname.includes(`/${href}`);
 
-            return (
-              <li
-                key={id}
-                className={`
-                    ${
-                      isActive
-                        ? 'text-white font-bold'
-                        : 'text-neutral-400 hover:text-white'
-                    }
-                    max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
-                `}
-              >
-                <Link
-                  href={`/${href}`}
+              return (
+                <li
+                  key={id}
                   className={`
-                      text-lg lg:text-base 
-                      transition-colors w-full block
-                      ${isActive ? 'text-white' : 'hover:text-white'}
+                  
+                      ${
+                        isActive
+                          ? 'text-white font-bold'
+                          : 'text-neutral-400 hover:text-white'
+                      }
+                      max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
                   `}
                 >
-                  {name}
-                </Link>
-              </li>
-            );
-          })}
-        </>
-      )}
-    </ul>
+                  <Link
+                    href={`/${href}`}
+                    className={`
+                        text-lg lg:text-base 
+                        transition-colors w-full block
+                        ${isActive ? 'text-white' : 'hover:text-white'}
+                    `}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              );
+            })}
+          </>
+        )}
+      </ul>
+    </div>
   );
 };
 
