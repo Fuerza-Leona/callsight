@@ -81,3 +81,86 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+.text-animation {
+  min-width: 280px;
+}
+.text-animation span {
+  position: relative;
+}
+.text-animation span::before {
+  content: '';
+  color: white;
+  animation: words 20s infinite;
+}
+.text-animation span::after {
+  content: '';
+  background-color: #13202a;
+  position: absolute;
+  width: (calc(100% + 8px) * -1);
+  height: calc(100% + 8px);
+  border-left: 3px solid lightcyan;
+  right: -8px;
+  animation:
+    cursor 0.6s infinite,
+    typing 20s steps(14) infinite;
+}
+@keyframes cursor {
+  to {
+    border-left: 2px solid #fff;
+  }
+}
+@keyframes words {
+  0%,
+  5% {
+    content: 'Calidad garantizada';
+  }
+  6%,
+  20% {
+    content: 'Transparencia total';
+  }
+  21%,
+  40% {
+    content: 'Pasión por lo que hacemos';
+  }
+  41%,
+  60% {
+    content: 'Orientación al cliente';
+  }
+  61%,
+  80% {
+    content: 'Claridad ante todo';
+  }
+  81%,
+  99.9% {
+    content: 'Calidad garantizada';
+  }
+}
+@keyframes typing {
+  0%,
+  10%,
+  15%,
+  30%,
+  35%,
+  50%,
+  55%,
+  70%,
+  75%,
+  90%,
+  95%,
+  100% {
+    width: 0;
+  }
+
+  5%,
+  20%,
+  25%,
+  40%,
+  45%,
+  60%,
+  65%,
+  80%,
+  85% {
+    width: calc(100% + 8px);
+  }
+}

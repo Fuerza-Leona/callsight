@@ -73,6 +73,11 @@ export const sideNavLinksAdmin: NavLink[] = [
     name: 'Mi perfil',
     href: 'perfil',
   },
+  {
+    id: 10,
+    name: 'Entrenamiento',
+    href: 'entrenamiento',
+  },
 ];
 
 export const sideNavLinksAgent: NavLink[] = [
@@ -142,3 +147,49 @@ export const useSideNavLinksClient = () => {
     },
   ];
 };
+
+export const moods = [
+  {
+    mood: 'Enojado',
+    description: 'Cliente molesto, tono confrontativo',
+    imageUrl: '/colors/red.jpg',
+    voice: 'coral',
+    //coral o ash
+  },
+  {
+    mood: 'Frustrado',
+    description: 'Cliente impaciente y sarcástico',
+    imageUrl: '/colors/orange.jpg',
+    voice: 'ballad',
+    //alloy meh, ash bueno, ballad bueno, coral buena, echo no, sage meh, shimmer, and verse no
+  },
+  {
+    mood: 'Detallista',
+    description:
+      'Cliente que hace muchas preguntas técnicas o administrativas.',
+    imageUrl: '/colors/yellow.jpg',
+    voice: 'sage',
+    //alloy, ash, ballad, coral, echo, sage - buena, shimmer - no, and verse
+  },
+  {
+    mood: 'Indeciso',
+    description: 'Cliente que duda en tomar decisiones',
+    imageUrl: '/colors/dark_blue.jpg',
+    voice: 'ballad',
+    //alloy - no, ash - bueno, ballad - bueno, coral, echo, sage, shimmer, and verse
+  },
+  {
+    mood: 'Confundido',
+    description: 'Cliente que no entiende el proceso o producto',
+    imageUrl: '/colors/gray.jpg',
+    voice: 'shimmer',
+    //alloy - buena, ash - decente , ballad - bueno, coral, echo, sage, shimmer, and verse
+  },
+  {
+    mood: 'Colaborador',
+    description: 'Cliente con actitud positiva, que quiere resolver',
+    imageUrl: '/colors/dark_green.jpg',
+    voice: 'verse',
+    //alloy - no, ash - meh, ballad - bueno, coral - buena, echo - decente, sage - buena, shimmer - buena, and verse - bueno
+  },
+];
