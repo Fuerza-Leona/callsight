@@ -54,7 +54,7 @@ const Navbar = () => {
             />
           </Link>
           <nav className="sm:flex hidden items-center justify-between w-full">
-            <NavItems />
+            {!isLoginPage && <NavItems />}
           </nav>
           <div className="flex gap-5 items-center">
             <button
