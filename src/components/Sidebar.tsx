@@ -97,9 +97,9 @@ const AdminNavSection = () => {
 
   return (
     <>
-      {/* Logo and profile icon */}
+      {/*  and profile icon */}
       <div className="flex justify-between items-center px-5 mb-16">
-        <Image src="/neoris.png" alt="Logo" width={150} height={50} priority />
+        <Image src="/neoris.png" alt="Logo" width={100} height={50} priority />
         <Link href="/perfil" className="mr-4">
           <AccountCircle
             sx={{

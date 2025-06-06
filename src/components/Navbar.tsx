@@ -48,7 +48,7 @@ const Navbar = () => {
             <Image
               src="/neoris.png"
               alt="Logo"
-              width={150}
+              width={100}
               height={50}
               priority
             />

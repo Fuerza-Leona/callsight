@@ -31,6 +31,11 @@ export default function Home() {
     fetchCompanyInformation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setFilteredRows(rows);
+  }, [rows]);
+
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <div className="relative lg:left-64 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3  pl-3">
@@ -55,12 +60,10 @@ export default function Home() {
               </div>
             )}
             <div className="h-[200px] w-full">
-              {rows.length > 1 && (
-                <CustomPaginationActionsTable
-                  rows={filteredRows}
-                  columns={columns}
-                />
-              )}
+              <CustomPaginationActionsTable
+                rows={filteredRows}
+                columns={columns}
+              />
             </div>
           </div>
         </div>
