@@ -34,6 +34,7 @@ export default function Home() {
 
     try {
       const user = await login(form.email, form.password);
+
       // Check if user needs Teams connection
       if (user && !user.isConnected) {
         setShowTeamsModal(true);
@@ -54,7 +55,6 @@ export default function Home() {
 
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center">
-      {/* Imagen de fondo */}
       <Image
         src="/fuerzaLeona.jpg"
         alt="Fondo con león"
@@ -63,9 +63,7 @@ export default function Home() {
         priority
       />
 
-      {/* Contenido */}
       <div className="relative z-20 flex w-full px-10 md:px-20 items-center justify-between">
-        {/* Texto izquierda */}
         <div className="text-white max-w-md">
           <h1 className="text-5xl font-bold mb-4">¡Bienvenid@!</h1>
           <p className="text-lg font-medium">
@@ -74,7 +72,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Formulario derecha */}
         <div className="bg-white bg-opacity-90 backdrop-blur-md p-10 rounded-2xl shadow-lg w-full max-w-md">
           <h2 className="text-2xl font-semibold text-center mb-6 text-[#313A26]">
             Inicia Sesión
@@ -117,17 +114,13 @@ export default function Home() {
 
             <p className="text-sm text-center mt-2 text-gray-700">
               ¿Aún no tienes una cuenta?{' '}
-              <span className="underline cursor-pointer">Contáctanos</span>
-            </p>
-            <p className="text-sm text-center text-gray-700 underline cursor-pointer">
-              ¿Olvidaste tu contraseña?
+              <span className="underline">Contáctanos</span>
             </p>
           </form>
         </div>
       </div>
 
-      {/* Teams Connection Modal */}
-      {showTeamsModal && (
+      {showTeamsModal && !user?.isConnected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10">
           <div className="bg-white rounded-xl p-8 shadow-xl w-full max-w-md mx-4 border border-gray-200">
             <div className="text-center">

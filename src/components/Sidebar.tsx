@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext';
 import Image from 'next/image';
 import { usePrevChatsHistory } from '@/hooks/usePrevChatsHistory';
+import { AccountCircle } from '@mui/icons-material';
 
 const ChatbotSideNavItems = () => {
   const {
@@ -97,29 +98,33 @@ const AdminNavSection = () => {
   return (
     <>
       {/* Logo and profile icon */}
-      <div className="flex justify-between items-center px-5 mb-10">
+      <div className="flex justify-between items-center px-5 mb-16">
         <Image src="/neoris.png" alt="Logo" width={150} height={50} priority />
-        <Link href="/perfil">
-          <Image
-            src="/assets/profileIcon.png"
-            alt="Perfil"
-            width={32}
-            height={32}
-            className="rounded-full cursor-pointer hover:opacity-80"
+        <Link href="/perfil" className="mr-4">
+          <AccountCircle
+            sx={{
+              fontSize: 32,
+              color: '#9CA3AF',
+              '&:hover': {
+                color: '#F3F4F6',
+              },
+              cursor: 'pointer',
+              transition: 'color 0.2s ease',
+            }}
           />
         </Link>
       </div>
 
       {/* Asistentes Dropdown */}
-      <div className="w-full px-5 mt-4">
+      <div className="w-full px-5 mt-8 mb-8 text-lg">
         <button
-          className="text-white font-semibold mb-2 flex items-center"
+          className="text-neutral-400 mb-4 flex items-center"
           onClick={() => setAsistentesOpen(!asistentesOpen)}
         >
-          IA {asistentesOpen ? '▴' : '▾'}
+          Inteligencia Artificial {asistentesOpen ? '▴' : '▾'}
         </button>
         {asistentesOpen && asistentesDropdown?.children && (
-          <ul className="pl-2 flex flex-col gap-2">
+          <ul className="pl-2 flex flex-col gap-4">
             {asistentesDropdown.children.map(({ id, href, name }) => {
               const isActive = href && pathname.includes(`/${href}`);
               return (
@@ -128,10 +133,10 @@ const AdminNavSection = () => {
                   className={`${
                     isActive
                       ? 'text-white font-bold'
-                      : 'text-neutral-400 hover:text-white'
+                      : 'text-neutral-400 text-xl hover:text-white'
                   }`}
                 >
-                  <Link href={`/${href}`} className="text-base block">
+                  <Link href={`/${href}`} className="text-base block text-lg">
                     {name}
                   </Link>
                 </li>
@@ -142,7 +147,7 @@ const AdminNavSection = () => {
       </div>
 
       {/* Other links */}
-      <ul className="pl-5 mt-4 flex flex-col gap-4">
+      <ul className="pl-5 mt-2 mb-8 flex flex-col gap-6">
         {otherItems.map(({ id, href, name }) => {
           const isActive =
             (name === 'Análisis de llamada' &&
@@ -160,7 +165,7 @@ const AdminNavSection = () => {
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
-              <Link href={`/${href}`} className="text-base block">
+              <Link href={`/${href}`} className="text-base block text-lg">
                 {name}
               </Link>
             </li>
@@ -168,15 +173,15 @@ const AdminNavSection = () => {
         })}
       </ul>
       {/* Administración Dropdown */}
-      <div className="w-full px-5 pt-5">
+      <div className="w-full px-5 pt-2">
         <button
-          className="text-white font-semibold mb-2 flex items-center"
+          className="text-neutral-400 mb-4 flex items-center text-lg"
           onClick={() => setAdminOpen(!adminOpen)}
         >
           Administración {adminOpen ? '▴' : '▾'}
         </button>
         {adminOpen && administracionDropdown?.children && (
-          <ul className="pl-2 flex flex-col gap-2">
+          <ul className="pl-2 flex flex-col gap-4">
             {administracionDropdown.children.map(({ id, href, name }) => {
               const isActive = href && pathname.includes(`/${href}`);
               return (
@@ -188,7 +193,7 @@ const AdminNavSection = () => {
                       : 'text-neutral-400 hover:text-white'
                   }`}
                 >
-                  <Link href={`/${href}`} className="text-base block">
+                  <Link href={`/${href}`} className="text-base block text-lg">
                     {name}
                   </Link>
                 </li>
@@ -232,13 +237,14 @@ const ClientAgentNavSection = ({ role }: { role: 'client' | 'agent' }) => {
                     ? 'text-white font-bold'
                     : 'text-neutral-400 hover:text-white'
                 }
+                
                 max-lg:w-full max-lg:rounded-md py-2 max-lg:px-5
             `}
             >
               <Link
                 href={`/${href}`}
                 className={`
-                  text-lg lg:text-base 
+                  text-lg
                   transition-colors w-full block
                   ${isActive ? 'text-white' : 'hover:text-white'}
               `}

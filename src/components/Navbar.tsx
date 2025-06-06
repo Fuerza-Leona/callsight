@@ -44,7 +44,7 @@ const Navbar = () => {
         <div
           className={`flex justify-between items-center py-5 mx-auto ${isOpen ? 'backdrop-blur-sm transition-all ease-in-out' : 'transition-all duration-300 ease-in-out'}`}
         >
-          <Link href="/" className="ml-5">
+          <Link href="/" className="ml-5 cursor-pointer">
             <Image
               src="/neoris.png"
               alt="Logo"
@@ -54,7 +54,7 @@ const Navbar = () => {
             />
           </Link>
           <nav className="sm:flex hidden items-center justify-between w-full">
-            <NavItems />
+            {!isLoginPage && <NavItems />}
           </nav>
           <div className="flex gap-5 items-center">
             <button

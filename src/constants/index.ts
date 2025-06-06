@@ -21,13 +21,13 @@ interface DropdownNavLink {
 export const navBarLinks: NavLink[] = [
   {
     id: 1,
-    name: '¿Quiénes somos?',
-    href: '#nosotros',
+    name: '¿Qué hacemos?',
+    href: '#que-hacemos',
   },
   {
     id: 2,
-    name: '¿Qué hacemos?',
-    href: '#que-hacemos',
+    name: '¿Quiénes somos?',
+    href: '#nosotros',
   },
   {
     id: 3,
