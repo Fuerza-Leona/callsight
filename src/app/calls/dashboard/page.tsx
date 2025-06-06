@@ -98,8 +98,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
-    const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
+    const startDate = selectedDate
+      .startOf('date')
+      .format('YYYY-MM-DD::HH:mm:ss');
+    const endDate = selectedDate.endOf('date').format('YYYY-MM-DD::HH:mm:ss');
+    console.log(startDate, endDate);
     const params = {
       startDate,
       endDate,
@@ -384,7 +387,9 @@ export default function Home() {
                       <span className="text-sm pl-2 font-light">
                         {' '}
                         en{' '}
-                        {dayjs(selectedDate).locale('es').format('MMMM YYYY')}
+                        {dayjs(selectedDate)
+                          .locale('es')
+                          .format('DD MMMM YYYY')}
                       </span>{' '}
                     </div>
                   )}

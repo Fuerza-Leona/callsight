@@ -38,11 +38,6 @@ export const sideNavLinksAdmin: NavLink[] = [
     href: 'calls/search',
   },
   {
-    id: 3,
-    name: 'Subir una llamada',
-    href: 'calls/upload',
-  },
-  {
     id: 4,
     name: 'Chatbot',
     href: 'chatbot',
@@ -90,11 +85,6 @@ export const sideNavLinksAgent: NavLink[] = [
     id: 2,
     name: 'Llamadas',
     href: 'calls/search',
-  },
-  {
-    id: 3,
-    name: 'Subir una llamada',
-    href: 'calls/upload',
   },
   {
     id: 4,
