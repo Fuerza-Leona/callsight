@@ -36,8 +36,11 @@ export default function Home() {
       const user = await login(form.email, form.password);
 
       // Check if user needs Teams connection
-      if (user && !user.isConnected) {
+      if (user && !user.isConnected && user.role !== 'client') {
         setShowTeamsModal(true);
+      } else if (user && user.role === 'client') {
+        // For clients, redirect immediately since they don't need Teams connection
+        redirectBasedOnRole(user);
       }
       // If user is already connected, login hook will handle the redirect
     } catch (err) {
