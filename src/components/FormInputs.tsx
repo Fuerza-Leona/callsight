@@ -66,7 +66,7 @@ const FormInputs: React.FC<FormInputsProps> = ({}) => {
 
     const formData = new FormData();
     formData.append('file', selectedFile);
-    formData.append('date_string', `${date} 00:00`);
+    formData.append('date_string', `${date} 12:00:00`);
     formData.append('company_id', selectedCompany);
     formData.append('participants', selectedParticipants.join(','));
 

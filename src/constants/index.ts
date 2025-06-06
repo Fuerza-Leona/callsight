@@ -1,3 +1,5 @@
+// Export const declarations make these values available for import in other files
+// This allows centralized configuration management across the application
 export const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/${process.env.NEXT_PUBLIC_API_VERSION}`;
 
 export const sessionSecret = `${process.env.SESSION_SECRET}`;
@@ -6,6 +8,14 @@ interface NavLink {
   id: number;
   name: string;
   href: string;
+}
+
+interface DropdownNavLink {
+  id: number; // Unique identifier
+  name: string; // Display text
+  href?: string; // Optional href - dropdowns might not have direct links
+  isDropdown?: boolean; // Flag to identify dropdown parents
+  children?: NavLink[]; // Array of child navigation items for dropdowns
 }
 
 export const navBarLinks: NavLink[] = [
@@ -26,7 +36,7 @@ export const navBarLinks: NavLink[] = [
   },
 ];
 
-export const sideNavLinksAdmin: NavLink[] = [
+export const sideNavLinksAdmin: DropdownNavLink[] = [
   {
     id: 1,
     name: 'Tablero',
@@ -38,45 +48,48 @@ export const sideNavLinksAdmin: NavLink[] = [
     href: 'calls/search',
   },
   {
-    id: 3,
-    name: 'Subir una llamada',
-    href: 'calls/upload',
-  },
-  {
     id: 4,
-    name: 'Chatbot',
-    href: 'chatbot',
+    name: 'Administración',
+    isDropdown: true,
+    children: [
+      {
+        id: 41,
+        name: 'Usuarios',
+        href: 'users',
+      },
+      {
+        id: 42,
+        name: 'Empresas',
+        href: 'clients',
+      },
+    ],
   },
   {
     id: 5,
+    name: 'IA',
+    isDropdown: true,
+    children: [
+      {
+        id: 51,
+        name: 'Chatbot',
+        href: 'chatbot',
+      },
+      {
+        id: 52,
+        name: 'Entrenamiento',
+        href: 'entrenamiento',
+      },
+    ],
+  },
+  {
+    id: 6,
     name: 'Sugerencias',
     href: 'sugerencias',
   },
   {
-    id: 6,
+    id: 7,
     name: 'Soporte',
     href: 'tickets',
-  },
-  {
-    id: 7,
-    name: 'Empresas',
-    href: 'clients',
-  },
-  {
-    id: 8,
-    name: 'Usuarios',
-    href: 'users',
-  },
-
-  {
-    id: 9,
-    name: 'Mi perfil',
-    href: 'perfil',
-  },
-  {
-    id: 10,
-    name: 'Entrenamiento',
-    href: 'entrenamiento',
   },
 ];
 
@@ -92,11 +105,6 @@ export const sideNavLinksAgent: NavLink[] = [
     href: 'calls/search',
   },
   {
-    id: 3,
-    name: 'Subir una llamada',
-    href: 'calls/upload',
-  },
-  {
     id: 4,
     name: 'Chatbot',
     href: 'chatbot',
@@ -106,7 +114,6 @@ export const sideNavLinksAgent: NavLink[] = [
     name: 'Sugerencias',
     href: 'sugerencias',
   },
-
   {
     id: 6,
     name: 'Soporte',
@@ -123,6 +130,7 @@ import { useUser } from '../context/UserContext';
 
 export const useSideNavLinksClient = () => {
   const { user } = useUser();
+  // Dynamic company_id injection ensures proper routing for support tickets
   const companyId = user?.company_id || '';
   return [
     {
@@ -138,6 +146,8 @@ export const useSideNavLinksClient = () => {
     {
       id: 3,
       name: 'Soporte',
+      // Dynamic URL construction with company_id parameter
+      // This ensures clients only see tickets relevant to their company
       href: `tickets/support?company_id=${companyId}`,
     },
     {
