@@ -13,7 +13,6 @@ export default function Home() {
     error,
     number: nCalls,
     rating: satisfaction,
-    duration,
     fetchProfile,
     loading: loadingProfile,
   } = useFetchProfile();
@@ -79,18 +78,6 @@ export default function Home() {
               </div>
             )}
 
-            <div
-              className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl justify-center items-center text-white"
-              style={{ backgroundColor: 'var(--neoris-blue)' }}
-            >
-              <p>Duración promedio por llamada</p>
-              <div className="flex">
-                <h2 id="average_time" className="font-thin text-3xl">
-                  {duration}
-                </h2>
-                <p>min</p>
-              </div>
-            </div>
             <div
               className="flex flex-col md:w-60 md:h-35 h-28 rounded-2xl w-full justify-center items-center text-white"
               style={{ backgroundColor: 'var(--slate-blue)' }}

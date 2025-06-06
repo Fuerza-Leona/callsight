@@ -1,5 +1,5 @@
 'use client';
-import { PieChart } from '@mui/x-charts/PieChart';
+import { pieArcLabelClasses, PieChart } from '@mui/x-charts/PieChart';
 import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -30,9 +30,11 @@ import {
   Company,
 } from '@/hooks/fetchDashboardCompanies';
 import { useUser } from '@/context/UserContext';
-import { Info } from '@mui/icons-material';
+import { Info, UploadFile } from '@mui/icons-material';
 import { useFetchReport } from '@/hooks/useFetchReport';
 import { useFetchTeams } from '@/hooks/fetchTeams';
+import Image from 'next/image';
+import TeamsConnectButton from '@/components/TeamsConnectButton';
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -97,8 +99,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const startDate = selectedDate.startOf('month').format('YYYY-MM-DD');
-    const endDate = selectedDate.endOf('month').format('YYYY-MM-DD');
+    const startDate = selectedDate
+      .startOf('date')
+      .format('YYYY-MM-DD::HH:mm:ss');
+    const endDate = selectedDate.endOf('date').format('YYYY-MM-DD::HH:mm:ss');
+    console.log(startDate, endDate);
     const params = {
       startDate,
       endDate,
@@ -159,44 +164,70 @@ export default function Home() {
           <div className="flex gap-2">
             <div>
               {user?.isConnected ? (
-                loadingTeams ? (
-                  <div>Cargando reuniones desde Teams...</div>
-                ) : typeof meetings === 'number' ? (
-                  meetings > 0 ? (
-                    <div>{`Nuevas reuniones en Teams: ${meetings}`}</div>
-                  ) : (
-                    <div>No hay nuevas reuniones en Teams</div>
-                  )
-                ) : (
-                  <div>No se pudo obtener el estado de Teams</div>
-                )
+                <button
+                  className="text-color rounded-md p-2 w-full flex items-center gap-2"
+                  style={{
+                    backgroundColor: loadingTeams ? '#f5f5f5' : 'white',
+                    color: loadingTeams ? '#9ca3af' : 'inherit',
+                    width: '285px',
+                  }}
+                >
+                  <Image
+                    src={
+                      'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Microsoft_Office_Teams_%282018–present%29.svg/2203px-Microsoft_Office_Teams_%282018–present%29.svg.png'
+                    }
+                    width={20}
+                    height={20}
+                    alt="Teams Logo"
+                    className={`w-5 h-5 mx-1 ${loadingTeams ? 'opacity-50' : ''}`}
+                  />
+                  {loadingTeams
+                    ? 'Cargando llamadas de Teams...'
+                    : typeof meetings === 'number'
+                      ? meetings > 0
+                        ? `${meetings} nuevas llamadas de Teams`
+                        : 'Sin llamadas nuevas de Teams'
+                      : 'Error en Teams'}
+                </button>
               ) : (
-                <div>Teams no está conectado</div>
+                <TeamsConnectButton />
               )}
             </div>
-            <div>
+            <div className="mr-2">
               <button
-                className="text-[#FFFFFF] rounded-md p-2 w-full cursor-pointer"
-                style={{ backgroundColor: 'var(--sky-blue)' }}
+                className="text-[#FFFFFF] rounded-md p-2 mx-1 w-full gap-2 cursor-pointer"
+                style={{ backgroundColor: '#6564DB' }}
                 onClick={fetchReport}
                 disabled={loadingReport}
               >
+                <FileDownloadIcon className="mr-2" />
                 {loadingReport ? 'Exportando...' : 'Exportar como PDF'}{' '}
-                <FileDownloadIcon />
               </button>
             </div>
+            <Link
+              href={'/calls/upload'}
+              className="text-[#FFFFFF] rounded-md block"
+              id="search"
+            >
+              <div
+                className="p-2  mr-1 items-center justify-center text-center flex rounded-md"
+                style={{ backgroundColor: '#F294CD' }}
+              >
+                <UploadFile className="mx-2" />
+                <p className="pr-3">Subir llamada</p>
+              </div>
+            </Link>
             <Link
               href={'/calls/search'}
               className="text-[#FFFFFF] rounded-md block"
               id="search"
             >
               <div
-                className="p-2 items-center justify-center text-center flex rounded-md"
+                className="p-2  items-center justify-center text-center flex rounded-md"
                 style={{ backgroundColor: 'var(--neoris-blue)' }}
               >
-                <p className="">
-                  Buscar llamada <SearchIcon />
-                </p>
+                <SearchIcon className="mx-1" />
+                <p className="pr-3">Buscar llamada</p>
               </div>
             </Link>
           </div>
@@ -212,9 +243,22 @@ export default function Home() {
                 <DateCalendar
                   value={selectedDate}
                   onChange={handleDateChange}
-                  views={['month']}
-                  openTo="month"
+                  views={['month', 'day']}
                   className="bg-[#1E242B] rounded-md w-1/1"
+                  sx={{
+                    color: 'white',
+                    '.MuiTypography-root': { color: 'white' },
+                    '.MuiPickersDay-root': { color: 'white' },
+                    '.MuiPickersDay-root.Mui-selected': {
+                      backgroundColor: '#6564DB',
+                      color: 'white',
+                    },
+                    '.MuiPickersCalendarHeader-label': { color: 'white' },
+                    '.MuiSvgIcon-root': { color: 'white' },
+                    '.MuiPickersArrowSwitcher-button': { color: 'white' },
+                    '.MuiPickersYear-root': { color: 'white' },
+                    '.MuiPickersMonth-root': { color: 'white' },
+                  }}
                 />
               </LocalizationProvider>
             </div>
@@ -346,7 +390,9 @@ export default function Home() {
                       <span className="text-sm pl-2 font-light">
                         {' '}
                         en{' '}
-                        {dayjs(selectedDate).locale('es').format('MMMM YYYY')}
+                        {dayjs(selectedDate)
+                          .locale('es')
+                          .format('DD MMMM YYYY')}
                       </span>{' '}
                     </div>
                   )}
@@ -530,6 +576,12 @@ export default function Home() {
                           ],
                         },
                       ]}
+                      sx={{
+                        [`& .${pieArcLabelClasses.root}`]: {
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                        },
+                      }}
                       width={350}
                       height={200}
                       className="font-bold text-xl pt-5"
