@@ -121,7 +121,7 @@ const AdminNavSection = () => {
           className="text-neutral-400 mb-4 flex items-center"
           onClick={() => setAsistentesOpen(!asistentesOpen)}
         >
-          Inteligencia Ariticial {asistentesOpen ? '▴' : '▾'}
+          Inteligencia Artificial {asistentesOpen ? '▴' : '▾'}
         </button>
         {asistentesOpen && asistentesDropdown?.children && (
           <ul className="pl-2 flex flex-col gap-4">
