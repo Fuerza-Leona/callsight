@@ -152,6 +152,7 @@ export const moods = [
     imageUrl: '/colors/orange.jpg',
     voice: 'ballad',
     //alloy meh, ash bueno, ballad bueno, coral buena, echo no, sage meh, shimmer, and verse no
+    //ash usa insultos
   },
   {
     mood: 'Detallista',
@@ -172,7 +173,7 @@ export const moods = [
     mood: 'Confundido',
     description: 'Cliente que no entiende el proceso o producto',
     imageUrl: '/colors/gray.jpg',
-    voice: 'shimmer',
+    voice: 'ash',
     //alloy - buena, ash - decente , ballad - bueno, coral, echo, sage, shimmer, and verse
   },
   {
