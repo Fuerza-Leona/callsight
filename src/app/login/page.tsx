@@ -2,17 +2,23 @@
 
 import { useRef, useState } from 'react';
 import { useLogin } from '@/hooks/useLogin';
+import { useUser } from '@/context/UserContext';
+import { useTeamsConnect } from '@/hooks/useTeamsConnect';
+import TeamsConnectButton from '@/components/TeamsConnectButton';
 import Image from 'next/image';
 
 export default function Home() {
   const formRef = useRef(null);
+  const [showTeamsModal, setShowTeamsModal] = useState(false);
 
   const [form, setForm] = useState({
     email: '',
     password: '',
   });
 
-  const { login, error, loading } = useLogin();
+  const { login, redirectBasedOnRole, error, loading } = useLogin();
+  const { user } = useUser();
+  const { loading: teamsLoading, error: teamsError } = useTeamsConnect();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,15 +33,28 @@ export default function Home() {
     }
 
     try {
-      await login(form.email, form.password);
+      const user = await login(form.email, form.password);
+
+      // Check if user needs Teams connection
+      if (user && !user.isConnected) {
+        setShowTeamsModal(true);
+      }
+      // If user is already connected, login hook will handle the redirect
     } catch (err) {
       console.error('Error during login:', err);
     }
   };
 
+  const handleProceedToPage = () => {
+    setShowTeamsModal(false);
+    // Use the current user from context to redirect based on role
+    if (user) {
+      redirectBasedOnRole(user);
+    }
+  };
+
   return (
-    <div className="relative w-full min-h-screen flex items-center justify-center ">
-      {/* Imagen de fondo */}
+    <div className="relative w-full min-h-screen flex items-center justify-center">
       <Image
         src="/fuerzaLeona.jpg"
         alt="Fondo con león"
@@ -44,9 +63,7 @@ export default function Home() {
         priority
       />
 
-      {/* Contenido */}
       <div className="relative z-20 flex w-full px-10 md:px-20 items-center justify-between">
-        {/* Texto izquierda */}
         <div className="text-white max-w-md">
           <h1 className="text-5xl font-bold mb-4">¡Bienvenid@!</h1>
           <p className="text-lg font-medium">
@@ -55,7 +72,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Formulario derecha */}
         <div className="bg-white bg-opacity-90 backdrop-blur-md p-10 rounded-2xl shadow-lg w-full max-w-md">
           <h2 className="text-2xl font-semibold text-center mb-6 text-[#313A26]">
             Inicia Sesión
@@ -86,24 +102,41 @@ export default function Home() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || teamsLoading}
               className="bg-[#13202A] text-white font-semibold py-2 rounded-md hover:opacity-90 transition"
             >
-              {loading ? 'Cargando...' : 'Iniciar sesión'}
+              {loading || teamsLoading ? 'Cargando...' : 'Iniciar sesión'}
             </button>
 
-            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            {(error || teamsError) && (
+              <p className="text-red-500 text-sm mt-1">{error || teamsError}</p>
+            )}
 
             <p className="text-sm text-center mt-2 text-gray-700">
               ¿Aún no tienes una cuenta?{' '}
-              <span className="underline cursor-pointer">Contáctanos</span>
-            </p>
-            <p className="text-sm text-center text-gray-700 underline cursor-pointer">
-              ¿Olvidaste tu contraseña?
+              <span className="underline">Contáctanos</span>
             </p>
           </form>
         </div>
       </div>
+
+      {showTeamsModal && !user?.isConnected && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10">
+          <div className="bg-white rounded-xl p-8 shadow-xl w-full max-w-md mx-4 border border-gray-200">
+            <div className="text-center">
+              <h3 className="text-2xl font-semibold text-[#313A26] mb-4">
+                Conectar con Microsoft Teams
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Para aprovechar al máximo nuestras funcionalidades, te
+                recomendamos conectar tu cuenta con Microsoft Teams.
+              </p>
+
+              <TeamsConnectButton onSkip={handleProceedToPage} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

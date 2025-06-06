@@ -21,10 +21,10 @@ const TranscriptBubble: React.FC<TranscriptBubbleProps> = ({
           : '';
 
   const margin =
-    user === 'me' ? 'ml-10 mr-0' : user === 'you' ? 'mr-10 ml-auto' : '';
+    user === 'me' ? 'ml-10 mr-0' : user === 'you' ? 'mr-12 ml-auto' : '';
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-3">
       <div
         className={`w-[calc(45%)] min-w-40 p-4 rounded-lg ${bgColor} ${margin}`}
       >

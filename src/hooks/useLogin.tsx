@@ -24,20 +24,38 @@ export const useLogin = () => {
       });
 
       setUser(response.data.user);
-      const role = response.data.user.role;
-      if (role !== 'client') {
-        router.push('/calls/dashboard');
-      } else {
-        router.push('/calls/search');
+
+      // If user is already connected to Teams, redirect immediately
+      if (response.data.user.isConnected) {
+        const role = response.data.user.role;
+        if (role !== 'client') {
+          router.push('/calls/dashboard');
+        } else {
+          router.push('/calls/search');
+        }
       }
+
+      // Return user data so component can check isConnected
+      return response.data.user;
     } catch (error) {
       setError(
         `Error al Iniciar sesión: ${error instanceof Error ? error.message : String(error)}`
       );
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  return { login, loading, error };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const redirectBasedOnRole = (user: any) => {
+    const role = user.role;
+    if (role !== 'client') {
+      router.push('/calls/dashboard');
+    } else {
+      router.push('/calls/search');
+    }
+  };
+
+  return { login, redirectBasedOnRole, loading, error };
 };

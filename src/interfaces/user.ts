@@ -8,4 +8,5 @@ export interface User {
   department: string;
   company_id: string;
   created_at?: string;
+  isConnected: boolean;
 }

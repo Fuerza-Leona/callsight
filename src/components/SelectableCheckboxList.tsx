@@ -4,9 +4,7 @@ import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
 import { Typography } from '@mui/material';
 import { UUID } from 'crypto';
 
@@ -26,7 +24,6 @@ type Props = {
 
 export default function SelectableCheckboxList({ items, onSelect }: Props) {
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
-  const [checked, setChecked] = React.useState<(number | string)[]>([]);
 
   const handleSelect = (index: number) => {
     setSelectedIndex(index);
@@ -34,19 +31,6 @@ export default function SelectableCheckboxList({ items, onSelect }: Props) {
     if (onSelect && items[index]) {
       onSelect(items[index]);
     }
-  };
-
-  const handleToggle = (id: number | string) => {
-    const currentIndex = checked.indexOf(id);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(id);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
   };
 
   // Debug props
@@ -76,30 +60,6 @@ export default function SelectableCheckboxList({ items, onSelect }: Props) {
                   },
                 }}
               >
-                <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    checked={checked.includes(item.id)}
-                    tabIndex={-1}
-                    disableRipple
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggle(item.id);
-                    }}
-                    slotProps={{
-                      input: {
-                        'aria-labelledby': labelId,
-                      },
-                    }}
-                    sx={{
-                      color: '#4D4637',
-                      '&.Mui-checked': {
-                        color: '#4D4637',
-                      },
-                    }}
-                  />
-                </ListItemIcon>
-
                 <ListItemText
                   id={labelId}
                   primary={
