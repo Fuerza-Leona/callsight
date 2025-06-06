@@ -34,6 +34,7 @@ import { Info, UploadFile } from '@mui/icons-material';
 import { useFetchReport } from '@/hooks/useFetchReport';
 import { useFetchTeams } from '@/hooks/fetchTeams';
 import Image from 'next/image';
+import TeamsConnectButton from '@/components/TeamsConnectButton';
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -162,33 +163,35 @@ export default function Home() {
           <p className="text-4xl font-bold">Tablero</p>
           <div className="flex gap-2">
             <div>
-              <button
-                className="text-color rounded-md p-2 w-full flex items-center gap-2"
-                style={{
-                  backgroundColor: loadingTeams ? '#f5f5f5' : 'white',
-                  color: loadingTeams ? '#9ca3af' : 'inherit',
-                  width: '285px',
-                }}
-              >
-                <Image
-                  src={
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Microsoft_Office_Teams_%282018–present%29.svg/2203px-Microsoft_Office_Teams_%282018–present%29.svg.png'
-                  }
-                  width={20}
-                  height={20}
-                  alt="Teams Logo"
-                  className={`w-5 h-5 mx-1 ${loadingTeams ? 'opacity-50' : ''}`}
-                />
-                {loadingTeams
-                  ? 'Cargando llamadas de Teams...'
-                  : user?.isConnected
-                    ? typeof meetings === 'number'
+              {user?.isConnected ? (
+                <button
+                  className="text-color rounded-md p-2 w-full flex items-center gap-2"
+                  style={{
+                    backgroundColor: loadingTeams ? '#f5f5f5' : 'white',
+                    color: loadingTeams ? '#9ca3af' : 'inherit',
+                    width: '285px',
+                  }}
+                >
+                  <Image
+                    src={
+                      'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Microsoft_Office_Teams_%282018–present%29.svg/2203px-Microsoft_Office_Teams_%282018–present%29.svg.png'
+                    }
+                    width={20}
+                    height={20}
+                    alt="Teams Logo"
+                    className={`w-5 h-5 mx-1 ${loadingTeams ? 'opacity-50' : ''}`}
+                  />
+                  {loadingTeams
+                    ? 'Cargando llamadas de Teams...'
+                    : typeof meetings === 'number'
                       ? meetings > 0
                         ? `${meetings} nuevas llamadas de Teams`
                         : 'Sin llamadas nuevas de Teams'
-                      : 'Error en Teams'
-                    : 'Sin conexión a Teams'}
-              </button>
+                      : 'Error en Teams'}
+                </button>
+              ) : (
+                <TeamsConnectButton />
+              )}
             </div>
             <div className="mr-2">
               <button
