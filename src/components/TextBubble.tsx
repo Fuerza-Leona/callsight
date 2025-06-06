@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 
 type Props = {
   index: number;
-  message: string;
+  message: string | React.ReactNode;
   isUser?: boolean;
 };
 

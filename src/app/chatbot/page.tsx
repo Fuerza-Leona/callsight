@@ -16,6 +16,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import ChatBotText from '@/components/ChatBotText';
 import { usePrevChatsHistory } from '@/hooks/usePrevChatsHistory';
 import ProviderBase from '@/components/ProviderBase';
+import ReactMarkdown from 'react-markdown';
 
 const formatSteps = (text: string): string[] => {
   //Enumarate steps if response has them
@@ -71,7 +72,7 @@ const ChatHistorySidebar = () => {
           )}
 
           {getChatsError && (
-            <p className="text-red-500 text-center">Error cargando historial</p>
+            <p className="text-center">No tienes chats previos.</p>
           )}
 
           <ul className="space-y-2">
@@ -308,7 +309,11 @@ const ChatbotInner = () => {
                 <TextBubble
                   index={i}
                   key={i}
-                  message={formatSteps(msg.content).join('\n\n')}
+                  message={
+                    <ReactMarkdown>
+                      {formatSteps(msg.content).join('\n\n')}
+                    </ReactMarkdown>
+                  }
                   isUser={msg.role === 'user'}
                 />
               ))}
