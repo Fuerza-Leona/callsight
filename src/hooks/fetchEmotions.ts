@@ -2,15 +2,10 @@
 
 import { useState } from 'react';
 import api from '@/utils/api';
+import { Emotions } from '@/interfaces/emotions';
 
 interface EmotionsResponse {
   emotions?: Emotions;
-}
-
-interface Emotions {
-  positive: number | undefined;
-  negative: number | undefined;
-  neutral: number | undefined;
 }
 
 interface FetchConversationsEmotionsParams {
