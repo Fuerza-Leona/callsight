@@ -15,3 +15,9 @@ https://docs.google.com/document/d/1ayl6gUUWBUgnTLovoTLYlzXrQBc3DwgL/edit?usp=sh
 
 ### Documento de inicio diseño
 https://docs.google.com/document/d/14lrS7ZX6h-9p14A8i3z1n98gACuYZXEYFlnXDj0yAm8/edit?usp=sharing
+
+### Carta de agradecimiento
+https://drive.google.com/file/d/17R5McozzuRyVO55dfmi-iE-C6BWCUFqa/view?usp=sharing
+
+## Documento de diseño
+https://drive.google.com/file/d/1aspi2cutJJKwN6LR89n3fQEoUTmmsssE/view?usp=sharing
