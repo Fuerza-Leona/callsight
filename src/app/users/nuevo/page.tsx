@@ -60,9 +60,9 @@ export default function Home() {
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <div className="relative lg:left-64 w-[96%] lg:w-[80%] flex flex-col md:justify-around md:flex-row gap-3 pl-3">
-        <div className="w-full flex flex-col">
-          <div className="flex flex-col w-full gap-5 md:ml-10 p-30">
-            <p>Crear nuevo usuario</p>
+        <div className="w-full flex flex-col p-10 flex-col items-center">
+          <p className="text-2xl font-bold">Crear nuevo usuario</p>
+          <div className="flex flex-col gap-5 md:ml-10 md:mt-10 w-[50%] p-10 bg-white rounded-xl">
             <TextField
               id="username"
               name="username"

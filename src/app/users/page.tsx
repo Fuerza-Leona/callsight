@@ -46,8 +46,18 @@ export default function Home() {
       );
     }
 
+    if (search) {
+      setFilteredUsers(
+        filteredUsers.filter(
+          (user) =>
+            user.username.toLowerCase().includes(search.toLowerCase()) ||
+            user.user_id.toLowerCase().includes(search.toLowerCase())
+        )
+      );
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCompanies, users]);
+  }, [selectedCompanies, users, search]);
 
   useEffect(() => {
     getUsers();

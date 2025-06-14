@@ -39,6 +39,7 @@ const Entrenamiento = () => {
     setSelectedMood(mood);
     setSelectedDescription(description);
     setSelectedVoice(voice);
+    setSelectedClient(mood);
   };
 
   const handleConnect = () => {
@@ -49,14 +50,18 @@ const Entrenamiento = () => {
     }
   };
 
+  const [selectedClient, setSelectedClient] = useState<string>('Ninguno');
+
   return (
     <>
       <div className="fixed right-8 top-12 bottom-12 w-72 bg-white shadow-xl rounded-xl z-10 p-6 border border-gray-300">
         <h2 className="text-lg font-semibold text-gray-800 mb-2">Simulador</h2>
         <p className="text-sm text-gray-600 mb-4">
-          Interactúa con un cliente simulado. Puedes hablar o escribir tu
-          mensaje.
+          Interactúa con un cliente mediante una llamada simulada. Es necesario
+          el uso del micrófono.
         </p>
+        <p className="font-semibold">Cliente seleccionado: </p>
+        <p className="text-gray-700 text-sm mb-2">{selectedClient}</p>
         {!connected ? (
           <button
             onClick={handleConnect}
@@ -66,14 +71,11 @@ const Entrenamiento = () => {
           </button>
         ) : (
           <>
-            <div className="text-gray-700 text-sm mb-2">
-              Conectado. Escribe tu mensaje:
-            </div>
-            <input
+            {/* <input
               type="text"
               placeholder="Escribe y presiona Enter"
               className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            /> */}
             <button
               onClick={stopSession}
               className="mt-2 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition"

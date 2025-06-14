@@ -3,29 +3,65 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <>
-      <section className="relative w-full min-h-screen flex items-center justify-center bg-[#13202A]">
-        <Image
-          src="/fuerzaLeona.jpg"
-          alt="Logo"
-          fill
-          className="object-cover pt-20"
-        />
-        <div className="absolute bg-white/40 p-8 rounded-lg shadow-lg w-[90%] max-w-xl text-center">
-          <h2 className="text-white text-2xl font-bold">
-            OBTÉN INSIGHTS VALIOSOS DE TUS REUNIONES
-          </h2>
-          <p className="text-white/90 mt-2">
-            Potencia tu relación con clientes con análisis inteligentes. Nuestra
-            plataforma transforma las reuniones en dashboards, estadísticas y
-            resúmenes accionables con IA, ayudando a mejorar la comunicación y
-            la toma de decisiones.
-          </p>
+      <section
+        id="que-hacemos"
+        className="w-full min-h-screen flex flex-col items-center justify-center bg-white px-8 py-16 pt-32 text-black"
+      >
+        <div className="flex justify-center items-center">
+          <div className="max-w-3xl text-xl pr-10 leading-relaxed">
+            <div className="font-bold text-5xl mb-15">¿Qué hacemos?</div>
+
+            <div className="font-bold">
+              Desarrollamos una plataforma de IA que:
+            </div>
+
+            <ul className="mt-6 space-y-4">
+              <li className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-[#13202A] rounded-full mt-2"></div>
+                <span className="text-lg">
+                  Analiza reuniones con clientes en tiempo real
+                </span>
+              </li>
+              <li className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-[#13202A] rounded-full mt-2"></div>
+                <span className="text-lg">
+                  Transcribe automáticamente las conversaciones
+                </span>
+              </li>
+              <li className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-[#13202A] rounded-full mt-2"></div>
+                <span className="text-lg">
+                  Extrae insights clave de cada interacción
+                </span>
+              </li>
+              <li className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-[#13202A] rounded-full mt-2"></div>
+                <span className="text-lg">
+                  Genera KPIs y análisis de sentimientos
+                </span>
+              </li>
+              <li className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-[#13202A] rounded-full mt-2"></div>
+                <span className="text-lg">
+                  Proporciona retroalimentación personalizada
+                </span>
+              </li>
+              <li className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-[#13202A] rounded-full mt-2"></div>
+                <span className="text-lg">
+                  Mejora la experiencia del cliente y la productividad del
+                  equipo
+                </span>
+              </li>
+            </ul>
+          </div>
+          <video src="landing.mp4" autoPlay muted loop></video>
         </div>
       </section>
 
       <section
         id="nosotros"
-        className="w-full min-h-screen flex flex-col items-start justify-start bg-[#13202A] px-8 py-16 text-white"
+        className="w-full min-h-screen flex flex-col items-start justify-start bg-[#13202A] px-8 py-16 text-white pt-32"
       >
         <h3 className="text-8xl font-medium mb-6">¿Quiénes somos?</h3>
         <p className="w-[85%] text-2xl font-thin leading-relaxed pt-5">
@@ -40,25 +76,6 @@ export default function Home() {
         >
           <span></span>{' '}
         </h3>
-      </section>
-
-      <section
-        id="que-hacemos"
-        className="w-full min-h-screen flex flex-col items-center justify-center bg-white px-8 py-16 text-black"
-      >
-        <h3 className="text-7xl font-medium mb-6">¿Qué hacemos?</h3>
-        <div className="flex justify-center items-center">
-          <p className="max-w-3xl text-xl leading-relaxed">
-            Desarrollamos una plataforma que permite analizar reuniones con
-            clientes en tiempo real, transcribirlas automáticamente y extraer
-            insights relevantes. A través de análisis de sentimientos,
-            emociones, palabras clave y generación de KPIs, ayudamos a mejorar
-            la experiencia del cliente y la productividad del equipo. Además,
-            proporcionamos retroalimentación personalizada y sugerencias
-            concretas para mejorar las interacciones.
-          </p>
-          <video src="landing.mp4" autoPlay muted loop></video>
-        </div>
       </section>
 
       <section
